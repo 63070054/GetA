@@ -1,3 +1,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+.todolistCardBackground{
+    background-color: #E3F0F0;
+}
