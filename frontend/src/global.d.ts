@@ -5,7 +5,7 @@ interface TodolistCard{
 
 interface Task{
     title:string;
-    status:"DONE"|"NOT DONE";
+    status:boolean;
     time?:string;
 }
 
