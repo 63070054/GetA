@@ -1,3 +1,6 @@
+interface OrangeButton{
+    ButtonName: string
+}
 interface TodolistCard{
     date:string;
     tasks:Task[];
