@@ -1,3 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import url('https://fonts.googleapis.com/css?family=Open+Sans');
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@500&display=swap');
+
+.orangeButton {
+    background-color: #FF7F56;
+    color: white;
+    width: 160px;
+    height: 55px;
+    font-size: 16px;
+}
+
+body {
+    font-family: 'Kanit', sans-serif !important;
+}

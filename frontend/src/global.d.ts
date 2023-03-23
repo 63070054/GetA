@@ -1,0 +1,3 @@
+interface OrangeButton{
+    ButtonName: string
+}
