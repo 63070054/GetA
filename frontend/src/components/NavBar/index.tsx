@@ -5,6 +5,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import FolderIcon from '@mui/icons-material/Folder';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import { useRouter } from "next/router";
 
 const NavBar = () => {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
@@ -54,20 +55,13 @@ const NavBar = () => {
     },
   ];
 
+  const route = useRouter()
+
   return (
-    <AppBar position="static">
+    <AppBar position="static" className="bg-white shadow-lg inline-block">
       <Container maxWidth="xl">
-        <Toolbar disableGutters className="flex">
-          {/* <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} /> */}
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="/"
-            className="hidden sm:block"
-          >
-            LOGO
-          </Typography>
+        <Toolbar disableGutters className="flex h-full h-full">
+          <img src="/logo.png" onClick={() => route.push("/")} className="w-40 hidden sm:block cursor-pointer" />
           <Box className="flex grow sm:hidden">
             <IconButton
               size="large"
@@ -102,16 +96,7 @@ const NavBar = () => {
               ))}
             </Menu>
           </Box>
-          {/* <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} /> */}
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href=""
-            className="flex grow sm:hidden justify-center sm:justify-start"
-          >
-            LOGO
-          </Typography>
+          <img src="/logo.png" onClick={() => route.push("/")} className="w-40 sm:hidden cursor-pointer" />
           <Box className="flex grow sm:block hidden">
             {pages.map((page, index) => (
               <Button
@@ -126,7 +111,7 @@ const NavBar = () => {
 
           <Box className="flex grow justify-end">
             <IconButton onClick={handleOpenUserMenu}>
-              <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+              <Avatar alt="" src="" />
             </IconButton>
             <Menu
               anchorEl={anchorElUser}
@@ -144,8 +129,8 @@ const NavBar = () => {
               className="mt-12"
             >
               {settings.map((setting, index) => (
-                <MenuItem key={index} onClick={handleCloseUserMenu} className="flex gap-2 justify-end">
-                  <Typography textAlign="center">{setting.name}</Typography>
+                <MenuItem key={index} onClick={handleCloseUserMenu} className="flex gap-2 justify-end h-12">
+                  <p>{setting.name}</p>
                   {setting.icon}
                 </MenuItem>
               ))}
