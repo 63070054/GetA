@@ -1,6 +1,6 @@
 const NotSignInContainer = ({ children }: ChildrenProps) => {
   return (
-    <div className="background h-screen">
+    <div className="grow">
       {children}
     </div>
   );

@@ -23,7 +23,9 @@ export default function App({ Component, pageProps }: AppProps) {
       fontFamily: "Kanit",
     },
   });
+
   const [isLogin, setIsLogin] = useState(false);
+
   return (
     <ThemeProvider theme={theme}>
       {isLogin ? (
