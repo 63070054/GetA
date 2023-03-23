@@ -2,8 +2,11 @@ import OrangeButton from "@/components/Button/OrangeButton";
 
 const index = () => {
     return (
-        <div>
-            <OrangeButton ButtonName="สมัครค้าบ"></OrangeButton>
+        <div className="flex">
+            <div className="backgroundRegister ">
+            </div>
+            <div className="backgroundRegistert">
+            </div>
         </div>
     );
 };

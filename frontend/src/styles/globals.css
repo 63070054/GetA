@@ -8,7 +8,16 @@
     background-color: #FF7F56;
     color: white;
 }
-
+.background {
+    background-color: white;
+    
+}
+.backgroundRegister {
+    background-color: #048181;
+}
+.backgroundRegister {
+    background-color: white;
+}
 body {
     font-family: 'Kanit', sans-serif !important;
 }
