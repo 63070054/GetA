@@ -13,7 +13,7 @@ const TodolistCard = ({ date, tasks }: TodolistCard) => {
                     <Task status={false} title="Do HomeWork"></Task>
                 </CardContent>
                 <CardActions className="grid justify-items-end ">
-                    <Fab size="small" className="addtask" color="primary" aria-label="add">
+                    <Fab size="small" color="info" aria-label="add">
                         <AddIcon />
                     </Fab>
                 </CardActions>
