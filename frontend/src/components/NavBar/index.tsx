@@ -2,6 +2,9 @@ import { AppBar, Avatar, Box, Button, Container, IconButton, Menu, MenuItem, Too
 import { useState } from "react";
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import FolderIcon from '@mui/icons-material/Folder';
+import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 
 const NavBar = () => {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
@@ -37,44 +40,35 @@ const NavBar = () => {
     {
       name: "โฟลเดอร์ของฉัน",
       routerPath: "",
-      icon: <AccountCircleIcon />
+      icon: <FolderIcon />
     },
     {
       name: "รายการที่ต้องทำ",
       routerPath: "",
-      icon: <AccountCircleIcon />
+      icon: <FormatListBulletedIcon />
     },
     {
       name: "ออกจากระบบ",
       routerPath: "",
-      icon: <AccountCircleIcon />
+      icon: <ExitToAppIcon />
     },
   ];
 
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
-        <Toolbar disableGutters>
+        <Toolbar disableGutters className="flex">
           {/* <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} /> */}
           <Typography
             variant="h6"
             noWrap
             component="a"
             href="/"
-            sx={{
-              mr: 2,
-              display: { xs: 'none', md: 'flex' },
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
+            className="hidden sm:block"
           >
             LOGO
           </Typography>
-
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+          <Box className="flex grow sm:hidden">
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -99,9 +93,7 @@ const NavBar = () => {
               }}
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
-              sx={{
-                display: { xs: 'block', md: 'none' },
-              }}
+              className="block sm:hidden"
             >
               {pages.map((page, index) => (
                 <MenuItem key={index} onClick={handleCloseNavMenu}>
@@ -116,20 +108,11 @@ const NavBar = () => {
             noWrap
             component="a"
             href=""
-            sx={{
-              mr: 2,
-              display: { xs: 'flex', md: 'none' },
-              flexGrow: 1,
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
+            className="flex grow sm:hidden justify-center sm:justify-start"
           >
             LOGO
           </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+          <Box className="flex grow sm:block hidden">
             {pages.map((page, index) => (
               <Button
                 key={index}
@@ -141,8 +124,8 @@ const NavBar = () => {
             ))}
           </Box>
 
-          <Box sx={{ flexGrow: 0 }}>
-            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+          <Box className="flex grow justify-end">
+            <IconButton onClick={handleOpenUserMenu}>
               <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
             </IconButton>
             <Menu
