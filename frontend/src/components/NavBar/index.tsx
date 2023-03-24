@@ -58,7 +58,7 @@ const NavBar = () => {
   const route = useRouter()
 
   return (
-    <AppBar position="static" className="bg-white shadow-lg inline-block">
+    <AppBar position="static" className="bg-white drop-shadow-sm inline-block relative z-10">
       <Container maxWidth="xl">
         <Toolbar disableGutters className="flex h-full h-full">
           <img src="/logo.png" onClick={() => route.push("/")} className="w-40 hidden sm:block cursor-pointer" />
@@ -99,13 +99,7 @@ const NavBar = () => {
           <img src="/logo.png" onClick={() => route.push("/")} className="w-40 sm:hidden cursor-pointer" />
           <Box className="flex grow sm:block hidden">
             {pages.map((page, index) => (
-              <Button
-                key={index}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                {page.name}
-              </Button>
+              <Typography variant="infoText">{page.name}</Typography>
             ))}
           </Box>
 
