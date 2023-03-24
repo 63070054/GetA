@@ -25,22 +25,34 @@ body {
 
 .backgroundRegistert {
   background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.registerWelcome {
+  color: white;
+
 }
 .registerTitle {
-  color: white;
-  
+  color: #103535;
+
 }
-.imgGetA{
-  width: 40%;
+
+.imgGetA {
+  width: 60%;
   background-color: white;
 }
+
 .todolistCard {
   color: #048181;
   background-color: #E3F0F0;
 }
-.registerText{
+
+.registerText {
   color: white;
 }
+
 .todolistTitle {
   background-color: #048181;
   color: white;

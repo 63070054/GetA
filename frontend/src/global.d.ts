@@ -6,6 +6,10 @@ interface TodolistCard{
     tasks:Task[];
 }
 
+interface FormsInput{
+  name:string;
+}
+
 interface Task{
     title:string;
     status:boolean;
