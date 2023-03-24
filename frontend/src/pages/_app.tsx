@@ -10,7 +10,7 @@ export default function App({ Component, pageProps }: AppProps) {
   const theme = createTheme({
     palette: {
       primary: {
-        main: '#048181'
+        main: '#048181',
       },
       secondary: {
         main: '#E3F0F0'
@@ -21,13 +21,13 @@ export default function App({ Component, pageProps }: AppProps) {
     },
     typography: {
       fontFamily: "Kanit",
-      infoText: {
+      info: {
         color: "#FF7F56",
       }
     },
   });
 
-  const [isLogin, setIsLogin] = useState(false);
+  const [isLogin, setIsLogin] = useState(true);
 
   return (
     <ThemeProvider theme={theme}>

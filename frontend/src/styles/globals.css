@@ -8,7 +8,18 @@ body {
 
 .orangeButton {
   background-color: #FF7F56;
-  color: white;
+}
+
+.orangeButton:hover {
+  background-color: #ff9470;
+}
+
+.greenButton {
+  background-color: #048181;
+}
+
+.greenButton:hover {
+  background-color: #128686;
 }
 
 .background {
