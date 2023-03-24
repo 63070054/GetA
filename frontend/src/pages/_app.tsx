@@ -3,8 +3,8 @@ import type { AppProps } from 'next/app'
 import AlreadySignInLayout from './../components/Layout/AlreadySignInLayout';
 import { createTheme } from "@mui/material";
 import { ThemeProvider } from '@mui/material/styles';
-import NotSignInLayout from '@/components/Layout/NotSignInLayout';
 import { useState } from 'react';
+import NotSignInLayout from '@/components/Layout/NotSignInLayout';
 
 export default function App({ Component, pageProps }: AppProps) {
   const theme = createTheme({
@@ -21,6 +21,9 @@ export default function App({ Component, pageProps }: AppProps) {
     },
     typography: {
       fontFamily: "Kanit",
+      infoText: {
+        color: "#FF7F56",
+      }
     },
   });
 
