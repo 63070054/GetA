@@ -1,6 +1,6 @@
 const NotSignInContainer = ({ children }: ChildrenProps) => {
   return (
-    <div className="grow">
+    <div className="grow flex">
       {children}
     </div>
   );
