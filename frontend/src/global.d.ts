@@ -1,15 +1,42 @@
-interface OrangeButton{
-    ButtonName: string
+interface OrangeButton {
+  ButtonName: string
 }
-interface TodolistCard{
-    date:string;
-    tasks:Task[];
+interface FormsInput {
+  label: string;
+  name: string;
+  type: HTMLInputTypeAttribute;
+  inputValue: InputValue;
+  handleInputChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
-interface Task{
-    title:string;
-    status:boolean;
-    time?:string;
+interface InputValue {
+  [key: string]: string;
+}
+interface SelectInput {
+  label: string;
+  selectData: selectValue[];
+}
+
+interface selectValue {
+  id: string;
+  name: string;
+}
+
+interface CheckBox{
+  label:string;
+  status:boolean;
+}
+interface TodolistCard {
+  date: string;
+  tasks: Task[];
+}
+
+
+
+interface Task {
+  title: string;
+  status: boolean;
+  time?: string;
 }
 
 interface ChildrenProps {
