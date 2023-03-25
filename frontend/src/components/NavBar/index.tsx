@@ -6,6 +6,7 @@ import FolderIcon from '@mui/icons-material/Folder';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 const NavBar = () => {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
@@ -58,7 +59,7 @@ const NavBar = () => {
   const route = useRouter()
 
   return (
-    <AppBar position="static" className="bg-white drop-shadow-sm inline-block relative z-10">
+    <AppBar position="static" className="bg-white drop-shadow-sm inline-block relative z-10 w-screen">
       <Container maxWidth="xl">
         <Toolbar disableGutters className="flex h-full h-full">
           <img src="/logo.png" onClick={() => route.push("/")} className="w-40 hidden sm:block cursor-pointer" />
@@ -97,16 +98,21 @@ const NavBar = () => {
             </Menu>
           </Box>
           <img src="/logo.png" onClick={() => route.push("/")} className="w-40 sm:hidden cursor-pointer" />
-          <Box className="flex grow sm:block hidden">
-            {pages.map((page, index) => (
-              <Typography variant="info" key={index}>{page.name}</Typography>
-            ))}
-          </Box>
 
-          <Box className="flex grow justify-end">
+          <Box className="flex grow justify-end items-center">
+            <div className="flex gap-4 mr-4">
+              {pages.map((page, index) => (
+                <Link href={page.routerPath} className="no-underline">
+                  <Button variant="contained" color="info" className="text-white bg-orange">
+                    <Typography key={index}>{page.name}</Typography>
+                  </Button>
+                </Link>
+              ))}
+            </div>
             <IconButton onClick={handleOpenUserMenu}>
               <Avatar alt="" src="" />
             </IconButton>
+
             <Menu
               anchorEl={anchorElUser}
               anchorOrigin={{
