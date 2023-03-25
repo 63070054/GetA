@@ -6,6 +6,28 @@ body {
   margin: 0;
 }
 
+.softOrangeBackground {
+  background-color: #FFEFEB;
+}
+
+.softOrangeText {
+  color: #FF7F56
+}
+
+.softGreenBackground {
+  background-color: #E1F7F7;
+}
+
+.softGreenText {
+  color: #048181
+}
+
+.center-offset {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 .bg-orange {
   background-color: #FF7F56;
   color: white;

@@ -99,7 +99,7 @@ const NavBar = () => {
           <img src="/logo.png" onClick={() => route.push("/")} className="w-40 sm:hidden cursor-pointer" />
           <Box className="flex grow sm:block hidden">
             {pages.map((page, index) => (
-              <Typography variant="info">{page.name}</Typography>
+              <Typography variant="info" key={index}>{page.name}</Typography>
             ))}
           </Box>
 

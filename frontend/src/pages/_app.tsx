@@ -23,6 +23,9 @@ export default function App({ Component, pageProps }: AppProps) {
       fontFamily: "Kanit",
       info: {
         color: "#FF7F56",
+      },
+      primary: {
+        color: "#103535"
       }
     },
   });
