@@ -28,20 +28,20 @@ body {
   transform: translate(-50%, -50%);
 }
 
-
-.orangeButton {
+.bg-orange {
   background-color: #FF7F56;
+  color: white;
 }
 
-.orangeButton:hover {
+.bg-orange:hover {
   background-color: #ff9470;
 }
 
-.greenButton {
+.bg-green {
   background-color: #048181;
 }
 
-.greenButton:hover {
+.bg-green:hover {
   background-color: #128686;
 }
 
@@ -59,15 +59,23 @@ body {
 
 .backgroundRegistert {
   background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.registerTitle {
+.registerWelcome {
   color: white;
 
 }
 
+.registerTitle {
+  color: #103535;
+
+}
+
 .imgGetA {
-  width: 40%;
+  width: 60%;
   background-color: white;
 }
 
