@@ -1,4 +1,3 @@
-import { IconGetAProps } from '@/global';
 import { Icon, SvgIcon, Typography } from '@mui/material';
 import Link from 'next/link';
 

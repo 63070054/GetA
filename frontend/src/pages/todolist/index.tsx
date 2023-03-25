@@ -1,6 +1,4 @@
 import TodolistCard from "@/components/TodolistCard";
-import { Task } from "@/global";
-
 const index = () => {
 
     const tasks: Task[] = []
