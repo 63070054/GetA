@@ -1,8 +1,8 @@
 import ShowFilterSelected from "@/components/Filter/ShowFilterSelected";
-import IconGetA from "@/components/IconGetA";
-import SearchInputWithFilter from "@/components/Input/SearchInputWithFilter";
 import FilterModal from "@/components/Modal/FilterModal";
 import { useState } from 'react';
+import SearchInputWithFilter from '@/components/Input/SearchInputWithFilter';
+import IconGetA from '@/components/IconGetA';
 
 export default function Home() {
 
