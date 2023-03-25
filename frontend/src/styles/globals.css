@@ -6,6 +6,29 @@ body {
   margin: 0;
 }
 
+.softOrangeBackground {
+  background-color: #FFEFEB;
+}
+
+.softOrangeText {
+  color: #FF7F56
+}
+
+.softGreenBackground {
+  background-color: #E1F7F7;
+}
+
+.softGreenText {
+  color: #048181
+}
+
+.center-offset {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+
 .orangeButton {
   background-color: #FF7F56;
 }
@@ -37,21 +60,26 @@ body {
 .backgroundRegistert {
   background-color: white;
 }
+
 .registerTitle {
   color: white;
-  
+
 }
-.imgGetA{
+
+.imgGetA {
   width: 40%;
   background-color: white;
 }
+
 .todolistCard {
   color: #048181;
   background-color: #E3F0F0;
 }
-.registerText{
+
+.registerText {
   color: white;
 }
+
 .todolistTitle {
   background-color: #048181;
   color: white;
