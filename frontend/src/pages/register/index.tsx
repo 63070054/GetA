@@ -5,6 +5,7 @@ import Typography from '@mui/material/Typography';
 import Link from "next/link";
 import { ChangeEvent, useState } from "react"
 import SelectInput from "@/components/forms/SelectInput";
+import InfoGetA from "@/components/GetAInfo/InfoGetA";
 
 
 const index = () => {
@@ -80,10 +81,7 @@ const index = () => {
         <div className="flex w-full shadow-2xl">
             <div className="backgroundRegister w-full items-center flex-col gap-4">
                 <div className="flex flex-col w-9/12 items-center">
-                    <Typography className="registerWelcome leading-none m-0 self-start" variant="h3" gutterBottom>Welcome to GET A</Typography>
-                    <Typography variant="body2" className="self-start" color="#CBD5E1" gutterBottom>แบ่งปันหรือเสาะหาสรุปได้ทุกวิชาที่คุณต้องการ</Typography>
-                    <Typography variant="body2" className="self-start" color="#CBD5E1" gutterBottom>Let’s GET Start and GET A in your Exam :)</Typography>
-                    <img src="getAWithBook.png " className="imgGetA shadow-lg rounded-xl m-1" ></img>
+                    <InfoGetA></InfoGetA>
                 </div>
             </div>
             <div className="backgroundRegistert w-full items-center flex-col gap-4 px-12 py-2">
@@ -102,7 +100,7 @@ const index = () => {
                 <OrangeButton ButtonName="สมัคร"></OrangeButton>
                 <div className="flex gap-2 items-center	">
                     <Typography className="text-sm">มีบัญชีอยู่แล้ว?</Typography>
-                    <Link href="/" className="no-underline	">
+                    <Link href="/login" className="no-underline	">
                         <Typography className="text-sm " variant="info"> ไปที่หน้าเข้าสู่ระบบ</Typography>
                     </Link>
                 </div>
