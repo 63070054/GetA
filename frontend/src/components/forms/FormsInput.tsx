@@ -2,14 +2,24 @@ import React from 'react';
 import TextField from '@mui/material/TextField';
 import { Typography } from '@mui/material';
 
-const FormsInput = ({ name }: FormsInput) => {
+const FormsInput = ({
+    label,
+    name,
+    type,
+    inputValue,
+    handleInputChange
+}: FormsInput) => {
     return (
-        <div>
-            <Typography variant="body2" className="self-start" color="#CBD5E1" gutterBottom>{name}</Typography>
+        <div className="w-full">
+            <Typography variant="body2" className="self-start" color="#CBD5E1" gutterBottom>{label}</Typography>
             <TextField
                 hiddenLabel
                 variant="filled"
                 size="small"
+                className='bg-green opacity-25 w-full'
+                name={name}
+                type={type}
+                onChange={handleInputChange}
             />
         </div>
     );

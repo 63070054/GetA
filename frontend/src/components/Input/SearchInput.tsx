@@ -22,7 +22,7 @@ const SearchInput = () => {
         placeholder="Search"
       />
       <Divider className='h-9/12' orientation="vertical" />
-      <Button color="info" variant='contained' className='p-4 rounded-none text-white orangeButton'>
+      <Button color="info" variant='contained' className='p-4 rounded-none text-white bg-orange'>
         <FilterAltIcon />
       </Button>
     </Paper>
