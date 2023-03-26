@@ -17,7 +17,7 @@ export default function App({ Component, pageProps }: AppProps) {
       },
       info: {
         main: '#FF7F56'
-      }
+      },
     },
     typography: {
       fontFamily: "Kanit",
