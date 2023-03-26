@@ -7,7 +7,7 @@ const index = () => {
 
     return (
         <div className="w-full">
-            <div className="grid md:grid-cols-3 grid-cols-1 gap-4">
+            <div className="grid md:grid-cols-3 grid-cols-1 gap-6">
                 <TodolistCard date="18 มีนาคม 2565" tasks={tasks}></TodolistCard>
                 <TodolistCard date="18 มีนาคม 2565" tasks={tasks}></TodolistCard>
                 <TodolistCard date="18 มีนาคม 2565" tasks={tasks}></TodolistCard>

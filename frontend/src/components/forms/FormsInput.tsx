@@ -11,15 +11,16 @@ const FormsInput = ({
 }: FormsInput) => {
     return (
         <div className="w-full">
-            <Typography variant="body2" className="self-start" color="#CBD5E1" gutterBottom>{label}</Typography>
+            <Typography variant="body2" className="self-start" color="#103535" gutterBottom>{label}</Typography>
             <TextField
                 hiddenLabel
                 variant="filled"
                 size="small"
-                className='bg-green opacity-25 w-full'
+                className='bg-green opacity-25 w-full rounded-lg'
                 name={name}
                 type={type}
                 onChange={handleInputChange}
+                color="primary"
             />
         </div>
     );

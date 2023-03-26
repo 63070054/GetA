@@ -6,9 +6,7 @@
 .todolistTitle{
     background-color: #048181;
     color:white;
-    padding: 0.3em;
     text-align: center;
-    border-radius:  0.5em 0.5em 0.5em 0.5em;
 }
 .task{
     margin-top: 1em;
@@ -105,37 +103,6 @@ body {
   color: white;
 }
 
-.todolistTitle {
-  background-color: #048181;
-  color: white;
-  padding: 0.3em;
-  text-align: center;
-  border-radius: 0.5em 0.5em 0.5em 0.5em;
-}
-
-.addtask {
-  background-color: #FF7F56;
-  float: right;
-}
-
-.addtask:hover {
-  background-color: #d77555;
-  float: right;
-}
-
-.todolistCard {
-  color: #048181;
-  background-color: #E3F0F0;
-}
-
-.todolistTitle {
-  background-color: #048181;
-  color: white;
-  padding: 0.3em;
-  text-align: center;
-  border-radius: 0.5em 0.5em 0.5em 0.5em;
-}
-
 .addtask {
   background-color: #FF7F56;
   float: right;
@@ -155,14 +122,4 @@ body {
 
 .checkedBox {
   background-color: #048181;
-}
-
-input[type="checkbox"]:checked::before {
-  content: "";
-  display: inline-block;
-  width: 14px;
-  height: 14px;
-  background-color: blue;
-  border-radius: 2px;
-  margin-right: 5px;
 }
