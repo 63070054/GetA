@@ -2,6 +2,11 @@ import { AppBar, Avatar, Box, Button, Container, IconButton, Menu, MenuItem, Too
 import { useState } from "react";
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import FolderIcon from '@mui/icons-material/Folder';
+import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import { useRouter } from "next/router";
+import Link from "next/link";
 
 const NavBar = () => {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
@@ -37,44 +42,28 @@ const NavBar = () => {
     {
       name: "โฟลเดอร์ของฉัน",
       routerPath: "",
-      icon: <AccountCircleIcon />
+      icon: <FolderIcon />
     },
     {
       name: "รายการที่ต้องทำ",
       routerPath: "",
-      icon: <AccountCircleIcon />
+      icon: <FormatListBulletedIcon />
     },
     {
       name: "ออกจากระบบ",
       routerPath: "",
-      icon: <AccountCircleIcon />
+      icon: <ExitToAppIcon />
     },
   ];
 
-  return (
-    <AppBar position="static">
-      <Container maxWidth="xl">
-        <Toolbar disableGutters>
-          {/* <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} /> */}
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="/"
-            sx={{
-              mr: 2,
-              display: { xs: 'none', md: 'flex' },
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            LOGO
-          </Typography>
+  const route = useRouter()
 
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+  return (
+    <AppBar position="static" className="bg-white drop-shadow-sm inline-block relative z-10 w-screen">
+      <Container maxWidth="xl">
+        <Toolbar disableGutters className="flex h-full h-full">
+          <img src="/logo.png" onClick={() => route.push("/")} className="w-40 hidden sm:block cursor-pointer" />
+          <Box className="flex grow sm:hidden">
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -99,9 +88,7 @@ const NavBar = () => {
               }}
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
-              sx={{
-                display: { xs: 'block', md: 'none' },
-              }}
+              className="block sm:hidden"
             >
               {pages.map((page, index) => (
                 <MenuItem key={index} onClick={handleCloseNavMenu}>
@@ -110,41 +97,22 @@ const NavBar = () => {
               ))}
             </Menu>
           </Box>
-          {/* <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} /> */}
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href=""
-            sx={{
-              mr: 2,
-              display: { xs: 'flex', md: 'none' },
-              flexGrow: 1,
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            LOGO
-          </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page, index) => (
-              <Button
-                key={index}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                {page.name}
-              </Button>
-            ))}
-          </Box>
+          <img src="/logo.png" onClick={() => route.push("/")} className="w-40 sm:hidden cursor-pointer" />
 
-          <Box sx={{ flexGrow: 0 }}>
-            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-              <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+          <Box className="flex grow justify-end items-center">
+            <div className="flex gap-4 mr-4">
+              {pages.map((page, index) => (
+                <Link href={page.routerPath} className="no-underline">
+                  <Button variant="contained" color="info" className="text-white bg-orange">
+                    <Typography key={index}>{page.name}</Typography>
+                  </Button>
+                </Link>
+              ))}
+            </div>
+            <IconButton onClick={handleOpenUserMenu}>
+              <Avatar alt="" src="" />
             </IconButton>
+
             <Menu
               anchorEl={anchorElUser}
               anchorOrigin={{
@@ -161,8 +129,8 @@ const NavBar = () => {
               className="mt-12"
             >
               {settings.map((setting, index) => (
-                <MenuItem key={index} onClick={handleCloseUserMenu} className="flex gap-2 justify-end">
-                  <Typography textAlign="center">{setting.name}</Typography>
+                <MenuItem key={index} onClick={handleCloseUserMenu} className="flex gap-2 justify-end h-12">
+                  <p>{setting.name}</p>
                   {setting.icon}
                 </MenuItem>
               ))}
@@ -174,4 +142,4 @@ const NavBar = () => {
   );
 };
 
-export default NavBar;
+export default NavBar;  
