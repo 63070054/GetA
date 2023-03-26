@@ -49,11 +49,12 @@ const FilterModal = ({
           รายวิชา
         </Typography>
         <div className="grid grid-cols-3 px-2">
-          {courses.map(course => (
+          {courses.map((course, index) => (
             <FormControlLabel
               control={<Checkbox value={course} onChange={handleCheckboxCoursesCheck} checked={filterCourses.includes(course)} />}
               label={course}
               className="w-fit"
+              key={index}
             />
           ))}
         </div>
@@ -61,11 +62,12 @@ const FilterModal = ({
           ชั้นปี
         </Typography>
         <div className="grid grid-cols-2 px-2">
-          {years.map(year => (
+          {years.map((year, index) => (
             <FormControlLabel
               control={<Checkbox value={year} onChange={handleCheckboxYearsCheck} checked={filterYears.includes(year)} />}
               label={year}
               className="w-fit"
+              key={index}
             />
           ))}
         </div>

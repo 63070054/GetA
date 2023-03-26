@@ -81,7 +81,7 @@ const index = () => {
         <div className="flex w-full shadow-2xl">
             <div className="backgroundRegister w-full items-center flex-col gap-4">
                 <div className="flex flex-col w-9/12 items-center">
-                    <InfoGetA></InfoGetA>
+                    <InfoGetA />
                 </div>
             </div>
             <div className="backgroundRegistert w-full items-center flex-col gap-4 px-12 py-2">
@@ -92,9 +92,9 @@ const index = () => {
                     <FormsInput label="รหัสผ่าน" name="password" type="password" {...{ inputValue, handleInputChange }}></FormsInput>
                     <FormsInput label="ยืนยันรหัสผ่าน" name="confirmPassword" type="password" {...{ inputValue, handleInputChange }}></FormsInput>
                     <div className="flex items-center justify-center gap-6 w-full">
-                        <SelectInput label="ชั้นปี" selectData={yearData}></SelectInput>
-                        <SelectInput label="สาขา" selectData={supData}></SelectInput>
-                        <SelectInput label="แขนง" selectData={supSupData}></SelectInput>
+                        <SelectInput label="ชั้นปี" selectData={yearData} />
+                        <SelectInput label="สาขา" selectData={supData} />
+                        <SelectInput label="แขนง" selectData={supSupData} />
                     </div>
                 </div>
                 <OrangeButton ButtonName="สมัคร"></OrangeButton>
