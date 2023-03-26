@@ -1,4 +1,4 @@
-import { Checkbox, FormControlLabel } from "@mui/material";
+import { Checkbox, FormControlLabel, Typography } from "@mui/material";
 import React from "react";
 
 const Task = ({id, status, title, time,onStatusChange }: Task) => {
@@ -10,12 +10,14 @@ const Task = ({id, status, title, time,onStatusChange }: Task) => {
         onStatusChange(id);
     };
     return (
-        <div className="task" >
+        <div className="task flex" >
             <FormControlLabel
-            label={title}
+            label=""
             control={<Checkbox checked={checked} onChange={handleChange} color="primary"/>}
             className={checked ? "line-through" : ""}
-            />
+            ></FormControlLabel>
+            <Typography className="mr-2 mt-2 grow">{title}</Typography>
+            <Typography className="mr-2 mt-2">{time}</Typography>
         </div>
     );
 };

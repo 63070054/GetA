@@ -8,10 +8,8 @@ const TodolistCard = ({ date, tasks }: TodolistCard) => {
     const [taskList, setTaskList] = React.useState(tasks);
     const handleChange = (taskId:number) => {
         setTaskList((prevTasks) => {
-            // find the task with the given id and update its status
             const updatedTasks = prevTasks.map((task) => {
                 if (task.id === taskId) {
-                    console.log("ada")
                     return { ...task, status: !task.status };
                 }
                 return task;
@@ -29,7 +27,7 @@ const TodolistCard = ({ date, tasks }: TodolistCard) => {
                     </Typography>
                     <div>
                         {taskList.map(task =>
-                            task.status === false ? <Task key={task.id} id={task.id} status={task.status} title={task.title} onStatusChange={() => handleChange(task.id)}/> : null
+                            task.status === false ? <Task key={task.id} id={task.id} status={task.status} title={task.title} time={task.time} onStatusChange={() => handleChange(task.id)}/> : null
                         )}
                     </div>
                     <Divider variant="middle" className="mt-5" color="primary"/>

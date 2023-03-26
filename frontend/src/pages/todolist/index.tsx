@@ -2,7 +2,7 @@ import TodolistCard from "@/components/TodolistCard";
 const index = () => {
 
     const tasks: Task[] = [{id:1, status: false, title: "Do HomeWork" },
-    {id:2, status: false, title: "Do HomeWork2" },
+    {id:2, status: false, title: "Do HomeWork2",time:"13.00" },
     {id:3, status: false, title: "Do HomeWork3" }]
 
     return (
