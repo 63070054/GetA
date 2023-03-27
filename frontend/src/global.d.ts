@@ -41,7 +41,7 @@ interface Task {
   title: string;
   status: boolean;
   time?: string;
-  onStatusChange?: (taskId:number) => void;
+  onStatusChange?: (taskId: number) => void;
 }
 
 interface ChildrenProps {
@@ -96,7 +96,23 @@ interface FilterModalProps {
 
 }
 
-interface AddTaskModalProps{
+interface FolderIcon {
+  id: string;
+  name: string;
+  description?: string;
+  ownerName: string,
+  ownerId: string,
+  courses: CourseType[];
+  yeras: YearType[];
+  files: IconGetAProps[];
+}
+
+interface LoadingScreenProps {
+  isLoading: boolean;
+  setIsLoading: Dispatch<SetStateAction<S>>;
+}
+
+interface AddTaskModalProps {
   openModal: boolean;
-  onStatusChange: (status:boolean) => void;
+  onStatusChange: (status: boolean) => void;
 }

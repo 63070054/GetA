@@ -12,7 +12,7 @@ export default function Home() {
       name: "SVV Week17(หลุดข้อสอบ)",
       routeTo: "/folder/:folderId",
       ownerName: "waveza2",
-      ownerId: "waveza2",
+      ownerId: "1",
       iconPath: "/icons/folderGetA.svg"
     },
     {
@@ -20,7 +20,7 @@ export default function Home() {
       name: "SVV Week17(หลุดข้อสอบ)",
       routeTo: "/folder/:folderId",
       ownerName: "waveza2",
-      ownerId: "waveza2",
+      ownerId: "2",
       iconPath: "/icons/folderGetA.svg"
     },
     {
@@ -28,7 +28,7 @@ export default function Home() {
       name: "SVV Week17(หลุดข้อสอบ)",
       routeTo: "/folder/:folderId",
       ownerName: "waveza2",
-      ownerId: "waveza2",
+      ownerId: "3",
       iconPath: "/icons/folderGetA.svg"
     },
     {
@@ -36,7 +36,7 @@ export default function Home() {
       name: "SVV Week17(หลุดข้อสอบ)",
       routeTo: "/folder/:folderId",
       ownerName: "waveza2",
-      ownerId: "waveza2",
+      ownerId: "4",
       iconPath: "/icons/folderGetA.svg"
     },
     {
@@ -44,7 +44,7 @@ export default function Home() {
       name: "SVV Week17(หลุดข้อสอบ)",
       routeTo: "/folder/:folderId",
       ownerName: "waveza2",
-      ownerId: "waveza2",
+      ownerId: "5",
       iconPath: "/icons/folderGetA.svg"
     },
     {
@@ -52,7 +52,7 @@ export default function Home() {
       name: "SVV Week17(หลุดข้อสอบ)",
       routeTo: "/folder/:folderId",
       ownerName: "waveza2",
-      ownerId: "waveza2",
+      ownerId: "6",
       iconPath: "/icons/folderGetA.svg"
     },
     {
@@ -60,7 +60,7 @@ export default function Home() {
       name: "SVV Week17(หลุดข้อสอบ)",
       routeTo: "/folder/:folderId",
       ownerName: "waveza2",
-      ownerId: "waveza2",
+      ownerId: "7",
       iconPath: "/icons/folderGetA.svg"
     },
     {
@@ -68,7 +68,7 @@ export default function Home() {
       name: "SVV Week17(หลุดข้อสอบ)",
       routeTo: "/folder/:folderId",
       ownerName: "waveza2",
-      ownerId: "waveza2",
+      ownerId: "8",
       iconPath: "/icons/folderGetA.svg"
     },
     {
@@ -76,7 +76,7 @@ export default function Home() {
       name: "SVV Week17(หลุดข้อสอบ)",
       routeTo: "/folder/:folderId",
       ownerName: "waveza2",
-      ownerId: "waveza2",
+      ownerId: "9",
       iconPath: "/icons/folderGetA.svg"
     },
     {
@@ -84,7 +84,7 @@ export default function Home() {
       name: "SVV Week17(หลุดข้อสอบ)",
       routeTo: "/folder/:folderId",
       ownerName: "waveza2",
-      ownerId: "waveza2",
+      ownerId: "10",
       iconPath: "/icons/folderGetA.svg"
     },
   ]
@@ -102,7 +102,7 @@ export default function Home() {
         <ShowFilterSelected courses={filterCourses} years={filterYears} />
         <div className="grid grid-cols-5 gap-12">
           {publicFlder.map(folder => (
-            <IconGetA {...folder} routeTo={folder.routeTo.replace(":folderId", folder.id)} />
+            <IconGetA {...folder} routeTo={folder.routeTo.replace(":folderId", folder.id)} key={folder.id} />
           ))}
         </div>
       </div>

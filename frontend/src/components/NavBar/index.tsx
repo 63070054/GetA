@@ -102,7 +102,7 @@ const NavBar = () => {
           <Box className="flex grow justify-end items-center">
             <div className="flex gap-4 mr-4">
               {pages.map((page, index) => (
-                <Link href={page.routerPath} className="no-underline">
+                <Link href={page.routerPath} className="no-underline" key={index}>
                   <Button variant="contained" color="info" className="text-white bg-orange">
                     <Typography key={index}>{page.name}</Typography>
                   </Button>
