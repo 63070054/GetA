@@ -36,8 +36,6 @@ interface TodolistCard {
   tasks: Task[];
 }
 
-
-
 interface Task {
   id: number;
   title: string;
@@ -112,4 +110,9 @@ interface FolderIcon {
 interface LoadingScreenProps {
   isLoading: boolean;
   setIsLoading: Dispatch<SetStateAction<S>>;
+}
+
+interface AddTaskModalProps {
+  openModal: boolean;
+  onStatusChange: (status: boolean) => void;
 }
