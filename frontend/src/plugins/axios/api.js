@@ -7,7 +7,6 @@ const api = axios.create({
 });
 
 const AxiosInterceptor = ({ children, setIsLoading }) => {
-  const [isSet, setIsSet] = useState(false);
   useEffect(() => {
     const resInterceptor = (response) => {
       setIsLoading(false);
@@ -37,14 +36,12 @@ const AxiosInterceptor = ({ children, setIsLoading }) => {
 
     const apiReqInterceptor = api.interceptors.request.use(reqInterceptor);
 
-    setIsSet(true);
-
     return () => {
       api.interceptors.response.eject(apiResInterceptor),
         api.interceptors.request.eject(apiReqInterceptor);
     };
   }, []);
-  return isSet && children;
+  return children;
 };
 
 export default api;
