@@ -5,7 +5,7 @@ import { createTheme } from "@mui/material";
 import { ThemeProvider } from '@mui/material/styles';
 import { useEffect, useState } from 'react';
 import NotSignInLayout from '@/components/Layout/NotSignInLayout';
-import api from './../plugins/axios/api';
+import api, { AxiosInterceptor } from './../plugins/axios/api';
 import Cookies from "js-cookie"
 import { useRouter } from 'next/router';
 import LoadingScreen from '@/components/Loading/LoadingScreen';
@@ -88,17 +88,19 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <ThemeProvider theme={theme}>
-      {isLogin ? (
-        <AlreadySignInLayout>
-          <Component {...pageProps} />
-        </AlreadySignInLayout>
-      ) : (
-        <NotSignInLayout>
-          <Component {...pageProps} />
-        </NotSignInLayout>
-      )
-      }
-      {isLoading && <LoadingScreen {...{ isLoading, setIsLoading }} />}
+      <AxiosInterceptor {...{ setIsLoading }}>
+        {isLogin ? (
+          <AlreadySignInLayout>
+            <Component {...pageProps} />
+          </AlreadySignInLayout>
+        ) : (
+          <NotSignInLayout>
+            <Component {...pageProps} />
+          </NotSignInLayout>
+        )
+        }
+        {isLoading && <LoadingScreen {...{ isLoading, setIsLoading }} />}
+      </AxiosInterceptor>
     </ThemeProvider>
   )
 }
