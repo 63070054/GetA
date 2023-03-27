@@ -116,3 +116,10 @@ interface AddTaskModalProps {
   openModal: boolean;
   onStatusChange: (status: boolean) => void;
 }
+
+interface GuidelineProps{
+  id:string;
+  name:string;
+  text:string;
+  ownerName:string;
+}

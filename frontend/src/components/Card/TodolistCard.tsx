@@ -3,7 +3,6 @@ import AddIcon from '@mui/icons-material/Add';
 import Task from "../Task";
 import Divider from '@mui/material/Divider';
 import React from "react";
-import FilterModal from "../Modal/FilterModal";
 import AddTaskModal from "../Modal/AddTaskModal";
 
 const TodolistCard = ({ date, tasks }: TodolistCard) => {
@@ -17,11 +16,10 @@ const TodolistCard = ({ date, tasks }: TodolistCard) => {
                 }
                 return task;
             });
-
             return updatedTasks;
         });
     };
-    const clostModal = () => {
+    const closeModal = () => {
         setOpen(open);
     }
     return (

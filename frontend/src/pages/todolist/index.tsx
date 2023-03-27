@@ -1,5 +1,5 @@
 import AddTodoCardButton from "@/components/Button/AddTodoCardButton";
-import TodolistCard from "@/components/TodolistCard";
+import TodolistCard from "@/components/Card/TodolistCard";
 const index = () => {
 
     const tasks: Task[] = [{id:1, status: false, title: "Do HomeWork" },
