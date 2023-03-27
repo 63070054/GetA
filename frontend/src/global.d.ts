@@ -36,8 +36,6 @@ interface TodolistCard {
   tasks: Task[];
 }
 
-
-
 interface Task {
   id: number;
   title: string;
@@ -96,4 +94,9 @@ interface FilterModalProps {
   setFilterCourses: Dispatch<SetStateAction<S>>;
   setFilterYears: Dispatch<SetStateAction<S>>;
 
+}
+
+interface AddTaskModalProps{
+  openModal: boolean;
+  onStatusChange: (status:boolean) => void;
 }

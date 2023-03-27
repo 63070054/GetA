@@ -14,9 +14,8 @@ const Task = ({id, status, title, time,onStatusChange }: Task) => {
             <FormControlLabel
             label=""
             control={<Checkbox checked={checked} onChange={handleChange} color="primary"/>}
-            className={checked ? "line-through" : ""}
             ></FormControlLabel>
-            <Typography className="mr-2 mt-2 grow">{title}</Typography>
+            <Typography className={checked ? "line-through mr-2 mt-2 grow" : "mr-2 mt-2 grow"}>{title}</Typography>
             <Typography className="mr-2 mt-2">{time}</Typography>
         </div>
     );
