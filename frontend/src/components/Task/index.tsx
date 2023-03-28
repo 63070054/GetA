@@ -6,7 +6,7 @@ const Task = ({id, status, title, time,onStatusChange }: Task) => {
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setChecked(event.target.checked);
-        if(onStatusChange)
+        if(onStatusChange&&id)
         onStatusChange(id);
     };
     return (

@@ -11,10 +11,11 @@ const AddTaskModal = ({ openModal, setOpenModal, addTask, toDoIndex }: AddTaskMo
     })
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
+        const {name, value } = e.target;
+        console.log(name, value);
         const copyInputValue = inputValue;
         copyInputValue[name] = value;
-        setInputValue(copyInputValue);
+        setInputValue({...copyInputValue});
     }
 
     const handleAddTask = () => {
@@ -23,6 +24,7 @@ const AddTaskModal = ({ openModal, setOpenModal, addTask, toDoIndex }: AddTaskMo
             time: inputValue.date,
             status: false
         }
+        console.log("1")
         addTask(toDoIndex, newTask)
     }
 
@@ -41,8 +43,8 @@ const AddTaskModal = ({ openModal, setOpenModal, addTask, toDoIndex }: AddTaskMo
                     <div className='p-7 flex flex-col gap-4'>
                         <FormsInput label="สิ่งที่ต้องทำ" name="title" type="text" {...{ inputValue, handleInputChange }}></FormsInput>
                         <div className='flex gap-4'>
-                            <FormsInput label="วันที่" name="date" type="text" {...{ inputValue, handleInputChange }}></FormsInput>
-                            <FormsInput label="เวลา" name="date" type="text" {...{ inputValue, handleInputChange }}></FormsInput>
+                            <FormsInput label="วันที่" name="time" type="text" {...{ inputValue, handleInputChange }}></FormsInput>
+                            <FormsInput label="เวลา" name="time" type="text" {...{ inputValue, handleInputChange }}></FormsInput>
                         </div>
                         <div className='flex gap-4'>
                             <Button className='bg-orange sm:w-32 w-full' onClick={() => setOpenModal(false)}>ยกเลิก</Button>

@@ -39,11 +39,11 @@ interface TodolistCard {
 }
 
 interface Task {
-  id?: number;
+  id?: string;
   title: string;
   status: boolean;
   time?: string;
-  onStatusChange?: (taskId: number) => void;
+  onStatusChange?: (taskId: string) => void;
 }
 
 interface ChildrenProps {
