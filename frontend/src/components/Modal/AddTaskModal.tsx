@@ -3,8 +3,12 @@ import { Box } from '@mui/system';
 import React, { ChangeEvent, useState } from 'react';
 import FormsInput from '../forms/FormsInput';
 
-const AddTaskModal = ({ openModal, onStatusChange }: AddTaskModalProps) => {
-    const [inputValue, setInputValue] = useState<InputValue>({ taskName: "" })
+const AddTaskModal = ({ openModal, setOpenModal, addTask, toDoIndex }: AddTaskModalProps) => {
+
+    const [inputValue, setInputValue] = useState<InputValue>({
+        title: "",
+        time: ""
+    })
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -13,11 +17,20 @@ const AddTaskModal = ({ openModal, onStatusChange }: AddTaskModalProps) => {
         setInputValue(copyInputValue);
     }
 
+    const handleAddTask = () => {
+        const newTask: Task = {
+            title: inputValue.title,
+            time: inputValue.date,
+            status: false
+        }
+        addTask(toDoIndex, newTask)
+    }
+
     return (
         <div>
             <Modal
                 open={openModal}
-                onClose={() => onStatusChange(false)}
+                onClose={() => setOpenModal(false)}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
@@ -26,14 +39,14 @@ const AddTaskModal = ({ openModal, onStatusChange }: AddTaskModalProps) => {
                         เพิ่มรายการที่ต้องทำ
                     </Typography>
                     <div className='p-7 flex flex-col gap-4'>
-                        <FormsInput label="สิ่งที่ต้องทำ" name="taskName" type="text" {...{ inputValue, handleInputChange }}></FormsInput>
+                        <FormsInput label="สิ่งที่ต้องทำ" name="title" type="text" {...{ inputValue, handleInputChange }}></FormsInput>
                         <div className='flex gap-4'>
-                            <FormsInput label="วันที่" name="taskName" type="text" {...{ inputValue, handleInputChange }}></FormsInput>
-                            <FormsInput label="เวลา" name="taskName" type="text" {...{ inputValue, handleInputChange }}></FormsInput>
+                            <FormsInput label="วันที่" name="date" type="text" {...{ inputValue, handleInputChange }}></FormsInput>
+                            <FormsInput label="เวลา" name="date" type="text" {...{ inputValue, handleInputChange }}></FormsInput>
                         </div>
                         <div className='flex gap-4'>
-                            <Button className='bg-orange sm:w-32 w-full' onClick={() => onStatusChange(false)}>ยกเลิก</Button>
-                            <Button className='bg-green sm:w-32 w-full text-white' onClick={() => onStatusChange(false)}>บันทึก</Button>
+                            <Button className='bg-orange sm:w-32 w-full' onClick={() => setOpenModal(false)}>ยกเลิก</Button>
+                            <Button className='bg-green sm:w-32 w-full text-white' onClick={handleAddTask}>บันทึก</Button>
                         </div>
                         
                     </div>

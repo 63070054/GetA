@@ -32,12 +32,14 @@ interface CheckBox {
   status: boolean;
 }
 interface TodolistCard {
+  id?: string;
   date: string;
   tasks: Task[];
+
 }
 
 interface Task {
-  id: number;
+  id?: number;
   title: string;
   status: boolean;
   time?: string;
@@ -114,5 +116,7 @@ interface LoadingScreenProps {
 
 interface AddTaskModalProps {
   openModal: boolean;
-  onStatusChange: (status: boolean) => void;
+  setOpenModal: Dispatch<SetStateAction<S>>;
+  addTask:(toDoIndex:number, newTask:Task)=>void;
+  toDoIndex: number;
 }

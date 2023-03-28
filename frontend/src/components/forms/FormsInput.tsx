@@ -19,6 +19,7 @@ const FormsInput = ({
                 className='bg-green opacity-25 w-full rounded-lg'
                 name={name}
                 type={type}
+                value={inputValue[name]}
                 onChange={handleInputChange}
                 color="primary"
             />

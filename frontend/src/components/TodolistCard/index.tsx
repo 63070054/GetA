@@ -6,7 +6,12 @@ import React from "react";
 import FilterModal from "../Modal/FilterModal";
 import AddTaskModal from "../Modal/AddTaskModal";
 
-const TodolistCard = ({ date, tasks }: TodolistCard) => {
+interface TodolistCardProps extends TodolistCard {
+    addTask:(toDoIndex:number, newTask:Task)=>void;
+    toDoIndex: number;
+}
+
+const TodolistCard = ({ date, tasks, addTask, toDoIndex}: TodolistCardProps) => {
     const [taskList, setTaskList] = React.useState(tasks);
     const [open, setOpen] = React.useState(false);
     const handleChange = (taskId: number) => {
@@ -24,6 +29,11 @@ const TodolistCard = ({ date, tasks }: TodolistCard) => {
     const clostModal = () => {
         setOpen(open);
     }
+
+    const handleonChangeStatus = (task: Task) => {
+        if(task.id) handleChange(task?.id)
+    }
+
     return (
         <div>
             <Card className="todolistCard max-w-xs h-96 rounded-lg">
@@ -33,13 +43,13 @@ const TodolistCard = ({ date, tasks }: TodolistCard) => {
                     </Typography>
                     <div className="px-3">
                         {taskList.map(task =>
-                            task.status === false ? <Task key={task.id} id={task.id} status={task.status} title={task.title} time={task.time} onStatusChange={() => handleChange(task.id)} /> : null
+                            task.status === false ? <Task key={task.id} id={task.id} status={task.status} title={task.title} time={task.time} onStatusChange={() => handleonChangeStatus(task)} /> : null
                         )}
                     </div>
                     <Divider variant="middle" className="mt-5" color="primary" />
                     <div className="px-3">
                         {taskList.map(task =>
-                            task.status === true ? <Task key={task.id} id={task.id} status={task.status} title={task.title} time={task.time} onStatusChange={() => handleChange(task.id)} /> : null
+                            task.status === true ? <Task key={task.id} id={task.id} status={task.status} title={task.title} time={task.time} onStatusChange={() => handleonChangeStatus(task)} /> : null
                         )}
                     </div>
 
@@ -50,7 +60,7 @@ const TodolistCard = ({ date, tasks }: TodolistCard) => {
                         </Fab>
                     </CardActions>
             </Card>
-            <AddTaskModal openModal={open} onStatusChange={() => setOpen(false)}></AddTaskModal>
+            <AddTaskModal openModal={open} setOpenModal={setOpen} {...{addTask, toDoIndex}}></AddTaskModal>
         </div>
     );
 };
