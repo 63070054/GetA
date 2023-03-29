@@ -16,7 +16,7 @@ const FormsInput = ({
                 hiddenLabel
                 variant="filled"
                 size="small"
-                className='bg-green opacity-25 w-full rounded-lg'
+                className='softGreenBackground w-full rounded-lg text-black'
                 name={name}
                 type={type}
                 value={inputValue[name]}

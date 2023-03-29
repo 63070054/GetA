@@ -8,7 +8,7 @@ const AddTodoCardButton = () => {
     }
     return (
         <div>
-            <Card className="todolistCard max-w-xs h-96 rounded-lg border-dashed border-4" onClick={addDailyTodo}>
+            <Card className="todolistCard h-96 rounded-lg border-dashed border-4" onClick={addDailyTodo}>
                 <Button fullWidth={true} className="flex justify-center items-center h-full p-0 fsize-50">+</Button>
             </Card>
         </div>

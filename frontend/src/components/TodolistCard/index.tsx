@@ -2,8 +2,8 @@ import { Button, Card, CardActions, CardContent, CardMedia, Fab, Typography } fr
 import AddIcon from '@mui/icons-material/Add';
 import Task from "../Task";
 import Divider from '@mui/material/Divider';
-import React from "react";
 import AddTaskModal from "../Modal/AddTaskModal";
+import { useState } from "react";
 
 interface TodolistCardProps extends TodolistCard {
     addTask:(toDoIndex:number, newTask:Task)=>void;
@@ -11,8 +11,8 @@ interface TodolistCardProps extends TodolistCard {
 }
 
 const TodolistCard = ({ date, tasks, addTask, toDoIndex}: TodolistCardProps) => {
-    const [taskList, setTaskList] = React.useState(tasks);
-    const [open, setOpen] = React.useState(false);
+    const [taskList, setTaskList] = useState(tasks);
+    const [open, setOpen] = useState(false);
     const handleChange = (taskId: string) => {
         setTaskList((prevTasks) => {
             const updatedTasks = prevTasks.map((task) => {
@@ -25,7 +25,7 @@ const TodolistCard = ({ date, tasks, addTask, toDoIndex}: TodolistCardProps) => 
             return updatedTasks;
         });
     };
-    const clostModal = () => {
+    const closeModal = () => {
         setOpen(open);
     }
 
@@ -35,7 +35,7 @@ const TodolistCard = ({ date, tasks, addTask, toDoIndex}: TodolistCardProps) => 
 
     return (
         <div className="relative">
-            <Card className="todolistCard max-w-xs h-96 rounded-lg overflow-y-auto">
+            <Card className="todolistCard h-96 rounded-lg overflow-y-auto">
                 <CardContent className="p-0">
                     <Typography className="todolistTitle p-2 sticky top-0 z-10" gutterBottom component="div">
                         {date}
