@@ -27,7 +27,7 @@ const index = () => {
 
     return (
         <div className="w-full">
-            <div className="grid md:grid-cols-3 grid-cols-1 gap-16">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:gap-16 grid-cols-1 gap-6">
                 {todos.map((todo, index) => (
                                     <TodolistCard key={index} toDoIndex={index} {...todo} addTask={addTask} />
                 ))}

@@ -1,4 +1,4 @@
-import { Button, Modal, Typography } from '@mui/material';
+import { Button, Checkbox, FormControlLabel, Modal, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import React, { ChangeEvent, useState } from 'react';
 import FormsInput from '../forms/FormsInput';
@@ -11,13 +11,11 @@ const AddTaskModal = ({ openModal, setOpenModal, addTask, toDoIndex }: AddTaskMo
 
     const [inputValue, setInputValue] = useState<InputValue>({
         title: "",
-        time:"00:00",
+        time: "00:00",
     })
+    const [timeInput, setTimeInput] = useState<boolean>(true)
 
-    console.log(inputValue)
-
-    const handleTimeChange = (timePicked:Dayjs) => {
-        console.log(timePicked.hour())
+    const handleTimeChange = (timePicked: Dayjs) => {
         const hours = timePicked.hour()
         const mins = timePicked.minute()
         const timeString = `${hours}:${mins}`
@@ -33,19 +31,28 @@ const AddTaskModal = ({ openModal, setOpenModal, addTask, toDoIndex }: AddTaskMo
         setInputValue({ ...copyInputValue });
     }
 
-
     const handleAddTask = () => {
-        const newTask: Task = {
-            title: inputValue.title,
-            time: inputValue.time,
-            status: false
+        if (inputValue.title) {
+            if (!timeInput) {
+                const copyInputValue = inputValue;
+                copyInputValue.time = "";
+                setInputValue({ ...copyInputValue });
+            }
+            const newTask: Task = {
+                title: inputValue.title,
+                time: inputValue.time,
+                status: false
+            }
+            addTask(toDoIndex, newTask)
+            setInputValue({
+                title: "",
+                time: "00:00"
+            })
+            setTimeInput(true)
+            setOpenModal(false)
         }
-        addTask(toDoIndex, newTask)
-        setInputValue({
-            title: "",
-            time: ""
-        })
-        setOpenModal(false)
+        else{
+        }
     }
 
     return (
@@ -62,11 +69,11 @@ const AddTaskModal = ({ openModal, setOpenModal, addTask, toDoIndex }: AddTaskMo
                     </Typography>
                     <div className='p-7 flex flex-col gap-4'>
                         <FormsInput label="สิ่งที่ต้องทำ" name="title" type="text" {...{ inputValue, handleInputChange }}></FormsInput>
-                        <div className='flex gap-4'>
-                            {/* <FormsInput label="วันที่" name="time" type="text" {...{ inputValue, handleInputChange }}></FormsInput> */}
-                            {/* <FormsInput label="เวลา" name="time" type="text" {...{ inputValue, handleInputChange }}></FormsInput> */}
+                        <FormControlLabel control={<Checkbox checked={timeInput} onChange={(e) => setTimeInput(e.target.checked)} />} label={"ระบุเวลา"} />
+                        {timeInput ? (<div className='flex gap-4'>
                             <CustomTimePicker handleTimeChange={handleTimeChange} />
-                        </div>
+                        </div>) : null}
+
                         <div className='flex gap-4'>
                             <Button className='bg-orange sm:w-32 w-full' onClick={() => setOpenModal(false)}>ยกเลิก</Button>
                             <Button className='bg-green sm:w-32 w-full text-white' onClick={handleAddTask}>บันทึก</Button>
