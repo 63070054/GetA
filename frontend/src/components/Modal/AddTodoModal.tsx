@@ -16,6 +16,7 @@ const AddTodoModal = ({addToDo,setOpenModal,openModal}:AddToDoModalProps) => {
             tasks:task
         }
         addToDo(newToDo);
+        setOpenModal(false);
     }
     const handleDateChange=(date:Dayjs)=>{
         console.log(date.date())
@@ -23,8 +24,8 @@ const AddTodoModal = ({addToDo,setOpenModal,openModal}:AddToDoModalProps) => {
         const day = date.date()
         const year = date.year()+543
         const pickedDate =`${day} ${month} ${year}`
-        setDateValue(pickedDate)
-        setOpenModal(false)
+        setDateValue(pickedDate);
+        
     }
 
     return (

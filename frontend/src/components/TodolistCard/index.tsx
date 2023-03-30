@@ -45,7 +45,7 @@ const TodolistCard = ({ date, tasks, addTask, toDoIndex}: TodolistCardProps) => 
                             task.status === false ? <Task key={index} {...task} onStatusChange={() => handleonChangeStatus(task)} /> : null
                         )}
                     </div>
-                    <Divider variant="middle" className="mt-5" color="primary" />
+                    {taskList.some(task => task.status === true) && <Divider variant="middle" className="mt-5" color="primary" />}
                     <div className="px-3">
                         {taskList.map((task,index) =>
                             task.status === true ? <Task key={index} {...task} onStatusChange={() => handleonChangeStatus(task)} /> : null
