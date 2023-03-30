@@ -1,10 +1,6 @@
 interface OrangeButton {
   ButtonName: string
 }
-interface TodolistCard {
-  date: string;
-  tasks: Task[];
-}
 
 interface FormsInput {
   label: string;
@@ -119,4 +115,10 @@ interface AddTaskModalProps {
   setOpenModal: Dispatch<SetStateAction<S>>;
   addTask:(toDoIndex:number, newTask:Task)=>void;
   toDoIndex: number;
+}
+
+interface AddToDoModalProps {
+  openModal: boolean;
+  setOpenModal: Dispatch<SetStateAction<S>>;
+  addToDo:(newToDo:TodolistCard)=>void;
 }
