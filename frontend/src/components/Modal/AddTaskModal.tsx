@@ -1,23 +1,65 @@
-import { Button, Modal, Typography } from '@mui/material';
+import { Button, Checkbox, FormControlLabel, Modal, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import React, { ChangeEvent, useState } from 'react';
 import FormsInput from '../forms/FormsInput';
+import TestDatePicker from '../Input/DatePicker';
+import CustomTimePicker from '../Input/TimePicker';
+import dayjs, { Dayjs } from 'dayjs';
 
-const AddTaskModal = ({ openModal, onStatusChange }: AddTaskModalProps) => {
-    const [inputValue, setInputValue] = useState<InputValue>({ taskName: "" })
+
+const AddTaskModal = ({ openModal, setOpenModal, addTask, toDoIndex }: AddTaskModalProps) => {
+
+    const [inputValue, setInputValue] = useState<InputValue>({
+        title: "",
+        time: "00:00",
+    })
+    const [timeInput, setTimeInput] = useState<boolean>(true)
+
+    const handleTimeChange = (timePicked: Dayjs) => {
+        const hours = timePicked.hour()
+        const mins = timePicked.minute()
+        const timeString = `${hours}:${mins}`
+        const copyInputValue = inputValue;
+        copyInputValue.time = timeString;
+        setInputValue({ ...copyInputValue });
+    }
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         const copyInputValue = inputValue;
         copyInputValue[name] = value;
-        setInputValue(copyInputValue);
+        setInputValue({ ...copyInputValue });
+    }
+
+    const handleAddTask = () => {
+        if (inputValue.title) {
+            if (!timeInput) {
+                const copyInputValue = inputValue;
+                copyInputValue.time = "";
+                setInputValue({ ...copyInputValue });
+            }
+            const newTask: Task = {
+                title: inputValue.title,
+                time: inputValue.time,
+                status: false
+            }
+            addTask(toDoIndex, newTask)
+            setInputValue({
+                title: "",
+                time: "00:00"
+            })
+            setTimeInput(true)
+            setOpenModal(false)
+        }
+        else{
+        }
     }
 
     return (
         <div>
             <Modal
                 open={openModal}
-                onClose={() => onStatusChange(false)}
+                onClose={() => setOpenModal(false)}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
@@ -26,16 +68,17 @@ const AddTaskModal = ({ openModal, onStatusChange }: AddTaskModalProps) => {
                         เพิ่มรายการที่ต้องทำ
                     </Typography>
                     <div className='p-7 flex flex-col gap-4'>
-                        <FormsInput label="สิ่งที่ต้องทำ" name="taskName" type="text" {...{ inputValue, handleInputChange }}></FormsInput>
+                        <FormsInput label="สิ่งที่ต้องทำ" name="title" type="text" {...{ inputValue, handleInputChange }}></FormsInput>
+                        <FormControlLabel control={<Checkbox checked={timeInput} onChange={(e) => setTimeInput(e.target.checked)} />} label={"ระบุเวลา"} />
+                        {timeInput ? (<div className='flex gap-4'>
+                            <CustomTimePicker handleTimeChange={handleTimeChange} />
+                        </div>) : null}
+
                         <div className='flex gap-4'>
-                            <FormsInput label="วันที่" name="taskName" type="text" {...{ inputValue, handleInputChange }}></FormsInput>
-                            <FormsInput label="เวลา" name="taskName" type="text" {...{ inputValue, handleInputChange }}></FormsInput>
+                            <Button className='bg-orange sm:w-32 w-full' onClick={() => setOpenModal(false)}>ยกเลิก</Button>
+                            <Button className='bg-green sm:w-32 w-full text-white' onClick={handleAddTask}>บันทึก</Button>
                         </div>
-                        <div className='flex gap-4'>
-                            <Button className='bg-orange sm:w-32 w-full' onClick={() => onStatusChange(false)}>ยกเลิก</Button>
-                            <Button className='bg-green sm:w-32 w-full text-white' onClick={() => onStatusChange(false)}>บันทึก</Button>
-                        </div>
-                        
+
                     </div>
                 </Box>
             </Modal>
