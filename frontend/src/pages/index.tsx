@@ -3,6 +3,7 @@ import FilterModal from "@/components/Modal/FilterModal";
 import { useState } from 'react';
 import SearchInputWithFilter from '@/components/Input/SearchInputWithFilter';
 import IconGetA from '@/components/IconGetA';
+import IconContainer from './../components/Container/IconContainer';
 
 export default function Home() {
 
@@ -100,11 +101,11 @@ export default function Home() {
       <div className="flex flex-col gap-6 w-full">
         <SearchInputWithFilter {...{ filterCourses, filterYears, searchInput, setFilterCourses, setFilterYears, setSearchInput }} setOpenFilterModal={setOpenModal} />
         <ShowFilterSelected courses={filterCourses} years={filterYears} />
-        <div className="grid grid-cols-5 gap-12">
+        <IconContainer>
           {publicFlder.map(folder => (
             <IconGetA {...folder} routeTo={folder.routeTo.replace(":folderId", folder.id)} key={folder.id} />
           ))}
-        </div>
+        </IconContainer>
       </div>
       <FilterModal {...{ openModal, setOpenModal, filterCourses, setFilterCourses, filterYears, setFilterYears }} />
     </>

@@ -3,11 +3,11 @@ module.exports = {
   // ...
   plugins: [
     // ...
-    'tailwindcss',
-    'autoprefixer',
+    "tailwindcss",
+    "autoprefixer",
   ],
   theme: {
-    extend: {}
+    extend: {},
   },
   content: [
     "./app/**/*.{js,ts,jsx,tsx}",
@@ -17,4 +17,4 @@ module.exports = {
     // Or if using `src` directory:
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
-}
+};

@@ -1,7 +1,9 @@
 const AlreadySignInContainer = ({ children }: ChildrenProps) => {
   return (
-    <div className="px-4 py-4 md:px-48 md:py-16 grow flex relative z-0">
-      {children}
+    <div className="px-0 md:px-20 lg:px-32 2xl:px-64 grow flex relative z-0 bg-gray-100">
+      <div className="py-4 md:py-16 px-8 md:px-8 bg-white shadow-lg	">
+        {children}
+      </div>
     </div>
   );
 };

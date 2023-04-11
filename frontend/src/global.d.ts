@@ -1,10 +1,6 @@
 interface OrangeButton {
   ButtonName: string
 }
-interface TodolistCard {
-  date: string;
-  tasks: Task[];
-}
 
 interface FormsInput {
   label: string;
@@ -32,16 +28,18 @@ interface CheckBox {
   status: boolean;
 }
 interface TodolistCard {
+  id?: string;
   date: string;
   tasks: Task[];
+
 }
 
 interface Task {
-  id: number;
+  id?: string;
   title: string;
   status: boolean;
   time?: string;
-  onStatusChange?: (taskId: number) => void;
+  onStatusChange?: (taskId: string) => void;
 }
 
 interface ChildrenProps {
@@ -114,12 +112,23 @@ interface LoadingScreenProps {
 
 interface AddTaskModalProps {
   openModal: boolean;
-  onStatusChange: (status: boolean) => void;
+  setOpenModal: Dispatch<SetStateAction<S>>;
+  addTask: (toDoIndex: number, newTask: Task) => void;
+  toDoIndex: number;
 }
 
-interface GuidelineProps{
-  id:string;
-  name:string;
-  text:string;
-  ownerName:string;
+interface AddToDoModalProps {
+  openModal: boolean;
+  setOpenModal: Dispatch<SetStateAction<S>>;
+  addToDo: (newToDo: TodolistCard) => void;
+}
+
+interface GuidelineProps {
+  id: string;
+  name: string;
+  text: string;
+  ownerName: string;
+  setOpenModal: Dispatch<SetStateAction<S>>;
+  addTask: (toDoIndex: number, newTask: Task) => void;
+  toDoIndex: number;
 }
