@@ -4,6 +4,7 @@ import { useState } from 'react';
 import SearchInputWithFilter from '@/components/Input/SearchInputWithFilter';
 import IconGetA from '@/components/IconGetA';
 import IconContainer from './../components/Container/IconContainer';
+import SmallContainer from "@/components/Container/SmallContainer";
 
 export default function Home() {
 
@@ -97,7 +98,7 @@ export default function Home() {
 
 
   return (
-    <>
+    <SmallContainer>
       <div className="flex flex-col gap-6 w-full">
         <SearchInputWithFilter {...{ filterCourses, filterYears, searchInput, setFilterCourses, setFilterYears, setSearchInput }} setOpenFilterModal={setOpenModal} />
         <ShowFilterSelected courses={filterCourses} years={filterYears} />
@@ -108,6 +109,6 @@ export default function Home() {
         </IconContainer>
       </div>
       <FilterModal {...{ openModal, setOpenModal, filterCourses, setFilterCourses, filterYears, setFilterYears }} />
-    </>
+    </SmallContainer>
   )
 }

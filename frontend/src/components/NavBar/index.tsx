@@ -30,7 +30,7 @@ const NavBar = () => {
   const pages: NavBarRouter[] = [
     {
       name: "แนวข้อสอบ",
-      routerPath: ""
+      routerPath: "/guideline"
     },
   ];
   const settings: NavBarRouter[] = [
