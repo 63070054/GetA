@@ -82,7 +82,9 @@ body {
   align-items: center;
   justify-content: center;
 }
-
+.tranfromTranslateY {
+  transform: translate(0%, -50%);
+}
 .registerWelcome {
   color: white;
 
