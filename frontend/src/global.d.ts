@@ -123,12 +123,10 @@ interface AddToDoModalProps {
   addToDo: (newToDo: TodolistCard) => void;
 }
 
-interface GuidelineProps {
+interface GuideLineCard {
   id: string;
-  name: string;
-  text: string;
-  ownerName: string;
-  setOpenModal: Dispatch<SetStateAction<S>>;
-  addTask: (toDoIndex: number, newTask: Task) => void;
-  toDoIndex: number;
+  title: string;
+  description: string;
+  folderId: string;
+  files: IconGetAProps[];
 }
