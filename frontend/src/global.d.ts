@@ -113,12 +113,20 @@ interface LoadingScreenProps {
 interface AddTaskModalProps {
   openModal: boolean;
   setOpenModal: Dispatch<SetStateAction<S>>;
-  addTask:(toDoIndex:number, newTask:Task)=>void;
+  addTask: (toDoIndex: number, newTask: Task) => void;
   toDoIndex: number;
 }
 
 interface AddToDoModalProps {
   openModal: boolean;
   setOpenModal: Dispatch<SetStateAction<S>>;
-  addToDo:(newToDo:TodolistCard)=>void;
+  addToDo: (newToDo: TodolistCard) => void;
+}
+
+interface GuideLineCard {
+  id: string;
+  title: string;
+  description: string;
+  folderId: string;
+  files: IconGetAProps[];
 }

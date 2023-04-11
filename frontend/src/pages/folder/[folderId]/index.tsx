@@ -4,6 +4,7 @@ import ShowFilterSelected from '@/components/Filter/ShowFilterSelected';
 import IconGetA from '@/components/IconGetA';
 import { useRouter } from 'next/router';
 import IconContainer from '@/components/Container/IconContainer';
+import SmallContainer from '@/components/Container/SmallContainer';
 
 const Folder = () => {
 
@@ -83,34 +84,36 @@ const Folder = () => {
   })
 
   return (
-    <div className='w-full flex flex-col gap-4'>
-      <div className='flex flex-col px-6 py-8 gap-4 shadow-lg border-b-2 border-black'>
-        <div className='flex gap-2 w-full flex-col'>
-          <div className='flex flex-col gap-2'>
-            <div>
-              <Typography variant='h4' className='font-bold'>{folderData.name}</Typography>
-              <Typography variant='primary'>{folderData.ownerName}</Typography>
+    <SmallContainer>
+      <div className='w-full flex flex-col gap-4'>
+        <div className='flex flex-col px-6 py-8 gap-4 shadow-lg border-b-2 border-black'>
+          <div className='flex gap-2 w-full flex-col'>
+            <div className='flex flex-col gap-2'>
+              <div>
+                <Typography variant='h4' className='font-bold'>{folderData.name}</Typography>
+                <Typography variant='primary'>{folderData.ownerName}</Typography>
+              </div>
+              <ShowFilterSelected courses={folderData.courses} years={folderData.yeras} />
             </div>
-            <ShowFilterSelected courses={folderData.courses} years={folderData.yeras} />
+          </div>
+          <div className='flex flex-col gap-2'>
+            <Typography variant='h5'>คำอธิบาย</Typography>
+            <Typography variant='body2' className='text-gray-400'><span className='ml-8' />{folderData?.description}</Typography>
           </div>
         </div>
-        <div className='flex flex-col gap-2'>
-          <Typography variant='h5'>คำอธิบาย</Typography>
-          <Typography variant='body2' className='text-gray-400'><span className='ml-8' />{folderData?.description}</Typography>
+        <div className='w-full flex justify-center'>
+          <IconContainer>
+            {folderData?.files.map(file => (
+              <>
+                {folderId && typeof (folderId) == "string" && (
+                  <IconGetA {...file} key={file.id} routeTo={file.routeTo.replace(":fileId", file.id).replace(":folderId", folderId)} />
+                )}
+              </>
+            ))}
+          </IconContainer>
         </div>
       </div>
-      <div className='w-full flex justify-center'>
-        <IconContainer>
-          {folderData?.files.map(file => (
-            <>
-              {folderId && typeof (folderId) == "string" && (
-                <IconGetA {...file} key={file.id} routeTo={file.routeTo.replace(":fileId", file.id).replace(":folderId", folderId)} />
-              )}
-            </>
-          ))}
-        </IconContainer>
-      </div>
-    </div>
+    </SmallContainer>
   );
 };
 

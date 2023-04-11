@@ -1,6 +1,7 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 import { Typography } from '@mui/material';
+import SmallContainer from '@/components/Container/SmallContainer';
 
 const File = () => {
 
@@ -10,10 +11,12 @@ const File = () => {
 
 
   return (
-    <div className="w-full flex flex-col gap-4">
-      <Typography variant='h4' className='font-bold'>ชื่อ File คร้าบ</Typography>
-      <iframe src="/filePDF/Cloud-Mid.pdf" className="w-full aspect-square" />
-    </div>
+    <SmallContainer>
+      <div className="w-full flex flex-col gap-4">
+        <Typography variant='h4' className='font-bold'>ชื่อ File คร้าบ</Typography>
+        <iframe src="/filePDF/Cloud-Mid.pdf" className="w-full aspect-square" />
+      </div>
+    </SmallContainer>
   );
 };
 

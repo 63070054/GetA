@@ -51,7 +51,7 @@ const AddTaskModal = ({ openModal, setOpenModal, addTask, toDoIndex }: AddTaskMo
             setTimeInput(true)
             setOpenModal(false)
         }
-        else{
+        else {
         }
     }
 
