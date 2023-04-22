@@ -4,6 +4,8 @@ import { useState } from 'react';
 import SearchInputWithFilter from '@/components/Input/SearchInputWithFilter';
 import IconGetA from '@/components/IconGetA';
 import { Typography } from "@mui/material";
+import SmallContainer from "@/components/Container/SmallContainer";
+import IconContainer from "@/components/Container/IconContainer";
 
 export default function Home() {
 
@@ -91,26 +93,30 @@ export default function Home() {
   ]
 
   return (
-    <>
+    <SmallContainer>
       <div className="relative h-48">
         <img src="userCover.png " className="h-full w-full absolute z-0 shadow-lg" ></img>
         <div className="relative flex h-full">
-        <img src="profile.png " className="aspect-square p-2 relative z-10 top-1/2 tranfromTranslateY " ></img>
-        <Typography variant="h6" className="self-start relative z-10" color="#000000" gutterBottom>โฟลเดอร์ของฉัน</Typography>
+          <div className="aspect-square">
+          <img src="profile.png " className="w-4/6 p-2 relative z-10 top-1/2 centerY " ></img></div>
+          <div className="flex flex-col self-center">
+          <Typography variant="h4" className="self-start relative z-10" color="#000000" gutterBottom>ณัฐพงษ์ ปทุมสูตร</Typography>
+          <Typography variant="h6" className="self-start relative z-10" color="#000000" gutterBottom>ณัฐพงษ์ ปทุมสูตร</Typography>
+          </div>
         </div>
       </div>
       <Typography variant="h6" className="self-start mt-6" color="#000000" gutterBottom>โฟลเดอร์ของฉัน</Typography>
       <div className="flex flex-col gap-6 w-full">
-        <div className="grid grid-cols-5 gap-12">
+        <IconContainer>
           {publicFlder.map(folder => (
             <IconGetA {...folder} routeTo={folder.routeTo.replace(":folderId", folder.id)} key={folder.id} />
           ))}
-        </div>
+        </IconContainer>
         <Typography variant="h6" className="self-start mt-6" color="#000000" gutterBottom>แนวข้อสอบของฉัน</Typography>
         <div className="flex flex-col gap-6 w-full">
           <Typography variant="h1" className="self-start" color="#000000" gutterBottom>เอาแนวข้อสอบมาใส่เองเลยไอ้ควาย</Typography>
         </div>
       </div>
-    </>
+    </SmallContainer>
   )
 }

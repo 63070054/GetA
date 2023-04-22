@@ -92,7 +92,7 @@ body {
   align-items: center;
   justify-content: center;
 }
-.tranfromTranslateY {
+.centerY {
   transform: translate(0%, -50%);
 }
 .registerWelcome {
