@@ -32,6 +32,11 @@ func main() {
     router.POST("/folder", api.AddFolder)
     router.DELETE("/folder", api.DelFolder)
 
+    router.GET("/guides", api.GetGuides)
+    router.GET("/guide/:id", api.Guide)
+    router.POST("/guide", api.AddGuide)
+    router.DELETE("/guide/:id", api.DelGuide)
+
 
     router.Run("localhost:8888")
 }
