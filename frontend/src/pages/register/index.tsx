@@ -28,7 +28,7 @@ const index = () => {
         },
         {
             id: "4",
-            name: "อื่นๆ",
+            name: "อื่น ๆ",
         },
     ]
     const supData: selectValue[] = [
@@ -38,7 +38,7 @@ const index = () => {
         },
         {
             id: "1",
-            name: "Data science",
+            name: "DSBA",
         }
     ]
     const supSupData: selectValue[] = [
@@ -56,7 +56,7 @@ const index = () => {
         },
         {
             id: "3",
-            name: "อื่นๆ",
+            name: "อื่น ๆ",
         },
     ]
 

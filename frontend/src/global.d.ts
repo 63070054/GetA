@@ -27,11 +27,26 @@ interface CheckBox {
   label: string;
   status: boolean;
 }
+
+interface User {
+  id: string;
+  name: string;
+  year: YearType;
+  program: Program;
+  subjectArea: SubjectArea;
+  myFolder: IconGetAProps[];
+  myGuideLine: GuideLineCard[];
+}
+
+type YearStudy = "ปี 1" | "ปี 2" | "ปี 3" | "ปี 4" | "อื่น ๆ";
+type Program = "IT" | "DSBA";
+type SubjectArea = "Network" | "Software Engineer" | "Multimedia" | "อื่น ๆ";
+
+
 interface TodolistCard {
   id?: string;
   date: string;
   tasks: Task[];
-
 }
 
 interface Task {
@@ -103,6 +118,12 @@ interface FolderIcon {
   courses: CourseType[];
   yeras: YearType[];
   files: IconGetAProps[];
+}
+
+interface File {
+  id: string;
+  name: string;
+  filePath: string;
 }
 
 interface LoadingScreenProps {
