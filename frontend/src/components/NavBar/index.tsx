@@ -35,7 +35,7 @@ const NavBar = () => {
   ];
   const settings: NavBarRouter[] = [
     {
-      name: "หน้าหลัก",
+      name: "โปรไฟล์ของฉัน",
       routerPath: "",
       icon: <AccountCircleIcon />
     },
