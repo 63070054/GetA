@@ -8,6 +8,12 @@ interface FormsInput {
   type: HTMLInputTypeAttribute;
   inputValue: InputValue;
   handleInputChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  amountRows?: number;
+}
+
+interface LoginModel {
+  userName: string;
+  password: string;
 }
 
 interface InputValue {
@@ -21,7 +27,7 @@ interface SelectInput {
 }
 
 interface selectValue {
-  id: string;
+  id: number;
   name: string;
 }
 
@@ -31,7 +37,7 @@ interface CheckBox {
 }
 
 interface User {
-  id?: string;
+  id?: number;
   name: string;
   year: YearStudy;
   program: Program;
@@ -46,13 +52,13 @@ type SubjectArea = "Network" | "Software Engineer" | "Multimedia" | "อื่�
 
 
 interface TodolistCard {
-  id?: string;
+  id?: number;
   date: string;
   tasks: Task[];
 }
 
 interface Task {
-  id?: string;
+  id?: number;
   title: string;
   status: boolean;
   time?: string;
@@ -70,14 +76,22 @@ interface NavBarRouter {
 }
 
 interface IconGetAProps {
-  id: string;
+  id: number;
   name: string;
   routeTo: string;
   ownerName?: string;
-  ownerId?: string;
+  ownerId?: number;
   iconPath: string;
   course?: CourseType;
   year?: YearType;
+}
+
+interface Folder {
+  name: string;
+  description: string;
+  ownerId: number;
+  course: CourseType[];
+  year: YearType[];
 }
 
 interface ShowFilterProps {
@@ -112,18 +126,18 @@ interface FilterModalProps {
 }
 
 interface FolderIcon {
-  id: string;
+  id: number;
   name: string;
   description?: string;
   ownerName: string,
-  ownerId: string,
+  ownerId: number,
   courses: CourseType[];
   yeras: YearType[];
   files: IconGetAProps[];
 }
 
 interface File {
-  id: string;
+  id: number;
   name: string;
   filePath: string;
 }
@@ -147,9 +161,9 @@ interface AddToDoModalProps {
 }
 
 interface GuideLineCard {
-  id: string;
+  id: number;
   title: string;
   description: string;
-  folderId: string;
+  folderId: number;
   files: IconGetAProps[];
 }

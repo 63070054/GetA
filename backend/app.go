@@ -23,10 +23,10 @@ func main() {
     router.POST("/undone/:id", api.UndoneTodo)
     router.POST("/date/:date", api.AddDate)
 
-    router.GET("/notes", api.GetNotes)
-    router.GET("/note/:id", api.GetNote)
-    router.POST("/note", api.UploadNote)
-    router.DELETE("/note/:id", api.DelNote)
+    router.GET("/files", api.GetFiles)
+    router.GET("/file/:id", api.GetFile)
+    router.POST("/file", api.UploadFile)
+    router.DELETE("/file/:id", api.DelFile)
     router.GET("/folders", api.GetFolders)
     router.GET("/folder/:id", api.GetFolder)
     router.POST("/folder", api.AddFolder)
@@ -38,7 +38,7 @@ func main() {
     router.DELETE("/guide/:id", api.DelGuide)
 
 
-    router.Run("localhost:8888")
+    router.Run(":8888")
 
 
     

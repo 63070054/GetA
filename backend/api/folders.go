@@ -7,23 +7,23 @@ import (
 )
 
 
-func GetNote(c *gin.Context) {
+func GetFile(c *gin.Context) {
     id := c.Param("id")
-    message := fmt.Sprintf("Get note: %s", id)
+    message := fmt.Sprintf("Get file: %s", id)
     c.IndentedJSON(http.StatusOK, gin.H{"message": message})
 }
 
-func GetNotes(c *gin.Context) {
-    c.IndentedJSON(http.StatusOK, "Get all notes")
+func GetFiles(c *gin.Context) {
+    c.IndentedJSON(http.StatusOK, "Get all files")
 }
 
-func UploadNote(c *gin.Context) {
-    c.IndentedJSON(http.StatusOK, "Upload note")
+func UploadFile(c *gin.Context) {
+    c.IndentedJSON(http.StatusOK, "Upload file")
 }
 
-func DelNote(c *gin.Context) {
+func DelFile(c *gin.Context) {
     id := c.Param("id")
-    message := fmt.Sprintf("Del note: %s", id)
+    message := fmt.Sprintf("Del file: %s", id)
     c.IndentedJSON(http.StatusOK, gin.H{"message": message})
 }
 

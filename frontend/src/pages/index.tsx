@@ -10,83 +10,83 @@ export default function Home() {
 
   const publicFlder: IconGetAProps[] = [
     {
-      id: "0",
+      id: 0,
       name: "SVV Week17(หลุดข้อสอบ)",
       routeTo: "/folder/:folderId",
       ownerName: "waveza2",
-      ownerId: "1",
+      ownerId: 1,
       iconPath: "/icons/folderGetA.svg"
     },
     {
-      id: "1",
+      id: 1,
       name: "SVV Week17(หลุดข้อสอบ)",
       routeTo: "/folder/:folderId",
       ownerName: "waveza2",
-      ownerId: "2",
+      ownerId: 2,
       iconPath: "/icons/folderGetA.svg"
     },
     {
-      id: "2",
+      id: 2,
       name: "SVV Week17(หลุดข้อสอบ)",
       routeTo: "/folder/:folderId",
       ownerName: "waveza2",
-      ownerId: "3",
+      ownerId: 3,
       iconPath: "/icons/folderGetA.svg"
     },
     {
-      id: "3",
+      id: 3,
       name: "SVV Week17(หลุดข้อสอบ)",
       routeTo: "/folder/:folderId",
       ownerName: "waveza2",
-      ownerId: "4",
+      ownerId: 4,
       iconPath: "/icons/folderGetA.svg"
     },
     {
-      id: "4",
+      id: 4,
       name: "SVV Week17(หลุดข้อสอบ)",
       routeTo: "/folder/:folderId",
       ownerName: "waveza2",
-      ownerId: "5",
+      ownerId: 5,
       iconPath: "/icons/folderGetA.svg"
     },
     {
-      id: "5",
+      id: 5,
       name: "SVV Week17(หลุดข้อสอบ)",
       routeTo: "/folder/:folderId",
       ownerName: "waveza2",
-      ownerId: "6",
+      ownerId: 6,
       iconPath: "/icons/folderGetA.svg"
     },
     {
-      id: "6",
+      id: 6,
       name: "SVV Week17(หลุดข้อสอบ)",
       routeTo: "/folder/:folderId",
       ownerName: "waveza2",
-      ownerId: "7",
+      ownerId: 7,
       iconPath: "/icons/folderGetA.svg"
     },
     {
-      id: "7",
+      id: 7,
       name: "SVV Week17(หลุดข้อสอบ)",
       routeTo: "/folder/:folderId",
       ownerName: "waveza2",
-      ownerId: "8",
+      ownerId: 8,
       iconPath: "/icons/folderGetA.svg"
     },
     {
-      id: "8",
+      id: 8,
       name: "SVV Week17(หลุดข้อสอบ)",
       routeTo: "/folder/:folderId",
       ownerName: "waveza2",
-      ownerId: "9",
+      ownerId: 9,
       iconPath: "/icons/folderGetA.svg"
     },
     {
-      id: "9",
+      id: 9,
       name: "SVV Week17(หลุดข้อสอบ)",
       routeTo: "/folder/:folderId",
       ownerName: "waveza2",
-      ownerId: "10",
+      ownerId: 9,
       iconPath: "/icons/folderGetA.svg"
     },
   ]
@@ -104,7 +104,7 @@ export default function Home() {
         <ShowFilterSelected courses={filterCourses} years={filterYears} />
         <IconContainer>
           {publicFlder.map(folder => (
-            <IconGetA {...folder} routeTo={folder.routeTo.replace(":folderId", folder.id)} key={folder.id} />
+            <IconGetA {...folder} routeTo={folder.routeTo.replace(":folderId", `${folder.id}`)} key={folder.id} />
           ))}
         </IconContainer>
       </div>

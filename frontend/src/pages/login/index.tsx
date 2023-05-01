@@ -17,12 +17,20 @@ const index = () => {
     })
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-
         const { name, value } = e.target;
-
         const copyInputValue = inputValue;
         copyInputValue[name] = value;
-        setInputValue(copyInputValue);
+        setInputValue({ ...copyInputValue });
+    }
+
+    const logIn = async () => {
+        const loginModel: LoginModel = {
+            userName: inputValue.userName,
+            password: inputValue.password
+        }
+
+
+
     }
 
     return (
@@ -41,7 +49,7 @@ const index = () => {
                 <div className="self-start">
                     <CheckBox status={false} label="Remember me"></CheckBox>
                 </div>
-                <div className="self-center">
+                <div className="self-center" onClick={logIn}>
                     <OrangeButton ButtonName="เข้าสู่ระบบ"></OrangeButton>
                 </div>
                 <div className="self-center">

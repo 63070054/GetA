@@ -7,7 +7,8 @@ const FormsInput = ({
     name,
     type,
     inputValue,
-    handleInputChange
+    handleInputChange,
+    amountRows
 }: FormsInput) => {
     return (
         <div className="w-full">
@@ -22,6 +23,8 @@ const FormsInput = ({
                 value={inputValue[name]}
                 onChange={handleInputChange}
                 color="primary"
+                rows={amountRows ? amountRows : 1}
+                multiline={amountRows ? true : false}
             />
         </div>
     );
