@@ -14,6 +14,7 @@ func main() {
     router.GET("/user/:id", api.GetUser)
     router.POST("/users", api.CreateUser)
     router.DELETE("/users", api.DelUser)
+    router.GET("/login", api.Login)
 
 
     router.GET("/todos", api.GetTodos)
@@ -38,7 +39,7 @@ func main() {
     router.DELETE("/guide/:id", api.DelGuide)
 
 
-    router.Run("localhost:8888")
+    router.Run(":8888")
 
 
     

@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 	"net/http"
+    "encoding/json"
 )
 
 type User struct {
@@ -16,6 +17,11 @@ type User struct {
 	Year        Year    `db:"year" json:"year"`
 	Program     Program `db:"program" json:"program"`
 	SubjectArea Area    `db:"subject_area" json:"subjectArea"`
+}
+
+type LoginUser struct{
+    UserName    string  `db:"userName" json:"userName"`
+    Password    string  `db:"password" json:"password"`
 }
 
 type Year string
@@ -93,6 +99,52 @@ func GetUser(c *gin.Context) {
 	message := fmt.Sprintf("User id : %s", id)
 	c.IndentedJSON(http.StatusOK, gin.H{"message": message})
 }
+
+func Login(c *gin.Context) {
+    var loginuser LoginUser
+    if err := c.BindJSON(&loginuser); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+    var users []User
+	db, err := sql.Open("mysql", "admin:Zaza456654@tcp(get-a-db.c3fxksxqrbwf.us-east-1.rds.amazonaws.com:3306)/get-a")
+	if err != nil {
+		fmt.Println("Err!")
+	}
+	defer db.Close()
+
+	err = db.Ping()
+	if err != nil {
+		fmt.Println("Ping Err!")
+	}
+	fmt.Println(loginuser.UserName,loginuser.Password)
+
+	rows, err := db.Query("SELECT * FROM Users WHERE username = ? AND password = ?",loginuser.UserName,loginuser.Password)
+	if err != nil {
+		fmt.Println("Failed to execute query:", err)
+		return
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var user User
+		if err := rows.Scan(&user.ID,&user.Password, &user.Name, &user.UserName, &user.Year, &user.Program, &user.SubjectArea); err != nil {
+			fmt.Println("Failed to scan row:", err)
+			return
+		}
+		users = append(users, user)
+	}
+
+    usersEncode, err := json.MarshalIndent(users, "", "    ")
+    
+    if err != nil {
+        fmt.Println("Failed to marshal JSON:", err)
+        return
+    }
+
+	c.IndentedJSON(http.StatusOK, usersEncode)
+}
+
 
 func CreateUser(c *gin.Context) {
 	var user User
