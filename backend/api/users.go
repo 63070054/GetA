@@ -2,73 +2,26 @@ package api
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"net/http"
 	_ "github.com/go-sql-driver/mysql"
+	"net/http"
 )
 
-func SetupUsersRoutes(router *gin.Engine) {
-	// usersGroup := router.Group("/users")
-	// usersGroup.GET("/", GetUsers)
-	// usersGroup.POST("/", CreateUser)
-	// // usersGroup.DELETE("/", DeleteUser)
-}
-
-func GetUsers(c *gin.Context) {
-    db, err := sql.Open("mysql", "admin:Zaza456654@tcp(get-a-db.c3fxksxqrbwf.us-east-1.rds.amazonaws.com:3306)/get-a")
-    if err != nil {
-        fmt.Println("Err!")
-    }
-    defer db.Close()
-
-    err = db.Ping()
-    if err != nil {
-        fmt.Println("Ping Err!")
-    }
-	fmt.Println("Connected!")
-
-    rows, err := db.Query("SELECT * FROM Users")
-    if err != nil {
-        fmt.Println("Failed to execute query:", err)
-        return
-    }
-    defer rows.Close()
-
-    for rows.Next() {
-        var user User
-        if err := rows.Scan( &user.ID, &user.Name, &user.Year, &user.Program, &user.SubjectArea); err != nil {
-            fmt.Println("Failed to scan row:", err)
-            return
-        }
-        users = append(users, user)
-    }
-
-    if err := rows.Err(); err != nil {
-        fmt.Println("Encountered an error while iterating over rows:", err)
-        return
-    }
-
-    if err := rows.Err(); err != nil {
-        fmt.Println("Encountered an error while iterating over rows:", err)
-        return
-    }
-
-	c.IndentedJSON(http.StatusOK, users)
-}
-
-func GetUser(c *gin.Context) {
-	id := c.Param("id")
-	message := fmt.Sprintf("User id : %s", id)
-	c.IndentedJSON(http.StatusOK, gin.H{"message": message})
-}
-
 type User struct {
-    ID          *int    `db:"id" json:"id"`
+	ID          *int    `db:"id" json:"id"`
 	Name        string  `db:"name" json:"name"`
+	UserName    string  `db:"userName" json:"userName"`
+	Password    string  `db:"password" json:"password"`
 	Year        Year    `db:"year" json:"year"`
 	Program     Program `db:"program" json:"program"`
 	SubjectArea Area    `db:"subject_area" json:"subjectArea"`
+}
+
+type LoginUser struct {
+	UserName string `db:"userName" json:"userName"`
+	Password string `db:"password" json:"password"`
 }
 
 type Year string
@@ -96,7 +49,134 @@ const (
 	Other            Area = "อื่น ๆ"
 )
 
-var users []User
+func GetUsers(c *gin.Context) {
+	var users []User
+	db, err := sql.Open("mysql", "admin:Zaza456654@tcp(get-a-db.c3fxksxqrbwf.us-east-1.rds.amazonaws.com:3306)/get-a")
+	if err != nil {
+		fmt.Println("Err!")
+	}
+	defer db.Close()
+
+	err = db.Ping()
+	if err != nil {
+		fmt.Println("Ping Err!")
+	}
+	fmt.Println("Connected!")
+
+	rows, err := db.Query("SELECT * FROM Users")
+	if err != nil {
+		fmt.Println("Failed to execute query:", err)
+		return
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var user User
+		if err := rows.Scan(&user.ID, &user.Password, &user.Name, &user.UserName, &user.Year, &user.Program, &user.SubjectArea); err != nil {
+			fmt.Println("Failed to scan row:", err)
+			return
+		}
+		users = append(users, user)
+	}
+
+	if err := rows.Err(); err != nil {
+		fmt.Println("Encountered an error while iterating over rows:", err)
+		return
+	}
+
+	if err := rows.Err(); err != nil {
+		fmt.Println("Encountered an error while iterating over rows:", err)
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, users)
+}
+
+func GetUser(c *gin.Context) {
+	id := c.Param("id")
+	// message := fmt.Sprintf("User id : %s", id)
+	db, err := sql.Open("mysql", "admin:Zaza456654@tcp(get-a-db.c3fxksxqrbwf.us-east-1.rds.amazonaws.com:3306)/get-a")
+	if err != nil {
+		fmt.Println("Err!")
+	}
+	defer db.Close()
+
+	err = db.Ping()
+	if err != nil {
+		fmt.Println("Ping Err!")
+	}
+
+	rows, err := db.Query("SELECT * FROM Users WHERE id = ?", id)
+	if err != nil {
+		fmt.Println("Failed to execute query:", err)
+		return
+	}
+	defer rows.Close()
+	var users []User
+
+	for rows.Next() {
+		var user User
+		if err := rows.Scan(&user.ID, &user.Password, &user.Name, &user.UserName, &user.Year, &user.Program, &user.SubjectArea); err != nil {
+			fmt.Println("Failed to scan row:", err)
+			return
+		}
+		users = append(users, user)
+	}
+
+	userByIDEncode, err := json.MarshalIndent(users, "", "    ")
+
+	if err != nil {
+		fmt.Println("Failed to marshal JSON:", err)
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, userByIDEncode)
+}
+
+func Login(c *gin.Context) {
+	var loginuser LoginUser
+	if err := c.BindJSON(&loginuser); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	var users []User
+	db, err := sql.Open("mysql", "admin:Zaza456654@tcp(get-a-db.c3fxksxqrbwf.us-east-1.rds.amazonaws.com:3306)/get-a")
+	if err != nil {
+		fmt.Println("Err!")
+	}
+	defer db.Close()
+
+	err = db.Ping()
+	if err != nil {
+		fmt.Println("Ping Err!")
+	}
+	fmt.Println(loginuser.UserName, loginuser.Password)
+
+	rows, err := db.Query("SELECT * FROM Users WHERE username = ? AND password = ?", loginuser.UserName, loginuser.Password)
+	if err != nil {
+		fmt.Println("Failed to execute query:", err)
+		return
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var user User
+		if err := rows.Scan(&user.ID, &user.Password, &user.Name, &user.UserName, &user.Year, &user.Program, &user.SubjectArea); err != nil {
+			fmt.Println("Failed to scan row:", err)
+			return
+		}
+		users = append(users, user)
+	}
+
+	usersEncode, err := json.MarshalIndent(users, "", "    ")
+
+	if err != nil {
+		fmt.Println("Failed to marshal JSON:", err)
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, usersEncode)
+}
 
 func CreateUser(c *gin.Context) {
 	var user User
@@ -104,9 +184,36 @@ func CreateUser(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	db, err := sql.Open("mysql", "admin:Zaza456654@tcp(get-a-db.c3fxksxqrbwf.us-east-1.rds.amazonaws.com:3306)/get-a")
+	if err != nil {
+		fmt.Println("Err!")
+	}
+	defer db.Close()
+
+	err = db.Ping()
+	if err != nil {
+		fmt.Println("Ping Err!")
+	}
+	fmt.Println("Connected!")
+
+	stmt, err := db.Prepare("INSERT INTO Users (name,username,password, year,program,subjectArea) VALUES(?,?,?,?,?,?)")
+	if err != nil {
+		// Handle error
+	}
+	defer stmt.Close()
+
+	result, err := stmt.Exec(user.Name, user.UserName, user.Password, user.Year, user.Program, user.SubjectArea)
+	if err != nil {
+		fmt.Printf("Insert Err!")
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		// Handle error
+	}
 
 	fmt.Printf("Received user with name: %s\n", user.Name)
-	c.IndentedJSON(http.StatusOK, "Create Users")
+	c.IndentedJSON(http.StatusOK, rowsAffected)
 }
 
 func DelUser(c *gin.Context) {
