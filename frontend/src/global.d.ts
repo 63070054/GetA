@@ -16,6 +16,8 @@ interface InputValue {
 interface SelectInput {
   label: string;
   selectData: selectValue[];
+  name: string;
+  handleSelectChange: (value: string, name: string) => void;
 }
 
 interface selectValue {
@@ -29,9 +31,9 @@ interface CheckBox {
 }
 
 interface User {
-  id: string;
+  id?: string;
   name: string;
-  year: YearType;
+  year: YearStudy;
   program: Program;
   subjectArea: SubjectArea;
   myFolder: IconGetAProps[];

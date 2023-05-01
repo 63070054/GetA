@@ -36,22 +36,17 @@ const NavBar = () => {
   const settings: NavBarRouter[] = [
     {
       name: "โปรไฟล์ของฉัน",
-      routerPath: "",
+      routerPath: "/myProfile",
       icon: <AccountCircleIcon />
     },
     {
-      name: "โฟลเดอร์ของฉัน",
-      routerPath: "",
-      icon: <FolderIcon />
-    },
-    {
       name: "รายการที่ต้องทำ",
-      routerPath: "",
+      routerPath: "/todolist",
       icon: <FormatListBulletedIcon />
     },
     {
       name: "ออกจากระบบ",
-      routerPath: "",
+      routerPath: "/login",
       icon: <ExitToAppIcon />
     },
   ];
@@ -129,10 +124,12 @@ const NavBar = () => {
               className="mt-12"
             >
               {settings.map((setting, index) => (
-                <MenuItem key={index} onClick={handleCloseUserMenu} className="flex gap-2 justify-end h-12">
-                  <p>{setting.name}</p>
-                  {setting.icon}
-                </MenuItem>
+                <Link href={setting.routerPath} className="no-underline text-black">
+                  <MenuItem key={index} onClick={handleCloseUserMenu} className="flex gap-2 justify-end h-12">
+                    <p>{setting.name}</p>
+                    {setting.icon}
+                  </MenuItem>
+                </Link>
               ))}
             </Menu>
           </Box>

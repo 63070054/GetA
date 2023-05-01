@@ -83,7 +83,7 @@ export default function App({ Component, pageProps }: AppProps) {
     };
   }, [router]);
 
-  const [isLogin, setIsLogin] = useState<boolean>(true);
+  const [isLogin, setIsLogin] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   return (

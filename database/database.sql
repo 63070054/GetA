@@ -1,7 +1,21 @@
+DROP TABLE IF EXISTS FolderFiles;
+
+DROP TABLE IF EXISTS GuideLinesFiles;
+
+DROP TABLE IF EXISTS SubTasks;
+
+DROP TABLE IF EXISTS Folders;
+
+DROP TABLE IF EXISTS GuideLines;
+
+DROP TABLE IF EXISTS Tasks;
+
+DROP TABLE IF EXISTS Users;
+
 CREATE TABLE Users (
-  id VARCHAR(255) PRIMARY KEY,
+  id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
-  year ENUM('ปี 1', 'ปี 2', 'ปี 3', 'ปี 4'),
+  year ENUM('ปี 1', 'ปี 2', 'ปี 3', 'ปี 4', 'อื่น ๆ'),
   program ENUM('IT', 'DSBA'),
   subjectArea ENUM(
     'Network',
@@ -12,51 +26,56 @@ CREATE TABLE Users (
 );
 
 CREATE TABLE Folders (
-  id VARCHAR(255) PRIMARY KEY,
+  id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
   description VARCHAR(255),
-  ownerId VARCHAR(255),
+  ownerId INT,
   FOREIGN KEY (ownerId) REFERENCES Users(id),
   course ENUM('SVV', 'ITPM', 'SOP', 'HID', 'OOP', 'Gen B'),
   year ENUM('ปี 1', 'ปี 2', 'ปี 3', 'ปี 4')
 );
 
 CREATE TABLE FolderFiles (
-  id VARCHAR(255) PRIMARY KEY,
+  id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
   filePath VARCHAR(255) NOT NULL,
-  folderId VARCHAR(255),
+  folderId INT,
   FOREIGN KEY (folderId) REFERENCES Folders(id)
 );
 
 CREATE TABLE GuideLines (
-  id VARCHAR(255) PRIMARY KEY,
+  id INT AUTO_INCREMENT PRIMARY KEY,
   title VARCHAR(255) NOT NULL,
   description VARCHAR(255) NOT NULL,
-  ownerId VARCHAR(255),
+  ownerId INT,
   FOREIGN KEY (ownerId) REFERENCES Users(id)
 );
 
 CREATE TABLE GuideLinesFiles (
-  id VARCHAR(255) PRIMARY KEY,
+  id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
   filePath VARCHAR(255) NOT NULL,
-  guideLineId VARCHAR(255),
+  guideLineId INT,
   FOREIGN KEY (guideLineId) REFERENCES GuideLines(id)
 );
 
 CREATE TABLE Tasks (
-  id VARCHAR(255) PRIMARY KEY,
+  id INT AUTO_INCREMENT PRIMARY KEY,
   date VARCHAR(255) NOT NULL,
-  ownerId VARCHAR(255),
+  ownerId INT,
   FOREIGN KEY (ownerId) REFERENCES Users(id)
 );
 
 CREATE TABLE SubTasks (
-  id VARCHAR(255) PRIMARY KEY,
+  id INT AUTO_INCREMENT PRIMARY KEY,
   title VARCHAR(255) NOT NULL,
   status BOOLEAN DEFAULT false,
   time VARCHAR(255),
-  taskId VARCHAR(255),
+  taskId INT,
   FOREIGN KEY (taskId) REFERENCES Tasks(id)
 );
+
+INSERT INTO
+  Users (name, year, program, subjectArea)
+VALUES
+  ('John', 'ปี 3', 'IT', 'Network');

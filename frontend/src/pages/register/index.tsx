@@ -1,12 +1,10 @@
-import OrangeButton from "@/components/Button/OrangeButton";
 import FormsInput from "@/components/forms/FormsInput";
-import { useRouter } from "next/router";
 import Typography from '@mui/material/Typography';
 import Link from "next/link";
 import { ChangeEvent, useState } from "react"
 import SelectInput from "@/components/forms/SelectInput";
 import InfoGetA from "@/components/GetAInfo/InfoGetA";
-
+import { Button } from '@mui/material';
 
 const index = () => {
     const yearData: selectValue[] = [
@@ -31,7 +29,7 @@ const index = () => {
             name: "อื่น ๆ",
         },
     ]
-    const supData: selectValue[] = [
+    const program: selectValue[] = [
         {
             id: "0",
             name: "IT",
@@ -41,7 +39,7 @@ const index = () => {
             name: "DSBA",
         }
     ]
-    const supSupData: selectValue[] = [
+    const subjectArea: selectValue[] = [
         {
             id: "0",
             name: "Network",
@@ -66,7 +64,16 @@ const index = () => {
         userName: "",
         password: "",
         confirmPassword: "",
+        year: "",
+        program: "",
+        subjectArea: "",
     })
+
+    const handleSelectChange = (value: string, name: string) => {
+        const copyInputValue = inputValue
+        copyInputValue[name] = value
+        setInputValue({ ...copyInputValue })
+    }
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
 
@@ -74,7 +81,18 @@ const index = () => {
 
         const copyInputValue = inputValue;
         copyInputValue[name] = value;
-        setInputValue(copyInputValue);
+        setInputValue({ ...copyInputValue });
+    }
+
+    const register = () => {
+        const createUserModel: User = {
+            name: inputValue.fullName,
+            year: inputValue.year as YearStudy,
+            program: inputValue.program as Program,
+            subjectArea: inputValue.subjectArea as SubjectArea,
+            myFolder: [],
+            myGuideLine: [],
+        }
     }
 
     return (
@@ -92,12 +110,13 @@ const index = () => {
                     <FormsInput label="รหัสผ่าน" name="password" type="password" {...{ inputValue, handleInputChange }}></FormsInput>
                     <FormsInput label="ยืนยันรหัสผ่าน" name="confirmPassword" type="password" {...{ inputValue, handleInputChange }}></FormsInput>
                     <div className="flex items-center justify-center gap-6 w-full">
-                        <SelectInput label="ชั้นปี" selectData={yearData} />
-                        <SelectInput label="สาขา" selectData={supData} />
-                        <SelectInput label="แขนง" selectData={supSupData} />
+                        <SelectInput label="ชั้นปี" selectData={yearData} handleSelectChange={handleSelectChange} name="year" />
+                        <SelectInput label="สาขา" selectData={program} handleSelectChange={handleSelectChange} name="program" />
+                        <SelectInput label="แขนง" selectData={subjectArea} handleSelectChange={handleSelectChange} name="subjectArea" />
                     </div>
                 </div>
-                <OrangeButton ButtonName="สมัคร"></OrangeButton>
+
+                <Button className='bg-orange sm:w-32 w-full' onClick={register}>สมัคร</Button>
                 <div className="flex gap-2 items-center	">
                     <Typography className="text-sm">มีบัญชีอยู่แล้ว?</Typography>
                     <Link href="/login" className="no-underline	">

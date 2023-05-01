@@ -39,10 +39,18 @@ const index = () => {
                     <FormsInput label="รหัสผ่าน" name="password" type="password" {...{ inputValue, handleInputChange }}></FormsInput>
                 </div>
                 <div className="self-start">
-                <CheckBox status={false} label="Remember me"></CheckBox>
+                    <CheckBox status={false} label="Remember me"></CheckBox>
                 </div>
-                <div className="self-end">
-                <OrangeButton ButtonName="เข้าสู่ระบบ"></OrangeButton>
+                <div className="self-center">
+                    <OrangeButton ButtonName="เข้าสู่ระบบ"></OrangeButton>
+                </div>
+                <div className="self-center">
+                    <div className="flex gap-2 items-center	">
+                        <Typography className="text-sm">ยังไม่มีบัญชี ?</Typography>
+                        <Link href="/register" className="no-underline	">
+                            <Typography className="text-sm " variant="info"> ไปที่หน้าสมัครสมาชิก</Typography>
+                        </Link>
+                    </div>
                 </div>
             </div>
         </div>
