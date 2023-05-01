@@ -93,6 +93,7 @@ const index = () => {
             myFolder: [],
             myGuideLine: [],
         }
+        console.log(createUserModel)
     }
 
     return (
