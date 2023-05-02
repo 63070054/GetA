@@ -29,7 +29,7 @@ func main() {
     router.DELETE("/todos/:id", api.DelTodos)
     router.POST("/done/:id", api.DoneTodo)
     router.POST("/undone/:id", api.UndoneTodo)
-    router.POST("/date/:userId", api.AddDate)
+    router.POST("/date", api.AddDate)
 
     router.GET("/files", api.GetFiles)
     router.GET("/file/:id", api.GetFile)

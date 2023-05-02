@@ -9,7 +9,7 @@ import (
 )
 
 type Task struct {
-	ID      int    `db:"id" json:"id"`
+	ID      *int    `db:"id" json:"id"`
 	Date    string `db:"date" json:"date"`
 	OwnerID int    `db:"ownerId" json:"ownerId"`
 }
@@ -206,11 +206,13 @@ func UndoneTodo(c *gin.Context) {
 }
 
 func AddDate(c *gin.Context) {
-	userId := c.Param("userId")
+	var task Task
 
-	var tasks []Task
-
-	db, err := sql.Open("mysql", "admin:Zaza456654@tcp(get-a-db.c3fxksxqrbwf.us-east-1.rds.amazonaws.com:3306)/get-a")
+    if err := c.BindJSON(&task); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+    db, err := sql.Open("mysql", "admin:Zaza456654@tcp(get-a-db.c3fxksxqrbwf.us-east-1.rds.amazonaws.com:3306)/get-a")
 	if err != nil {
 		fmt.Println("Err!")
 	}
@@ -219,23 +221,23 @@ func AddDate(c *gin.Context) {
 	if err != nil {
 		fmt.Println("Ping Err!")
 	}
-	rows, err := db.Query("SELECT * FROM Tasks WHERE ownerId = ?", userId)
+
+	stmt, err := db.Prepare("INSERT INTO Tasks (date,ownerId) VALUES(?,?)")
 	if err != nil {
-		fmt.Println("Failed to execute query:", err)
-		return
+		// Handle error
 	}
-	defer rows.Close()
-	for rows.Next() {
-		var task Task
-		if err := rows.Scan(&task.ID, &task.Date, &task.OwnerID); err != nil {
-			fmt.Println("Failed to scan row:", err)
-			return
-		}
-		tasks = append(tasks, task)
+	defer stmt.Close()
+
+	result, err := stmt.Exec(task.Date, task.OwnerID)
+	if err != nil {
+		fmt.Printf("Insert Err!")
 	}
 
-	fmt.Println("Connected!")
+	LastInsert, err := result.LastInsertId()
+	if err != nil {
+		// Handle error
+	}
 
-	c.IndentedJSON(http.StatusOK, tasks)
+	c.IndentedJSON(http.StatusOK, LastInsert)
 
 }
