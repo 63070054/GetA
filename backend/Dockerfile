@@ -1,29 +1,23 @@
-FROM golang:1.16.7-alpine3.14
+# Use a lightweight alpine image with Go and Node.js installed
+FROM golang:alpine as builder
 
-# Set the working directory
+# Set the working directory inside the container
 WORKDIR /app
 
-# Copy the go.mod and go.sum files to the container
-COPY go.mod go.sum ./
-
-# Download the Go modules
-RUN go mod download
-
-# Download the missing dependency and update the checksums
-RUN go get golang.org/x/text
-RUN go mod verify
-
-# Copy the rest of the application code to the container
+# Copy the source code to the working directory inside the container
 COPY . .
 
-# Build the application
+# Build the Go binary
 RUN go build -o main .
 
-# Set the environment variable for the server port
-ENV PORT=8888
+# Use a lightweight Node.js image to serve the application
+FROM node:alpine
 
-# Expose the port that the application will run on
-EXPOSE 8888
+# Set the working directory inside the container
+WORKDIR /app
 
-# Start the application
-CMD ["./main"]
+# Copy the Go binary from the builder stage to the working directory inside the container
+COPY --from=builder /app/main .
+
+# Start the application when the container starts
+CMD ["go", "run", "."]
