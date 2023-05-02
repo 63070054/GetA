@@ -40,7 +40,6 @@ func GetTodos(c *gin.Context) {
         fmt.Println(err)
     }
 
-
 	var todos []Todos
 
 	db, err := sql.Open("mysql", "admin:Zaza456654@tcp(get-a-db.c3fxksxqrbwf.us-east-1.rds.amazonaws.com:3306)/get-a")
@@ -77,6 +76,12 @@ func GetTodos(c *gin.Context) {
 
 func AddTodos(c *gin.Context) {
 
+    var todo SubTask
+    if err := c.BindJSON(&todo); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
     db, err := sql.Open("mysql", "admin:Zaza456654@tcp(get-a-db.c3fxksxqrbwf.us-east-1.rds.amazonaws.com:3306)/get-a")
 	if err != nil {
 		fmt.Println("Err!")
@@ -87,7 +92,24 @@ func AddTodos(c *gin.Context) {
 		fmt.Println("Ping Err!")
 	}
 
-	c.IndentedJSON(http.StatusOK, "Add Todos")
+    stmt, err := db.Prepare("INSERT INTO SubTasks (title,status,time, taskId) VALUES(?,?,?,?)")
+	if err != nil {
+		// Handle error
+	}
+	defer stmt.Close()
+
+	result, err := stmt.Exec(todo.Title, todo.Status, todo.Time, todo.TaskID)
+	if err != nil {
+		fmt.Printf("Insert Err!")
+	}
+
+	LastInsert, err := result.LastInsertId()
+	if err != nil {
+		// Handle error
+	}
+
+
+	c.IndentedJSON(http.StatusOK, LastInsert)
 }
 
 func DelTodos(c *gin.Context) {
