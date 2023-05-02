@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
+    "strconv"
 )
 
 type Guideline struct {
@@ -12,24 +13,48 @@ type Guideline struct {
 	Title       string          `db:"title" json:"title"`
 	Description string          `db:"description" json:"description"`
 	OwnerID     int             `db:"ownerId" json:"ownerId"`
-	Files       []GuideLineFile `json:"files"`
-}
-type GuideLineFile struct {
-	ID          *int   `db:"id" json:"id"`
-	Name        string `db:"name" json:"name"`
-	FilePath    string `db:"filePath" json:"filePath"`
-	GuideLineID int    `db:"guideLineId" json:"guideLineId"`
 }
 
 func GetGuide(c *gin.Context) {
 	id := c.Param("id")
-	message := fmt.Sprintf("Get guide: %s", id)
-	c.IndentedJSON(http.StatusOK, gin.H{"message": message})
+	userId, err := strconv.Atoi(id)
+	if err != nil {
+		fmt.Println(err)
+	}
+    var guides []Guideline
+    db, err := sql.Open("mysql", "admin:Zaza456654@tcp(get-a-db.c3fxksxqrbwf.us-east-1.rds.amazonaws.com:3306)/get-a")
+	if err != nil {
+		fmt.Println("Err!")
+	}
+	defer db.Close()
+
+	err = db.Ping()
+	if err != nil {
+		fmt.Println("Ping Err!")
+	}
+	fmt.Println("Connected!")
+
+	rows, err := db.Query("SELECT * FROM GuideLines WHERE ownerId = ?",userId)
+	if err != nil {
+		fmt.Println("Failed to execute query:", err)
+		return
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var guide Guideline
+		if err := rows.Scan(&guide.ID, &guide.Title, &guide.Description, &guide.OwnerID); err != nil {
+			fmt.Println("Failed to scan row:", err)
+			return
+		}
+		guides = append(guides, guide)
+	}
+
+	c.IndentedJSON(http.StatusOK, guides)
 }
 
 func GetGuides(c *gin.Context) {
 	var guides []Guideline
-	var guideFiles []GuideLineFile
 	db, err := sql.Open("mysql", "admin:Zaza456654@tcp(get-a-db.c3fxksxqrbwf.us-east-1.rds.amazonaws.com:3306)/get-a")
 	if err != nil {
 		fmt.Println("Err!")
@@ -53,28 +78,6 @@ func GetGuides(c *gin.Context) {
 			return
 		}
 		guides = append(guides, guide)
-	}
-	guideFilesQuery, err := db.Query("SELECT * FROM GuideLinesFiles")
-	if err != nil {
-		fmt.Println("Failed to execute query:", err)
-		return
-	}
-	defer guideFilesQuery.Close()
-	for guideFilesQuery.Next() {
-		var guideFile GuideLineFile
-		if err := guideFilesQuery.Scan(&guideFile.ID, &guideFile.Name, &guideFile.FilePath, &guideFile.GuideLineID); err != nil {
-			fmt.Println("Failed to scan row:", err)
-			return
-		}
-		for i, guideline := range guides {
-			if guideline.ID != nil {
-				fmt.Println(guides[i])
-				if guideFile.GuideLineID == *guideline.ID {
-					guides[i].Files = append(guides[i].Files, guideFile)
-				}
-			}
-		}
-		guideFiles = append(guideFiles, guideFile)
 	}
 
 	c.IndentedJSON(http.StatusOK, guides)
