@@ -12,7 +12,7 @@ type Task struct {
 	ID      *int    `db:"id" json:"id"`
 	Date    string `db:"date" json:"date"`
 	OwnerID int    `db:"ownerId" json:"ownerId"`
-    SubTasks []SubTask `json:subTasks`
+  SubTasks []SubTask `json:subTasks`
 }
 
 type SubTask struct {

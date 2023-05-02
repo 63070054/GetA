@@ -5,18 +5,25 @@ import FormsInput from '../forms/FormsInput';
 import CustomTimePicker from '../Input/TimePicker';
 import dayjs, { Dayjs } from 'dayjs';
 import CustomDatePicker from '../Input/DatePicker';
+import { useUser } from '@/utils/useUser';
 
 const AddTodoModal = ({ addToDo, setOpenModal, openModal }: AddToDoModalProps) => {
     const [dateValue, setDateValue] = useState<string>("1 เมษายน 2566")
     const monthsArr: string[] = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม']
+
+    const { id: userId } = useUser()
+
     const handleAddToDo = () => {
-        const task: Task[] = []
-        const newToDo: TodolistCard = {
-            date: dateValue,
-            tasks: task
+        if (userId) {
+            const task: Task[] = []
+            const newToDo: TodolistCard = {
+                date: dateValue,
+                subTasks: task,
+                ownerId: userId
+            }
+            addToDo(newToDo);
+            setOpenModal(false);
         }
-        addToDo(newToDo);
-        setOpenModal(false);
     }
     const handleDateChange = (date: Dayjs) => {
         console.log(date.date())

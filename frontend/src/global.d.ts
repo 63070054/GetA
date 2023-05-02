@@ -64,11 +64,24 @@ type YearStudy = "ปี 1" | "ปี 2" | "ปี 3" | "ปี 4" | "อื่�
 type Program = "IT" | "DSBA";
 type SubjectArea = "Network" | "Software Engineer" | "Multimedia" | "อื่น ๆ";
 
+interface AddDateModel {
+  date: string;
+  ownerId: numberl;
+  subTasks: Task[];
+}
+
+interface AddTaskModel {
+  title: string;
+  status: boolean;
+  time?: string;
+  taskId: number;
+}
 
 interface TodolistCard {
   id?: number;
   date: string;
-  tasks: Task[];
+  subTasks: Task[];
+  ownerId: number;
 }
 
 interface Task {
@@ -76,7 +89,7 @@ interface Task {
   title: string;
   status: boolean;
   time?: string;
-  onStatusChange?: (taskId: string) => void;
+  taskId: number;
 }
 
 interface ChildrenProps {
@@ -177,6 +190,7 @@ interface AddTaskModalProps {
   setOpenModal: Dispatch<SetStateAction<S>>;
   addTask: (toDoIndex: number, newTask: Task) => void;
   toDoIndex: number;
+  taskId: number;
 }
 
 interface AddToDoModalProps {

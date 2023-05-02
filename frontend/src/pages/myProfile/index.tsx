@@ -10,6 +10,7 @@ import api from "@/plugins/axios/api";
 import MediumComtainer from "@/components/Container/MediumContainer";
 import GetAToast from "@/components/Alert/GetAToast";
 import { useUser } from "@/utils/useUser";
+import { useRouter } from 'next/router';
 
 export default function MyProfile() {
 
@@ -20,30 +21,40 @@ export default function MyProfile() {
   const [filterCourses, setFilterCourses] = useState<CourseType[]>([])
   const [filterYears, setFilterYears] = useState<YearType[]>([])
   const [openModal, setOpenModal] = useState<boolean>(false)
-  const { id, name, year, program, subjectArea, myFolder, myGuideLine } = useUser()
+  const { id: userId, name } = useUser()
   const [userInfo, setUserInfo] = useState<User>()
+  const router = useRouter()
 
   useEffect(() => {
 
-    const convertMyFolder: IconGetAProps[] = myFolder?.map(folder => {
-      return {
-        id: folder.id,
-        name: folder.name,
-        routeTo: "/folder/:folderId",
-        iconPath: "/icons/folderGetA.svg"
-      }
-    }) || []
 
-    setUserInfo({
-      id,
-      name,
-      year,
-      program,
-      subjectArea,
-      myFolder: convertMyFolder,
-      myGuideLine
-    })
-  }, [])
+    const getUserById = async () => {
+      try {
+        const response = await api.get("/user/" + userId)
+
+        const copyUserInfo: User = response.data[0]
+        console.log(response.data)
+        copyUserInfo.myFolder = copyUserInfo.myFolder.map(folder => {
+          return {
+            id: folder.id,
+            name: folder.name,
+            routeTo: "/folder/:folderId",
+            iconPath: "/icons/folderGetA.svg"
+          }
+        })
+
+        setUserInfo({ ...copyUserInfo })
+      } catch (err) {
+        console.log(err)
+      }
+    }
+
+    if (router.isReady) {
+      getUserById()
+    }
+
+
+  }, [router.isReady])
 
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -61,23 +72,37 @@ export default function MyProfile() {
 
   const createFolder = async () => {
 
-    if (id) {
+    if (userId) {
       const newFolder: Folder = {
         name: inputValueFolder.name,
         description: inputValueFolder.description,
-        ownerId: id,
+        ownerId: userId,
         ownerName: name,
         courses: filterCourses as CourseType[],
         years: filterYears as YearType[],
       }
 
       try {
-        await api.post("/folder", newFolder)
+        const response = await api.post("/folder", newFolder)
+        const folderId = response.data
         await resetValue()
         GetAToast.fire({
           icon: "success",
           title: "สร้างโฟลเดอร์สำเร็จ",
         });
+
+        if (userInfo) {
+          const copyUserInfo: User = userInfo;
+          const folderFromDB: IconGetAProps = {
+            id: folderId,
+            name: newFolder.name,
+            routeTo: "/folder/:folderId",
+            iconPath: "/icons/folderGetA.svg"
+          }
+          copyUserInfo?.myFolder.push(folderFromDB)
+
+          setUserInfo({ ...copyUserInfo })
+        }
 
       } catch (err) {
         console.log(err)
@@ -110,9 +135,13 @@ export default function MyProfile() {
               <div className='flex flex-col gap'>
                 <Typography variant="h4" className="relative z-10" color="#000000" gutterBottom>{userInfo?.name}</Typography>
                 <div className='flex gap-2 self-start'>
-                  <Chip label={userInfo?.program} variant="outlined" />
-                  <Chip label={userInfo?.subjectArea} variant="outlined" />
-                  <Chip label={userInfo?.year} variant="outlined" />
+                  {userInfo && (
+                    <>
+                      <Chip label={userInfo?.program} variant="outlined" />
+                      <Chip label={userInfo?.subjectArea} variant="outlined" />
+                      <Chip label={userInfo?.year} variant="outlined" />
+                    </>
+                  )}
                 </div>
               </div>
             </div>

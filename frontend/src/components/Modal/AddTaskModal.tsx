@@ -7,7 +7,7 @@ import CustomTimePicker from '../Input/TimePicker';
 import dayjs, { Dayjs } from 'dayjs';
 
 
-const AddTaskModal = ({ openModal, setOpenModal, addTask, toDoIndex }: AddTaskModalProps) => {
+const AddTaskModal = ({ openModal, setOpenModal, addTask, toDoIndex, taskId }: AddTaskModalProps) => {
 
     const [inputValue, setInputValue] = useState<InputValue>({
         title: "",
@@ -16,12 +16,14 @@ const AddTaskModal = ({ openModal, setOpenModal, addTask, toDoIndex }: AddTaskMo
     const [timeInput, setTimeInput] = useState<boolean>(true)
 
     const handleTimeChange = (timePicked: Dayjs) => {
-        const hours = timePicked.hour()
-        const mins = timePicked.minute()
-        const timeString = `${hours}:${mins}`
-        const copyInputValue = inputValue;
+        const hours = timePicked.hour();
+        const mins = timePicked.minute();
+        const minsString = mins.toString().padStart(2, '0'); // add leading zero if necessary
+        const hourssString = hours.toString().padStart(2, '0'); // add leading zero if necessary
+        const timeString = `${hourssString}:${minsString}`;
+        const copyInputValue = { ...inputValue };
         copyInputValue.time = timeString;
-        setInputValue({ ...copyInputValue });
+        setInputValue(copyInputValue);
     }
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -32,7 +34,7 @@ const AddTaskModal = ({ openModal, setOpenModal, addTask, toDoIndex }: AddTaskMo
     }
 
     const handleAddTask = () => {
-        if (inputValue.title) {
+        if (inputValue.title && taskId) {
             if (!timeInput) {
                 const copyInputValue = inputValue;
                 copyInputValue.time = "";
@@ -41,7 +43,8 @@ const AddTaskModal = ({ openModal, setOpenModal, addTask, toDoIndex }: AddTaskMo
             const newTask: Task = {
                 title: inputValue.title,
                 time: inputValue.time,
-                status: false
+                status: false,
+                taskId: taskId
             }
             addTask(toDoIndex, newTask)
             setInputValue({

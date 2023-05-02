@@ -21,6 +21,8 @@ export default function Home() {
         }
       })
 
+      console.log(response)
+
       setPublicFolder([...publicFolders])
 
     }
@@ -28,7 +30,6 @@ export default function Home() {
   }, [])
 
   const [publicFolder, setPublicFolder] = useState<IconGetAProps[]>([])
-
   const [filterCourses, setFilterCourses] = useState<CourseType[]>([])
   const [filterYears, setFilterYears] = useState<YearType[]>([])
   const [searchInput, setSearchInput] = useState<string>("")

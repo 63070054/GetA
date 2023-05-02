@@ -111,12 +111,6 @@ func GetUsers(c *gin.Context) {
 
 func GetUser(c *gin.Context) {
 	id := c.Param("id")
-	// message := fmt.Sprintf("User id : %s", id)
-	var loginuser LoginUser
-	if err := c.BindJSON(&loginuser); err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
 	var users []User
 	db, err := sql.Open("mysql", "admin:Zaza456654@tcp(get-a-db.c3fxksxqrbwf.us-east-1.rds.amazonaws.com:3306)/get-a")
 	if err != nil {
@@ -133,15 +127,17 @@ func GetUser(c *gin.Context) {
        GROUP_CONCAT(DISTINCT f.id, ':::', f.name SEPARATOR '??') as myFolder,
        GROUP_CONCAT(DISTINCT g.id, ':::', g.title, ':::', g.description SEPARATOR '??') as myGuideLine
         FROM Users u
-        LEFT JOIN Folders f ON f.ownerId = ?
-				LEFT JOIN GuideLines g on g.ownerId = ?
-				WHERE username = ? AND password = ?
-        GROUP BY ?`, id, id, id)
+        LEFT JOIN Folders f ON f.ownerId = u.id
+				LEFT JOIN GuideLines g on g.ownerId = u.id
+				WHERE u.id = ?
+        GROUP BY u.id`, id)
 	if err != nil {
 		fmt.Println("Failed to execute query:", err)
 		return
 	}
 	defer rows.Close()
+
+	fmt.Println("TEST")
 
 	for rows.Next() {
 			var user User
@@ -192,6 +188,8 @@ func GetUser(c *gin.Context) {
 
 		users = append(users, user)
 	}
+
+	fmt.Println(users)
 
 	if err != nil {
 		fmt.Println("Failed to marshal JSON:", err)

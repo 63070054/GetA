@@ -12,7 +12,7 @@ import GetAToast from "@/components/Alert/GetAToast";
 import { useUser } from "@/utils/useUser";
 import { useRouter } from 'next/router';
 
-export default function MyProfile() {
+export default function UserDetail() {
 
   const router = useRouter()
   const { userId } = router.query
@@ -22,19 +22,23 @@ export default function MyProfile() {
   useEffect(() => {
 
     const getUserById = async () => {
-      const response = await api.get("/user/" + userId)
+      try {
+        const response = await api.get("/user/" + userId)
 
-      const copyUserInfo: User = response.data[0]
-      copyUserInfo.myFolder = copyUserInfo.myFolder.map(folder => {
-        return {
-          id: folder.id,
-          name: folder.name,
-          routeTo: "/folder/:folderId",
-          iconPath: "/icons/folderGetA.svg"
-        }
-      })
+        const copyUserInfo: User = response.data[0]
+        copyUserInfo.myFolder = copyUserInfo.myFolder.map(folder => {
+          return {
+            id: folder.id,
+            name: folder.name,
+            routeTo: "/folder/:folderId",
+            iconPath: "/icons/folderGetA.svg"
+          }
+        })
 
-      setUserInfo({ ...copyUserInfo })
+        setUserInfo({ ...copyUserInfo })
+      } catch (err) {
+        console.log(err)
+      }
     }
 
     if (router.isReady) {
