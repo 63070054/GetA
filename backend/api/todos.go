@@ -12,6 +12,7 @@ type Task struct {
 	ID      *int    `db:"id" json:"id"`
 	Date    string `db:"date" json:"date"`
 	OwnerID int    `db:"ownerId" json:"ownerId"`
+    SubTasks []SubTask `json:subTasks`
 }
 
 type SubTask struct {
@@ -40,7 +41,7 @@ func GetTodos(c *gin.Context) {
 		fmt.Println(err)
 	}
 
-	var todos []Todos
+	var tasks []Task
 
 	db, err := sql.Open("mysql", "admin:Zaza456654@tcp(get-a-db.c3fxksxqrbwf.us-east-1.rds.amazonaws.com:3306)/get-a")
 	if err != nil {
@@ -51,27 +52,46 @@ func GetTodos(c *gin.Context) {
 	if err != nil {
 		fmt.Println("Ping Err!")
 	}
-	result, err := db.Exec("USE `get-a`")
-	fmt.Println(result)
 
-	rows, err := db.Query("SELECT Tasks.*, SubTasks.title, SubTasks.status, SubTasks.time ,SubTasks.Id FROM Tasks INNER JOIN SubTasks ON Tasks.id = SubTasks.taskId WHERE Tasks.ownerId = ?", userId)
+	allTasks, err := db.Query("SELECT * FROM Tasks WHERE ownerId = ?", userId)
 	if err != nil {
 		fmt.Println("Failed to execute query:", err)
 		return
 	}
-	defer rows.Close()
-	for rows.Next() {
-		var todo Todos
-		if err := rows.Scan(&todo.ID, &todo.Date, &todo.OwnerID, &todo.Title, &todo.Status, &todo.Time, &todo.TodoID); err != nil {
+	defer allTasks.Close()
+	for allTasks.Next() {
+		var task Task
+		if err := allTasks.Scan(&task.ID, &task.Date, &task.OwnerID); err != nil {
 			fmt.Println("Failed to scan row:", err)
 			return
 		}
-		todos = append(todos, todo)
+		tasks = append(tasks, task)
+	}
+
+    allSubTasks, err := db.Query("SELECT * FROM SubTasks")
+	if err != nil {
+		fmt.Println("Failed to execute query:", err)
+		return
+	}
+	defer allSubTasks.Close()
+	for allSubTasks.Next() {
+		var sub SubTask
+		if err := allSubTasks.Scan(&sub.ID,&sub.Title,&sub.Status,&sub.Time, &sub.TaskID,   ); err != nil {
+			fmt.Println("Failed to scan row:", err)
+			return
+		}
+        for i, task := range tasks {
+            if sub.TaskID == *task.ID{
+                tasks[i].SubTasks = append(tasks[i].SubTasks, sub)
+            }
+            
+        }
+		
 	}
 
 	fmt.Println("Connected!")
 
-	c.IndentedJSON(http.StatusOK, todos)
+	c.IndentedJSON(http.StatusOK, tasks)
 }
 
 func AddTodos(c *gin.Context) {
@@ -92,7 +112,7 @@ func AddTodos(c *gin.Context) {
 		fmt.Println("Ping Err!")
 	}
 
-	stmt, err := db.Prepare("INSERT INTO SubTasks (title,status,time, taskId) VALUES(?,?,?,?)")
+	stmt, err := db.Prepare("INSERT INTO SubTasks (title,status,time, taskId ) VALUES(?,?,?,?)")
 	if err != nil {
 		// Handle error
 	}
