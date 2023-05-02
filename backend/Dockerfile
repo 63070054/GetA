@@ -20,10 +20,10 @@ COPY . .
 RUN go build -o main .
 
 # Set the environment variable for the server port
-ENV PORT=8080
+ENV PORT=8888
 
 # Expose the port that the application will run on
-EXPOSE 8080
+EXPOSE 8888
 
 # Start the application
 CMD ["./main"]
