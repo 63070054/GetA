@@ -5,58 +5,63 @@ import { ChangeEvent, useState } from "react"
 import SelectInput from "@/components/forms/SelectInput";
 import InfoGetA from "@/components/GetAInfo/InfoGetA";
 import { Button } from '@mui/material';
+import api from "@/plugins/axios/api";
+import Cookies from "js-cookie";
+import { useRouter } from "next/router";
 
 const index = () => {
     const yearData: selectValue[] = [
         {
-            id: "0",
+            id: 0,
             name: "ปี 1",
         },
         {
-            id: "1",
+            id: 1,
             name: "ปี 2",
         },
         {
-            id: "2",
+            id: 2,
             name: "ปี 3",
         },
         {
-            id: "3",
+            id: 3,
             name: "ปี 4",
         },
         {
-            id: "4",
+            id: 4,
             name: "อื่น ๆ",
         },
     ]
     const program: selectValue[] = [
         {
-            id: "0",
+            id: 0,
             name: "IT",
         },
         {
-            id: "1",
+            id: 1,
             name: "DSBA",
         }
     ]
     const subjectArea: selectValue[] = [
         {
-            id: "0",
+            id: 0,
             name: "Network",
         },
         {
-            id: "1",
+            id: 1,
             name: "Software Engineer",
         },
         {
-            id: "2",
+            id: 2,
             name: "Multimedia",
         },
         {
-            id: "3",
+            id: 3,
             name: "อื่น ๆ",
         },
     ]
+
+    const router = useRouter()
 
 
     const [inputValue, setInputValue] = useState<InputValue>({
@@ -84,16 +89,25 @@ const index = () => {
         setInputValue({ ...copyInputValue });
     }
 
-    const register = () => {
-        const createUserModel: User = {
+    const register = async () => {
+        const createUserModel: CreateUserModel = {
             name: inputValue.fullName,
+            userName: inputValue.userName,
+            password: inputValue.password,
             year: inputValue.year as YearStudy,
             program: inputValue.program as Program,
             subjectArea: inputValue.subjectArea as SubjectArea,
-            myFolder: [],
-            myGuideLine: [],
         }
-        console.log(createUserModel)
+
+        try {
+            const result = await api.post("/register", createUserModel)
+            Cookies.set("token", result.data)
+            router.push("/")
+
+        } catch (err) {
+            console.log(err)
+        }
+
     }
 
     return (
@@ -106,10 +120,10 @@ const index = () => {
             <div className="backgroundRegistert w-full items-center flex-col gap-4 px-12 py-2">
                 <div className="flex flex-col gap-4 w-full items-center">
                     <Typography className="registerTitle leading-none m-0 items-center" variant="h3" gutterBottom>สมัครสมาชิก</Typography>
-                    <FormsInput label="ชื่อ นามสกุล" name="fullName" type="text" {...{ inputValue, handleInputChange }}></FormsInput>
-                    <FormsInput label="ชื่อผู้ใช้" name="userName" type="text" {...{ inputValue, handleInputChange }}></FormsInput>
-                    <FormsInput label="รหัสผ่าน" name="password" type="password" {...{ inputValue, handleInputChange }}></FormsInput>
-                    <FormsInput label="ยืนยันรหัสผ่าน" name="confirmPassword" type="password" {...{ inputValue, handleInputChange }}></FormsInput>
+                    <FormsInput label="ชื่อ นามสกุล" name="fullName" type="text" {...{ inputValue, handleInputChange }} />
+                    <FormsInput label="ชื่อผู้ใช้" name="userName" type="text" {...{ inputValue, handleInputChange }} />
+                    <FormsInput label="รหัสผ่าน" name="password" type="password" {...{ inputValue, handleInputChange }} />
+                    <FormsInput label="ยืนยันรหัสผ่าน" name="confirmPassword" type="password" {...{ inputValue, handleInputChange }} />
                     <div className="flex items-center justify-center gap-6 w-full">
                         <SelectInput label="ชั้นปี" selectData={yearData} handleSelectChange={handleSelectChange} name="year" />
                         <SelectInput label="สาขา" selectData={program} handleSelectChange={handleSelectChange} name="program" />

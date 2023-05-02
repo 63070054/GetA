@@ -8,7 +8,14 @@ import (
 
 func main() {
     router := gin.Default()
-    router.Use(cors.Default())
+
+	// Allow all origins
+	config := cors.DefaultConfig()
+	config.AllowAllOrigins = true
+    config.AllowMethods = []string{"GET", "PUT", "POST", "DELETE", "PATCH", "OPTIONS"}
+    config.AllowHeaders = []string{"Authorization", "Content-Type"}
+
+	router.Use(cors.New(config))
 
 	router.GET("/users", api.GetUsers)
     router.GET("/user/:id", api.GetUser)
@@ -24,10 +31,10 @@ func main() {
     router.POST("/undone/:id", api.UndoneTodo)
     router.POST("/date", api.AddDate)
 
-    router.GET("/notes", api.GetNotes)
-    router.GET("/note/:id", api.GetNote)
-    router.POST("/note", api.UploadNote)
-    router.DELETE("/note/:id", api.DelNote)
+    router.GET("/files", api.GetFiles)
+    router.GET("/file/:id", api.GetFile)
+    router.POST("/file", api.UploadFile)
+    router.DELETE("/file/:id", api.DelFile)
     router.GET("/folders", api.GetFolders)
     router.GET("/folder/:id", api.GetFolder)
     router.POST("/folder", api.AddFolder)

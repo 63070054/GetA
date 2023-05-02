@@ -63,7 +63,7 @@ const AddTaskModal = ({ openModal, setOpenModal, addTask, toDoIndex }: AddTaskMo
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
-                <Box className="absolute center-offset bg-white shadow-lg rounded-lg flex flex-col w-80">
+                <Box className="absolute center-offset bg-white shadow-lg rounded-lg flex flex-col md:w-auto w-11/12">
                     <Typography id="modal-modal-title" variant="h6" component="h2" className='todolistTitle p-1 rounded-t-lg'>
                         เพิ่มรายการที่ต้องทำ
                     </Typography>

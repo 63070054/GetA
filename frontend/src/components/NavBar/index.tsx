@@ -1,12 +1,13 @@
 import { AppBar, Avatar, Box, Button, Container, IconButton, Menu, MenuItem, Toolbar, Tooltip, Typography } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import FolderIcon from '@mui/icons-material/Folder';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { useRouter } from "next/router";
 import Link from "next/link";
+import Cookies from "js-cookie";
+import { useIsLogin } from "@/utils/useIsLogin";
 
 const NavBar = () => {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
@@ -26,6 +27,12 @@ const NavBar = () => {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+
+  const logOut = () => {
+    setAnchorElUser(null);
+    setIsLogin(false)
+    Cookies.remove("token")
+  }
 
   const pages: NavBarRouter[] = [
     {
@@ -52,6 +59,7 @@ const NavBar = () => {
   ];
 
   const route = useRouter()
+  const { isLogin, setIsLogin } = useIsLogin();
 
   return (
     <AppBar position="static" className="bg-white drop-shadow-sm inline-block relative z-10 w-screen">
@@ -95,43 +103,53 @@ const NavBar = () => {
           <img src="/logo.png" onClick={() => route.push("/")} className="w-40 sm:hidden cursor-pointer" />
 
           <Box className="flex grow justify-end items-center">
-            <div className="flex gap-4 mr-4">
-              {pages.map((page, index) => (
-                <Link href={page.routerPath} className="no-underline" key={index}>
-                  <Button variant="contained" color="info" className="text-white bg-orange">
-                    <Typography key={index}>{page.name}</Typography>
-                  </Button>
-                </Link>
-              ))}
-            </div>
-            <IconButton onClick={handleOpenUserMenu}>
-              <Avatar alt="" src="" />
-            </IconButton>
+            {isLogin ? (
+              <>
+                <div className="flex gap-4 mr-4">
+                  {pages.map((page, index) => (
+                    <Link href={page.routerPath} className="no-underline" key={index}>
+                      <Button variant="contained" color="info" className="text-white bg-orange">
+                        <Typography key={index}>{page.name}</Typography>
+                      </Button>
+                    </Link>
+                  ))}
+                </div>
+                <IconButton onClick={handleOpenUserMenu}>
+                  <Avatar alt="" src="" />
+                </IconButton>
 
-            <Menu
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-              className="mt-12"
-            >
-              {settings.map((setting, index) => (
-                <Link href={setting.routerPath} className="no-underline text-black">
-                  <MenuItem key={index} onClick={handleCloseUserMenu} className="flex gap-2 justify-end h-12">
-                    <p>{setting.name}</p>
-                    {setting.icon}
-                  </MenuItem>
-                </Link>
-              ))}
-            </Menu>
+                <Menu
+                  anchorEl={anchorElUser}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  open={Boolean(anchorElUser)}
+                  onClose={handleCloseUserMenu}
+                  className="mt-12"
+                >
+                  {settings.map((setting, index) => (
+                    <Link href={setting.routerPath} className="no-underline text-black">
+                      <MenuItem key={index} onClick={setting.name == "ออกจากระบบ" ? logOut : handleCloseUserMenu} className="flex gap-2 justify-end h-12">
+                        <p>{setting.name}</p>
+                        {setting.icon}
+                      </MenuItem>
+                    </Link>
+                  ))}
+                </Menu>
+              </>
+            ) : (
+              <Link href="/login" className="no-underline text-black">
+                <Button variant="contained" color="info" className="text-white bg-orange">
+                  <Typography>เข้าสู่ระบบ</Typography>
+                </Button>
+              </Link>
+            )}
           </Box>
         </Toolbar>
       </Container>

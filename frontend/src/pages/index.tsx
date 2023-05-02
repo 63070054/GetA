@@ -5,97 +5,54 @@ import SearchInputWithFilter from '@/components/Input/SearchInputWithFilter';
 import IconGetA from '@/components/IconGetA';
 import IconContainer from './../components/Container/IconContainer';
 import SmallContainer from "@/components/Container/SmallContainer";
+import { useEffect } from 'react';
+import api from "@/plugins/axios/api";
 
 export default function Home() {
 
-  const publicFlder: IconGetAProps[] = [
-    {
-      id: "0",
-      name: "SVV Week17(หลุดข้อสอบ)",
-      routeTo: "/folder/:folderId",
-      ownerName: "waveza2",
-      ownerId: "1",
-      iconPath: "/icons/folderGetA.svg"
-    },
-    {
-      id: "1",
-      name: "SVV Week17(หลุดข้อสอบ)",
-      routeTo: "/folder/:folderId",
-      ownerName: "waveza2",
-      ownerId: "2",
-      iconPath: "/icons/folderGetA.svg"
-    },
-    {
-      id: "2",
-      name: "SVV Week17(หลุดข้อสอบ)",
-      routeTo: "/folder/:folderId",
-      ownerName: "waveza2",
-      ownerId: "3",
-      iconPath: "/icons/folderGetA.svg"
-    },
-    {
-      id: "3",
-      name: "SVV Week17(หลุดข้อสอบ)",
-      routeTo: "/folder/:folderId",
-      ownerName: "waveza2",
-      ownerId: "4",
-      iconPath: "/icons/folderGetA.svg"
-    },
-    {
-      id: "4",
-      name: "SVV Week17(หลุดข้อสอบ)",
-      routeTo: "/folder/:folderId",
-      ownerName: "waveza2",
-      ownerId: "5",
-      iconPath: "/icons/folderGetA.svg"
-    },
-    {
-      id: "5",
-      name: "SVV Week17(หลุดข้อสอบ)",
-      routeTo: "/folder/:folderId",
-      ownerName: "waveza2",
-      ownerId: "6",
-      iconPath: "/icons/folderGetA.svg"
-    },
-    {
-      id: "6",
-      name: "SVV Week17(หลุดข้อสอบ)",
-      routeTo: "/folder/:folderId",
-      ownerName: "waveza2",
-      ownerId: "7",
-      iconPath: "/icons/folderGetA.svg"
-    },
-    {
-      id: "7",
-      name: "SVV Week17(หลุดข้อสอบ)",
-      routeTo: "/folder/:folderId",
-      ownerName: "waveza2",
-      ownerId: "8",
-      iconPath: "/icons/folderGetA.svg"
-    },
-    {
-      id: "8",
-      name: "SVV Week17(หลุดข้อสอบ)",
-      routeTo: "/folder/:folderId",
-      ownerName: "waveza2",
-      ownerId: "9",
-      iconPath: "/icons/folderGetA.svg"
-    },
-    {
-      id: "9",
-      name: "SVV Week17(หลุดข้อสอบ)",
-      routeTo: "/folder/:folderId",
-      ownerName: "waveza2",
-      ownerId: "10",
-      iconPath: "/icons/folderGetA.svg"
-    },
-  ]
+  useEffect(() => {
+    const getFolders = async () => {
+      const response = await api.get("/folders")
+      console.log(response.data)
+      const publicFolders = response.data.map((folder: Folder) => {
+        return {
+          ...folder,
+          routeTo: "/folder/:folderId",
+          iconPath: "/icons/folderGetA.svg"
+        }
+      })
 
-  const [filterCourses, setFilterCourses] = useState<CourseType[]>(["SVV", "ITPM"])
-  const [filterYears, setFilterYears] = useState<YearType[]>(["ปี 1"])
+      setPublicFolder([...publicFolders])
+
+    }
+    getFolders()
+  }, [])
+
+  const [publicFolder, setPublicFolder] = useState<IconGetAProps[]>([])
+
+  const [filterCourses, setFilterCourses] = useState<CourseType[]>([])
+  const [filterYears, setFilterYears] = useState<YearType[]>([])
   const [searchInput, setSearchInput] = useState<string>("")
+  const convertSearchInput = searchInput.toLowerCase().trim()
   const [openModal, setOpenModal] = useState<boolean>(false)
 
+  const filterPublicFolder = publicFolder.filter(folder => {
+    if (filterCourses.length === 0 && filterYears.length === 0 && !convertSearchInput) {
+      return true;
+    }
+
+    const folderValues = [
+      folder.name?.toLowerCase() || "",
+      folder.description?.toLowerCase() || "",
+      folder.ownerName?.toLowerCase() || "",
+    ];
+
+    const includeCourse = filterCourses.some(filterCourse => folder.courses?.includes(filterCourse));
+    const includeYear = filterYears.some(filterYear => folder.years?.includes(filterYear));
+    const includeText = convertSearchInput != "" ? folderValues.some(folderValue => folderValue.includes(convertSearchInput)) : false;
+
+    return includeCourse || includeYear || includeText;
+  });
 
   return (
     <SmallContainer>
@@ -103,8 +60,8 @@ export default function Home() {
         <SearchInputWithFilter {...{ filterCourses, filterYears, searchInput, setFilterCourses, setFilterYears, setSearchInput }} setOpenFilterModal={setOpenModal} />
         <ShowFilterSelected courses={filterCourses} years={filterYears} />
         <IconContainer>
-          {publicFlder.map(folder => (
-            <IconGetA {...folder} routeTo={folder.routeTo.replace(":folderId", folder.id)} key={folder.id} />
+          {filterPublicFolder.map(folder => (
+            <IconGetA {...folder} routeTo={folder.routeTo.replace(":folderId", `${folder.id}`)} key={folder.id} />
           ))}
         </IconContainer>
       </div>

@@ -8,6 +8,17 @@ interface FormsInput {
   type: HTMLInputTypeAttribute;
   inputValue: InputValue;
   handleInputChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  amountRows?: number;
+}
+
+interface CreateFilesModel {
+  files: Blob[];
+  folderId: int;
+}
+
+interface LoginModel {
+  userName: string;
+  password: string;
 }
 
 interface InputValue {
@@ -21,7 +32,7 @@ interface SelectInput {
 }
 
 interface selectValue {
-  id: string;
+  id: number;
   name: string;
 }
 
@@ -30,8 +41,17 @@ interface CheckBox {
   status: boolean;
 }
 
+interface CreateUserModel {
+  name: string;
+  userName: string;
+  password: string;
+  year: YearStudy;
+  program: Program;
+  subjectArea: SubjectArea;
+}
+
 interface User {
-  id?: string;
+  id?: number;
   name: string;
   year: YearStudy;
   program: Program;
@@ -46,13 +66,13 @@ type SubjectArea = "Network" | "Software Engineer" | "Multimedia" | "อื่�
 
 
 interface TodolistCard {
-  id?: string;
+  id?: number;
   date: string;
   tasks: Task[];
 }
 
 interface Task {
-  id?: string;
+  id?: number;
   title: string;
   status: boolean;
   time?: string;
@@ -70,14 +90,23 @@ interface NavBarRouter {
 }
 
 interface IconGetAProps {
-  id: string;
+  id: number;
   name: string;
+  description?: string;
   routeTo: string;
   ownerName?: string;
-  ownerId?: string;
+  ownerId?: number;
   iconPath: string;
-  course?: CourseType;
-  year?: YearType;
+  courses?: CourseType[];
+  years?: YearType[];
+}
+
+interface Folder {
+  name: string;
+  description: string;
+  ownerId: number;
+  courses: CourseType[];
+  years: YearType[];
 }
 
 interface ShowFilterProps {
@@ -112,18 +141,18 @@ interface FilterModalProps {
 }
 
 interface FolderIcon {
-  id: string;
+  id: number;
   name: string;
   description?: string;
   ownerName: string,
-  ownerId: string,
+  ownerId: number,
   courses: CourseType[];
-  yeras: YearType[];
+  years: YearType[];
   files: IconGetAProps[];
 }
 
 interface File {
-  id: string;
+  id: number;
   name: string;
   filePath: string;
 }
@@ -131,6 +160,15 @@ interface File {
 interface LoadingScreenProps {
   isLoading: boolean;
   setIsLoading: Dispatch<SetStateAction<S>>;
+}
+
+interface AddFilesModalProps {
+  openModal: boolean;
+  setOpenModal: Dispatch<SetStateAction<S>>;
+  handleDrop: (acceptedFiles: File[]) => void;
+  fileSelected: Blob[];
+  createFiles: () => void;
+  handleUnselectFile: (fileName: string) => void;
 }
 
 interface AddTaskModalProps {
@@ -147,9 +185,9 @@ interface AddToDoModalProps {
 }
 
 interface GuideLineCard {
-  id: string;
+  id: number;
   title: string;
   description: string;
-  folderId: string;
+  folderId: number;
   files: IconGetAProps[];
 }

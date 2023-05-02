@@ -15,6 +15,8 @@ DROP TABLE IF EXISTS Users;
 CREATE TABLE Users (
   id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
+  userName VARCHAR(255) NOT NULL,
+  password VARCHAR(255) NOT NULL,
   year ENUM('ปี 1', 'ปี 2', 'ปี 3', 'ปี 4', 'อื่น ๆ'),
   program ENUM('IT', 'DSBA'),
   subjectArea ENUM(
@@ -30,9 +32,21 @@ CREATE TABLE Folders (
   name VARCHAR(255) NOT NULL,
   description VARCHAR(255),
   ownerId INT,
-  FOREIGN KEY (ownerId) REFERENCES Users(id),
-  course ENUM('SVV', 'ITPM', 'SOP', 'HID', 'OOP', 'Gen B'),
-  year ENUM('ปี 1', 'ปี 2', 'ปี 3', 'ปี 4')
+  FOREIGN KEY (ownerId) REFERENCES Users(id)
+);
+
+CREATE TABLE YearFolders (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name ENUM('ปี 1', 'ปี 2', 'ปี 3', 'ปี 4'),
+  folderId INT,
+  FOREIGN KEY (folderId) REFERENCES Folders(id)
+);
+
+CREATE TABLE CourseFolders (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name ENUM('SVV', 'ITPM', 'SOP', 'HID', 'OOP', 'Gen B'),
+  folderId INT,
+  FOREIGN KEY (folderId) REFERENCES Folders(id)
 );
 
 CREATE TABLE FolderFiles (
@@ -76,6 +90,20 @@ CREATE TABLE SubTasks (
 );
 
 INSERT INTO
-  Users (name, year, program, subjectArea)
+  Users (
+    name,
+    userName,
+    password,
+    year,
+    program,
+    subjectArea
+  )
 VALUES
-  ('John', 'ปี 3', 'IT', 'Network');
+  (
+    'John',
+    'johnza2',
+    '1234',
+    'ปี 3',
+    'IT',
+    'Network'
+  );
