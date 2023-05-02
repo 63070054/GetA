@@ -46,9 +46,9 @@ func main() {
     router.POST("/folder", api.AddFolder)
     router.DELETE("/folder", api.DelFolder)
 
-    router.GET("/guides", api.GetGuides)
+    router.GET("/allGuides", api.GetGuides)
     router.GET("/guide/:id", api.GetGuide)
-    router.POST("/guide", api.AddGuide)
+    router.POST("/newGuide", api.AddGuide)
     router.DELETE("/guide/:id", api.DelGuide)
 
 

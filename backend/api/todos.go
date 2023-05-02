@@ -69,8 +69,6 @@ func GetTodos(c *gin.Context) {
 		todos = append(todos, todo)
 	}
 
-	fmt.Println("Connected!")
-
 	c.IndentedJSON(http.StatusOK, todos)
 }
 
