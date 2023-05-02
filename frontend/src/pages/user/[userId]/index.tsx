@@ -79,7 +79,7 @@ export default function UserDetail() {
         </div>
       </div>
       <div className="flex gap-4 items-center mt-6">
-        <Typography variant="h6" className="m-0" color="#000000" gutterBottom>โฟลเดอร์ของฉัน</Typography>
+        <Typography variant="h6" className="m-0" color="#000000" gutterBottom>โฟลเดอร์ของ {userInfo?.name}</Typography>
 
       </div>
       <div className="flex flex-col gap-4 w-full">
@@ -89,7 +89,7 @@ export default function UserDetail() {
           ))}
         </IconContainer>
         <div className="flex gap-4 items-center mt-6">
-          <Typography variant="h6" className="m-0" color="#000000" gutterBottom>แนวข้อสอบของฉัน</Typography>
+          <Typography variant="h6" className="m-0" color="#000000" gutterBottom>แนวข้อสอบของ {userInfo?.name}</Typography>
 
         </div>
         <div className="flex flex-col gap-4 w-full">

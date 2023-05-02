@@ -481,7 +481,7 @@ func GetFolders(c *gin.Context) {
 
 func GetFolder(c *gin.Context) {
     id := c.Param("id")
-    userId, err := strconv.Atoi(id)
+    folderId, err := strconv.Atoi(id)
     var folders []Folders
     var files []File
     var courses []Course
@@ -497,16 +497,15 @@ func GetFolder(c *gin.Context) {
 		fmt.Println("Ping Err!")
 	}
 	fmt.Println("Connected!")
-    queryusers, err := db.Query(`SELECT id, name FROM Users WHERE id = ?`,userId)
+    queryusers, err := db.Query(`SELECT id, name FROM Users`)
     defer queryusers.Close()
 	for queryusers.Next() {
 		var user NameUser
-
+        fmt.Println(user)
         if err := queryusers.Scan(&user.Id, &user.Name); err != nil {
             fmt.Println("Failed to scan row:", err)
             return
         }
-        fmt.Println(user)
 		users = append(users, user)
 	}
 
@@ -547,7 +546,7 @@ func GetFolder(c *gin.Context) {
 
 		years = append(years, year)
 	}
-    queryfolders, err := db.Query(`SELECT * FROM Folders WHERE ownerId = ?`, userId)
+    queryfolders, err := db.Query(`SELECT * FROM Folders WHERE id = ?`, folderId)
 	if err != nil {
 		fmt.Println("Failed to execute query:", err)
 		return
@@ -560,6 +559,8 @@ func GetFolder(c *gin.Context) {
             fmt.Println("Failed to scan row:", err)
             return
         }
+
+
         for i, file := range files {
             if *folder.Id == *&files[i].FolderId{
                 folder.Files = append(folder.Files, file)
@@ -586,6 +587,8 @@ func GetFolder(c *gin.Context) {
         }
 		folders = append(folders, folder)
 	}
+
+    fmt.Println(folders)
 
 	c.IndentedJSON(http.StatusOK, folders)
 }

@@ -24,12 +24,12 @@ const Folder = () => {
     const getFolderById = async () => {
       const response = await api.get("/folder/" + folderId)
       const folder = response?.data?.[0]
-      console.log(folder)
+      console.log(response)
       if (folder) {
-        folder.files = folder?.files.map((file: any) => {
+        folder.files = folder?.files?.map((file: any) => {
           return {
-            id: file.Id,
-            name: file.Name,
+            id: file.id,
+            name: file.name,
             routeTo: "/folder/:folderId/file/:fileId",
             iconPath: "/icons/fileGetA.svg"
           }
@@ -98,15 +98,15 @@ const Folder = () => {
           }
         });
         const newFiles = response.data
+        console.log(response.data)
         const convertNewFiles = newFiles.map((file: any) => {
           return {
-            id: file.Id,
-            name: file.Name,
+            id: file.id,
+            name: file.name,
             routeTo: "/folder/:folderId/file/:fileId",
             iconPath: "/icons/fileGetA.svg"
           }
         })
-        console.log(response);
         const copyFolderData = folderData
         copyFolderData.files = [...copyFolderData.files, ...convertNewFiles]
         setFolderData({ ...copyFolderData })
@@ -144,7 +144,7 @@ const Folder = () => {
           </div>
         </div>
         <div className='w-full flex justify-center'>
-          {folderData?.files?.length == 0 ? (
+          {(folderData?.files?.length == 0) || (!folderData.files) ? (
             <Typography variant='h4' className='font-bold'>ไม่มีไฟล์</Typography>
           ) : (
             <IconContainer>
