@@ -118,7 +118,7 @@ func DelTodos(c *gin.Context) {
 		fmt.Println(err)
 	}
 
-    db, err := sql.Open("mysql", "admin:Zaza456654@tcp(get-a-db.c3fxksxqrbwf.us-east-1.rds.amazonaws.com:3306)/get-a")
+	db, err := sql.Open("mysql", "admin:Zaza456654@tcp(get-a-db.c3fxksxqrbwf.us-east-1.rds.amazonaws.com:3306)/get-a")
 	if err != nil {
 		fmt.Println("Err!")
 	}
@@ -148,15 +148,61 @@ func DelTodos(c *gin.Context) {
 }
 
 func DoneTodo(c *gin.Context) {
-	id := c.Param("id")
-	message := fmt.Sprintf("Done Todo %s", id)
-	c.IndentedJSON(http.StatusOK, gin.H{"message": message})
+	todoid := c.Param("id")
+	id, err := strconv.Atoi(todoid)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	db, err := sql.Open("mysql", "admin:Zaza456654@tcp(get-a-db.c3fxksxqrbwf.us-east-1.rds.amazonaws.com:3306)/get-a")
+	if err != nil {
+		fmt.Println("Err!")
+	}
+	defer db.Close()
+	err = db.Ping()
+	if err != nil {
+		fmt.Println("Ping Err!")
+	}
+
+	stmt, err := db.Prepare("UPDATE SubTasks SET status = ? WHERE id = ?")
+	if err != nil {
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(true, id)
+	if err != nil {
+
+	}
+	c.IndentedJSON(http.StatusOK,id)
 }
 
 func UndoneTodo(c *gin.Context) {
-	id := c.Param("id")
-	message := fmt.Sprintf("Undone Todo %s", id)
-	c.IndentedJSON(http.StatusOK, gin.H{"message": message})
+	todoid := c.Param("id")
+	id, err := strconv.Atoi(todoid)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	db, err := sql.Open("mysql", "admin:Zaza456654@tcp(get-a-db.c3fxksxqrbwf.us-east-1.rds.amazonaws.com:3306)/get-a")
+	if err != nil {
+		fmt.Println("Err!")
+	}
+	defer db.Close()
+	err = db.Ping()
+	if err != nil {
+		fmt.Println("Ping Err!")
+	}
+
+	stmt, err := db.Prepare("UPDATE SubTasks SET status = ? WHERE id = ?")
+	if err != nil {
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(false, id)
+	if err != nil {
+
+	}
+	c.IndentedJSON(http.StatusOK,id)
 }
 
 func AddDate(c *gin.Context) {
