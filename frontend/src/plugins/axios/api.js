@@ -3,7 +3,8 @@ import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 
 const api = axios.create({
-  baseURL: "http://localhost:8888",
+  // baseURL: "http://localhost:8888",
+  baseURL: "http://3.86.227.129:8888",
 });
 
 const AxiosInterceptor = ({ children, setIsLoading }) => {
