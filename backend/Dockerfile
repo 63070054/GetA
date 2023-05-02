@@ -1,29 +1,28 @@
-FROM golang:1.16.7-alpine3.14
+# syntax=docker/dockerfile:1
 
-# Set the working directory
+FROM golang:1.20
+
+# Set destination for COPY
 WORKDIR /app
 
-# Copy the go.mod and go.sum files to the container
+# Download Go modules
 COPY go.mod go.sum ./
+RUN go mod download 
 
-# Download the Go modules
-RUN go mod download
+# Copy the source code. Note the slash at the end, as explained in
+# https://docs.docker.com/engine/reference/builder/#copy
+COPY  . /app//
 
-# Download the missing dependency and update the checksums
-RUN go get golang.org/x/text
-RUN go mod verify
+# Build
+RUN CGO_ENABLED=0 GOOS=linux go build -o ./backend
 
-# Copy the rest of the application code to the container
-COPY . .
 
-# Build the application
-RUN go build -o main .
+# Optional:
+# To bind to a TCP port, runtime parameters must be supplied to the docker command.
+# But we can document in the Dockerfile what ports
+# the application is going to listen on by default.
+# https://docs.docker.com/engine/reference/builder/#expose
+EXPOSE 8888
 
-# Set the environment variable for the server port
-ENV PORT=8080
-
-# Expose the port that the application will run on
-EXPOSE 8080
-
-# Start the application
-CMD ["./main"]
+# Run
+CMD ["./backend"]
