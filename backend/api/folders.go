@@ -1,11 +1,9 @@
 package api
 
 import (
-    // "encoding/json"
 	"database/sql"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	_ "github.com/go-sql-driver/mysql"
 	"net/http"
     "strings"
     "strconv"
@@ -13,14 +11,72 @@ import (
     "github.com/aws/aws-sdk-go/aws"
     "github.com/aws/aws-sdk-go/aws/session"
     "github.com/aws/aws-sdk-go/service/s3"
-    // "reflect"
+    "io/ioutil"
+    "bytes"
+    "github.com/aws/aws-sdk-go/aws/credentials"
+    "os"
 )
+
+
+type FolderFile struct {
+    Id  *int64 `json:id db:id`
+    Name string `json:name db:name`
+    FilePath string `json:filePath db:filePath`
+    FolderId int `json:folderId db:folderId`
+}
 
 
 func GetFile(c *gin.Context) {
     id := c.Param("id")
-    message := fmt.Sprintf("Get file: %s", id)
-    c.IndentedJSON(http.StatusOK, gin.H{"message": message})
+    folderId := c.Param("folderId")
+
+    var folderFiles []FolderFile
+	db, err := sql.Open("mysql", "admin:Zaza456654@tcp(get-a-db.c3fxksxqrbwf.us-east-1.rds.amazonaws.com:3306)/get-a")
+	if err != nil {
+		fmt.Println("Err!")
+	}
+	defer db.Close()
+	err = db.Ping()
+	if err != nil {
+		fmt.Println("Ping Err!")
+	}
+	fmt.Println("Connected!")
+	rows, err := db.Query(`
+        SELECT * FROM FolderFiles
+        WHERE id = ? AND folderId = ?
+        `, id, folderId)
+
+	if err != nil {
+		fmt.Println("Failed to execute query:", err)
+		return
+	}
+
+
+	defer rows.Close()
+
+	for rows.Next() {
+		var folderFile FolderFile
+
+        if err := rows.Scan(&folderFile.Id, &folderFile.Name, &folderFile.FilePath, &folderFile.FolderId); err != nil {
+            fmt.Println("Failed to scan row:", err)
+            return
+        }
+
+        
+		folderFiles = append(folderFiles, folderFile)
+	}
+    fmt.Println("test")
+
+
+	if err := rows.Err(); err != nil {
+		fmt.Println("Encountered an error while iterating over rows:", err)
+		return
+	}
+
+    fmt.Println(folderFiles)
+
+
+	c.IndentedJSON(http.StatusOK, folderFiles)
 }
 
 func GetFiles(c *gin.Context) {
@@ -32,7 +88,6 @@ type UploadFilesModel struct {
 	FolderID  int                     `form:"folderId"`
 }
 
-
 func UploadFile(c *gin.Context) {
     // Parse the multipart form data from the request
     form, err := c.MultipartForm()
@@ -40,6 +95,17 @@ func UploadFile(c *gin.Context) {
         c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
         return
     }
+
+    db, err := sql.Open("mysql", "admin:Zaza456654@tcp(get-a-db.c3fxksxqrbwf.us-east-1.rds.amazonaws.com:3306)/get-a")
+	if err != nil {
+		fmt.Println("Err!")
+	}
+	defer db.Close()
+
+	err = db.Ping()
+	if err != nil {
+		fmt.Println("Ping Err!")
+	}
 
     // Get the files from the form data
     files := form.File["files"]
@@ -49,7 +115,13 @@ func UploadFile(c *gin.Context) {
 
      sess, err := session.NewSession(&aws.Config{
         Region: aws.String("us-east-1"),
+        Credentials: credentials.NewStaticCredentials(
+            os.Getenv("AWS_ACCESS_KEY_ID"),
+            os.Getenv("AWS_SECRET_ACCESS_KEY"),
+        os.Getenv("AWS_SESSION_TOKEN"),),
     })
+
+
     if err != nil {
         c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
         return
@@ -57,6 +129,7 @@ func UploadFile(c *gin.Context) {
 
     // Create an S3 client
     svc := s3.New(sess)
+    var newFilesId []FolderFile;
 
     // Loop through the files and upload them to S3
     for _, file := range files {
@@ -78,21 +151,58 @@ func UploadFile(c *gin.Context) {
         // Create a new S3 object key
         objectKey := fmt.Sprintf("%s/%s", folderId, file.Filename)
 
+        url := fmt.Sprintf("https://get-a-files.s3.amazonaws.com/%s", objectKey)
+
         // Create a new S3 object
         _, err = svc.PutObject(&s3.PutObjectInput{
             Body:   bytes.NewReader(fileBytes),
-            Bucket: aws.String("my-bucket"),
+            Bucket: aws.String("get-a-files"),
             Key:    aws.String(objectKey),
+             ContentType: aws.String("application/pdf"),
         })
+
+
         if err != nil {
             c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
             return
         }
+
+        stmt, err := db.Prepare("INSERT INTO FolderFiles (name, filePath, folderId) VALUES(?,?,?)")
+        if err != nil {
+            // Handle error
+        }
+        defer stmt.Close()
+
+        result, err := stmt.Exec(file.Filename, url, folderId)
+        if err != nil {
+            fmt.Printf("Insert Err!")
+        }
+
+        newFileId, err := result.LastInsertId()
+        if err != nil {
+            // Handle error
+        }
+
+        convertFolderId, err := strconv.Atoi(folderId)
+        if err != nil {
+
+        }
+
+        fmt.Println(file)
+
+        newFilesId = append(newFilesId, FolderFile{
+            Id:       &newFileId,
+            Name:     file.Filename,
+            FilePath: url,
+            FolderId: convertFolderId,
+        })
+
     }
 
-    c.IndentedJSON(http.StatusOK, "Upload file")
+    fmt.Println(newFilesId)
 
-    c.IndentedJSON(http.StatusOK, "Upload file")
+
+    c.IndentedJSON(http.StatusOK, newFilesId)
 }
 
 func DelFile(c *gin.Context) {
@@ -115,7 +225,7 @@ type Folder struct {
 type FileFolder struct {
     Id   int
     Name string
-    FilePath string
+    FilePath *string
 }
 
 type CourseFolder string
@@ -237,9 +347,9 @@ func GetFolders(c *gin.Context) {
 	fmt.Println("Connected!")
 	rows, err := db.Query(`
         SELECT f.id, f.name, f.description, f.ownerId, u.name as ownerName,
-       GROUP_CONCAT(DISTINCT yf.name SEPARATOR ', ') as years,
-       GROUP_CONCAT(DISTINCT cf.name SEPARATOR ', ') as courses,
-       GROUP_CONCAT(DISTINCT ff.id, ':', ff.name, ':', ff.filePath SEPARATOR ', ') as files
+       GROUP_CONCAT(DISTINCT yf.name SEPARATOR '??') as years,
+       GROUP_CONCAT(DISTINCT cf.name SEPARATOR '??') as courses,
+       GROUP_CONCAT(DISTINCT ff.id, ':::', ff.name SEPARATOR '??') as files
         FROM Folders f
         LEFT JOIN Users u ON f.ownerId = u.id
         LEFT JOIN YearFolders yf ON f.id = yf.folderId
@@ -265,7 +375,7 @@ func GetFolders(c *gin.Context) {
         }
 
         folder.Years = make([]YearFolder, 0)
-        yearArr := strings.Split(string(yearStr), ", ")
+        yearArr := strings.Split(string(yearStr), "??")
         if len(yearArr) > 1 {
             for _, year := range yearArr {
                 folder.Years = append(folder.Years, YearFolder(year))
@@ -273,7 +383,7 @@ func GetFolders(c *gin.Context) {
         }
 
         folder.Courses = make([]CourseFolder, 0)
-        courseArr := strings.Split(string(courseStr), ", ")
+        courseArr := strings.Split(string(courseStr), "??")
         if len(courseArr) > 1 {
             for _, course := range courseArr {
                 folder.Courses = append(folder.Courses, CourseFolder(course))
@@ -281,20 +391,19 @@ func GetFolders(c *gin.Context) {
         }
 
         folder.Files = make([]FileFolder, 0)
-        fileArr := strings.Split(string(fileStr), ", ")
+        fileArr := strings.Split(string(fileStr), "??")
         if len(fileArr) > 1  {
             for _, file := range fileArr {
-                parts := strings.Split(file, ":")
+                fmt.Println(file)
+                parts := strings.Split(file, ":::")
                 fileId, err := strconv.Atoi(parts[0])
                 if err != nil {
                     // handle the error
                 }
                 fileName := parts[1]
-                filePath := parts[2]
                 folder.Files = append(folder.Files, FileFolder{
                     Id: fileId,
                     Name: fileName,
-                    FilePath: filePath,
                 })
             }
         }
@@ -330,9 +439,9 @@ func GetFolder(c *gin.Context) {
 	fmt.Println("Connected!")
 	rows, err := db.Query(`
     SELECT f.id, f.name, f.description, f.ownerId, u.name as ownerName,
-       GROUP_CONCAT(DISTINCT yf.name SEPARATOR ', ') as years,
-       GROUP_CONCAT(DISTINCT cf.name SEPARATOR ', ') as courses,
-       GROUP_CONCAT(DISTINCT ff.id, ':', ff.name, ':', ff.filePath SEPARATOR ', ') as files
+       GROUP_CONCAT(DISTINCT yf.name SEPARATOR '??') as years,
+       GROUP_CONCAT(DISTINCT cf.name SEPARATOR '??') as courses,
+       GROUP_CONCAT(DISTINCT ff.id, ':::', ff.name SEPARATOR '??') as files
     FROM Folders f
     LEFT JOIN Users u ON f.ownerId = u.id
     LEFT JOIN YearFolders yf ON f.id = yf.folderId
@@ -360,8 +469,7 @@ if err != nil {
         }
 
         folder.Years = make([]YearFolder, 0)
-        yearArr := strings.Split(string(yearStr), ", ")
-        fmt.Println(len(yearArr))
+        yearArr := strings.Split(string(yearStr), "??")
         if len(yearArr) > 1 {
             for _, year := range yearArr {
                 folder.Years = append(folder.Years, YearFolder(year))
@@ -369,8 +477,7 @@ if err != nil {
         }
 
         folder.Courses = make([]CourseFolder, 0)
-        courseArr := strings.Split(string(courseStr), ", ")
-        fmt.Println(len(courseArr))
+        courseArr := strings.Split(string(courseStr), "??")
         if len(courseArr) > 1 {
             for _, course := range courseArr {
                 folder.Courses = append(folder.Courses, CourseFolder(course))
@@ -378,26 +485,28 @@ if err != nil {
         }
 
         folder.Files = make([]FileFolder, 0)
-        fileArr := strings.Split(string(fileStr), ", ")
+        fileArr := strings.Split(string(fileStr), "??")
         if len(fileArr) > 1  {
             for _, file := range fileArr {
-                parts := strings.Split(file, ":")
+                fmt.Println(file)
+                parts := strings.Split(file, ":::")
                 fileId, err := strconv.Atoi(parts[0])
                 if err != nil {
                     // handle the error
                 }
                 fileName := parts[1]
-                filePath := parts[2]
+                fmt.Println(fileName)
                 folder.Files = append(folder.Files, FileFolder{
                     Id: fileId,
                     Name: fileName,
-                    FilePath: filePath,
                 })
             }
         }
 
 		folders = append(folders, folder)
 	}
+
+    fmt.Println(folders)
 
 	if err := rows.Err(); err != nil {
 		fmt.Println("Encountered an error while iterating over rows:", err)

@@ -11,27 +11,35 @@ import { ChangeEvent } from 'react';
 import PDFUploader from '@/components/Input/PDFuploader';
 import { useCallback } from 'react';
 import AddFilesModal from '@/components/Modal/AddFilesModal';
+import Cookies from 'js-cookie';
 
 const Folder = () => {
 
   const router = useRouter()
   const { folderId } = router.query
+  const token = Cookies.get("token") || ""
+  const decodedToken: User = token ? JSON.parse(Buffer.from(token, 'base64').toString('utf-8'))[0] : null;
+  const userId = decodedToken?.id
 
   useEffect(() => {
     const getFolderById = async () => {
       const response = await api.get("/folder/" + folderId)
       const folder = response?.data?.[0]
+      console.log(folder)
       if (folder) {
-        folder.files = folder?.files.map((file: File) => {
+        folder.files = folder?.files.map((file: any) => {
           return {
-            ...file,
+            id: file.Id,
+            name: file.Name,
             routeTo: "/folder/:folderId/file/:fileId",
             iconPath: "/icons/fileGetA.svg"
           }
         })
+        console.log(folder)
+        setFolderData({ ...folder })
+
       }
 
-      setFolderData({ ...folder })
 
     }
     if (router.isReady) {
@@ -90,12 +98,31 @@ const Folder = () => {
             "Content-Type": "multipart/form-data"
           }
         });
+        const newFiles = response.data
+        const convertNewFiles = newFiles.map((file: any) => {
+          return {
+            id: file.Id,
+            name: file.Name,
+            routeTo: "/folder/:folderId/file/:fileId",
+            iconPath: "/icons/fileGetA.svg"
+          }
+        })
         console.log(response);
+        const copyFolderData = folderData
+        copyFolderData.files = [...copyFolderData.files, ...convertNewFiles]
+        setFolderData({ ...copyFolderData })
+        resetValue()
+
       } catch (err) {
         console.log(err);
       }
     }
   };
+
+  const resetValue = () => {
+    setFileSelected([])
+    setOpenModal(false)
+  }
 
   return (
     <SmallContainer>
@@ -124,15 +151,17 @@ const Folder = () => {
             <IconContainer>
               {folderData?.files?.map(file => (
                 <>
-                  {folderId && typeof (folderId) == "string" && (
-                    <IconGetA {...file} key={file?.id} routeTo={file?.routeTo?.replace(":fileId", `${file?.id}`).replace(":folderId", folderId)} />
+                  {folderId && (
+                    <IconGetA {...file} key={file?.id} routeTo={file?.routeTo?.replace(":fileId", `${file?.id}`).replace(":folderId", `${folderId}`)} />
                   )}
                 </>
               ))}
             </IconContainer>
           )}
         </div>
-        <Button className="bg-orange" onClick={() => setOpenModal(true)}>เพิ่มไฟล์</Button>
+        {folderData.ownerId == userId && (
+          <Button className="bg-orange" onClick={() => setOpenModal(true)}>เพิ่มไฟล์</Button>
+        )}
 
       </div>
       <AddFilesModal {...{ openModal, setOpenModal, handleDrop, createFiles, fileSelected, handleUnselectFile }} />

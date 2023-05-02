@@ -5,6 +5,8 @@ import PDFUploader from '../Input/PDFuploader';
 
 const AddFilesModal = ({ openModal, setOpenModal, handleDrop, createFiles, fileSelected, handleUnselectFile }: AddFilesModalProps) => {
 
+  const maxLengthText = 30;
+
   return (
     <div>
       <Modal
@@ -20,15 +22,22 @@ const AddFilesModal = ({ openModal, setOpenModal, handleDrop, createFiles, fileS
           <div className="py-4 px-12 flex flex-col gap-4">
             <PDFUploader {...{ handleDrop }} />
             <div className="flex flex-col gap-2">
-              {fileSelected.map((file, index) => (
-                <div
-                  className="h-8 border border border-dashed border-2 border-black px-8 py-4 flex items-center gap-4 justify-between"
-                  key={index}
-                >
-                  <Typography variant="primary">{file.name}</Typography>
-                  <Button key={index} variant='contained' className="text-white bg-red-500 hover:bg-red-700" onClick={() => handleUnselectFile(file.name)}>DEL</Button>
-                </div>
-              ))}
+              {fileSelected.map((file, index) => {
+                let showName = file.name
+
+                if (file.name?.length > maxLengthText) {
+                  showName = file.name.slice(0, maxLengthText + 1) + "..."
+                }
+                return (
+                  <div
+                    className="h-8 border border border-dashed border-2 border-black px-8 py-4 flex items-center gap-4 justify-between"
+                    key={index}
+                  >
+                    <Typography variant="primary">{showName}</Typography>
+                    <Button key={index} variant='contained' className="text-white bg-red-500 hover:bg-red-700" onClick={() => handleUnselectFile(file.name)}>DEL</Button>
+                  </div>
+                )
+              })}
             </div>
             <Button className='bg-orange w-full' onClick={createFiles}>ยืนยันการสร้างไฟล์</Button>
           </div>

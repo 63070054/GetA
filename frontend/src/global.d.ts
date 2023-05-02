@@ -151,7 +151,7 @@ interface FolderIcon {
   files: IconGetAProps[];
 }
 
-interface File {
+interface FileGetA {
   id: number;
   name: string;
   filePath: string;
@@ -165,7 +165,7 @@ interface LoadingScreenProps {
 interface AddFilesModalProps {
   openModal: boolean;
   setOpenModal: Dispatch<SetStateAction<S>>;
-  handleDrop: (acceptedFiles: File[]) => void;
+  handleDrop: (acceptedFiles: Blob[]) => void;
   fileSelected: Blob[];
   createFiles: () => void;
   handleUnselectFile: (fileName: string) => void;

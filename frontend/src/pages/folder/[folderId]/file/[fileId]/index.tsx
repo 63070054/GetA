@@ -1,21 +1,44 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { Typography } from '@mui/material';
 import SmallContainer from '@/components/Container/SmallContainer';
+import api from '@/plugins/axios/api';
 
 const File = () => {
 
 
   const router = useRouter()
-  const { fileId } = router.query
+  const { folderId, fileId } = router.query
+  const [fileData, setFileData] = useState<FileGetA>()
+
+  useEffect(() => {
+    const getFolderById = async () => {
+      const response = await api.get(`/folderById/${folderId}/file/${fileId}`)
+      const file = response?.data[0]
+      const convertFile: FileGetA = {
+        id: file.Id,
+        name: file.Name,
+        filePath: file.FilePath,
+      }
+
+      setFileData({ ...convertFile })
+
+
+    }
+    if (router.isReady) {
+      getFolderById()
+    }
+  }, [router.isReady])
 
 
   return (
     <SmallContainer>
-      <div className="w-full flex flex-col gap-4">
-        <Typography variant='h4' className='font-bold'>ชื่อ File คร้าบ</Typography>
-        <iframe src="/filePDF/Cloud-Mid.pdf" className="w-full aspect-square" />
-      </div>
+      {fileData && (
+        <div className="w-full flex flex-col gap-4">
+          <Typography variant='h4' className='font-bold'>{fileData.name}</Typography>
+          <iframe src={fileData.filePath} className="w-full aspect-square" />
+        </div>
+      )}
     </SmallContainer>
   );
 };
