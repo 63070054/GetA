@@ -30,12 +30,12 @@ func main() {
     router.POST("/login", api.Login)
 
 
-    router.GET("/todos", api.GetTodos)
+    router.GET("/todos/:id", api.GetTodos)
     router.POST("/todos", api.AddTodos)
     router.DELETE("/todos/:id", api.DelTodos)
     router.POST("/done/:id", api.DoneTodo)
     router.POST("/undone/:id", api.UndoneTodo)
-    router.POST("/date/:date", api.AddDate)
+    router.POST("/date", api.AddDate)
 
     router.GET("/files", api.GetFiles)
     router.GET("/folderById/:folderId/file/:id", api.GetFile)
