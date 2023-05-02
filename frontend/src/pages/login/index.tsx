@@ -7,9 +7,13 @@ import { ChangeEvent, useState } from "react"
 import SelectInput from "@/components/forms/SelectInput";
 import InfoGetA from "@/components/GetAInfo/InfoGetA";
 import CheckBox from "@/components/Input/CheckBox";
+import api from "@/plugins/axios/api";
+import Cookies from "js-cookie";
 
 
 const index = () => {
+
+    const router = useRouter()
 
     const [inputValue, setInputValue] = useState<InputValue>({
         userName: "",
@@ -29,7 +33,14 @@ const index = () => {
             password: inputValue.password
         }
 
+        try {
+            const result = await api.post("/login", loginModel)
+            Cookies.set("token", result.data)
+            router.push("/")
 
+        } catch (err) {
+            console.log(err)
+        }
 
     }
 
@@ -37,7 +48,7 @@ const index = () => {
         <div className="flex w-full h-full shadow-2xl">
             <div className="backgroundRegister w-full items-center flex-col gap-4">
                 <div className="flex flex-col w-9/12 items-center">
-                    <InfoGetA></InfoGetA>
+                    <InfoGetA />
                 </div>
             </div>
             <div className="backgroundRegistert w-full items-center flex-col gap-4 px-12 py-2">
@@ -45,9 +56,6 @@ const index = () => {
                     <Typography className="registerTitle leading-none m-0 items-center" variant="h3" gutterBottom>เข้าสู่ระบบ</Typography>
                     <FormsInput label="ชื่อผู้ใช้" name="userName" type="text" {...{ inputValue, handleInputChange }}></FormsInput>
                     <FormsInput label="รหัสผ่าน" name="password" type="password" {...{ inputValue, handleInputChange }}></FormsInput>
-                </div>
-                <div className="self-start">
-                    <CheckBox status={false} label="Remember me"></CheckBox>
                 </div>
                 <div className="self-center" onClick={logIn}>
                     <OrangeButton ButtonName="เข้าสู่ระบบ"></OrangeButton>

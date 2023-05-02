@@ -8,13 +8,20 @@ import (
 
 func main() {
     router := gin.Default()
-    router.Use(cors.Default())
+
+	// Allow all origins
+	config := cors.DefaultConfig()
+	config.AllowAllOrigins = true
+    config.AllowMethods = []string{"GET", "PUT", "POST", "DELETE", "PATCH", "OPTIONS"}
+    config.AllowHeaders = []string{"Authorization", "Content-Type"}
+
+	router.Use(cors.New(config))
 
 	router.GET("/users", api.GetUsers)
     router.GET("/user/:id", api.GetUser)
     router.POST("/users", api.CreateUser)
     router.DELETE("/users", api.DelUser)
-    router.GET("/login", api.Login)
+    router.POST("/login", api.Login)
 
 
     router.GET("/todos", api.GetTodos)

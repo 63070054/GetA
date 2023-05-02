@@ -13,8 +13,12 @@ import CreateFolderModal from "@/components/Modal/CreateFolderModal";
 import api from "@/plugins/axios/api";
 import Cookies from "js-cookie";
 import MediumComtainer from "@/components/Container/MediumContainer";
+import { useRouter } from "next/router";
 
-export default function MyProfile() {
+export default function UesrProfile() {
+
+  const router = useRouter()
+  const { userId } = router.query
 
   const userInfo: User = {
     id: 0,
@@ -167,9 +171,6 @@ export default function MyProfile() {
   const [filterCourses, setFilterCourses] = useState<CourseType[]>([])
   const [filterYears, setFilterYears] = useState<YearType[]>([])
   const [openModal, setOpenModal] = useState<boolean>(false)
-  const token = Cookies.get("token") || ""
-  const decodedToken: User = token ? JSON.parse(Buffer.from(token, 'base64').toString('utf-8'))[0] : null;
-  const userId = decodedToken?.id
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -190,7 +191,7 @@ export default function MyProfile() {
       const newFolder: Folder = {
         name: inputValueFolder.name,
         description: inputValueFolder.description,
-        ownerId: userId,
+        ownerId: Number(userId),
         courses: filterCourses as CourseType[],
         years: filterYears as YearType[],
       }
@@ -217,7 +218,7 @@ export default function MyProfile() {
   return (
     <MediumComtainer>
       <div className="relative h-48">
-        <img src="/userCover.png " className="h-full w-full absolute z-0 shadow-lg" />
+        <img src="/userCover.png" className="h-full w-full absolute z-0 shadow-lg" />
         <div className="relative flex h-full">
           <div className="aspect-square">
             <img src="/profile.png " className="w-4/6 p-2 relative z-10 top-1/2 centerY " />
@@ -237,7 +238,7 @@ export default function MyProfile() {
       <div className="flex flex-col gap-4 w-full">
         <IconContainer>
           {userInfo.myFolder.map(folder => (
-            <IconGetA {...folder} routeTo={folder.routeTo.replace(":folderId", `${folder.id}`)} key={folder.id} />
+            <IconGetA {...folder} routeTo={folder.routeTo.replace(":folderId", `${folder.id}`)} key={`folder-${folder.id}`} />
           ))}
         </IconContainer>
         <div className="flex gap-4 items-center mt-6">
@@ -249,7 +250,7 @@ export default function MyProfile() {
         <div className="flex flex-col gap-4 w-full">
           <GuideLineContainer>
             {userInfo.myGuideLine.map(guideLine => (
-              <GuidelineCard key={guideLine.id} {...guideLine} />
+              <GuidelineCard key={`guideline-${guideLine.id}`} {...guideLine} />
             ))}
           </GuideLineContainer>
         </div>

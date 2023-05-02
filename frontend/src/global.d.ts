@@ -11,6 +11,11 @@ interface FormsInput {
   amountRows?: number;
 }
 
+interface CreateFilesModel {
+  files: Blob[];
+  folderId: int;
+}
+
 interface LoginModel {
   userName: string;
   password: string;
@@ -34,6 +39,15 @@ interface selectValue {
 interface CheckBox {
   label: string;
   status: boolean;
+}
+
+interface CreateUserModel {
+  name: string;
+  userName: string;
+  password: string;
+  year: YearStudy;
+  program: Program;
+  subjectArea: SubjectArea;
 }
 
 interface User {
@@ -78,20 +92,21 @@ interface NavBarRouter {
 interface IconGetAProps {
   id: number;
   name: string;
+  description?: string;
   routeTo: string;
   ownerName?: string;
   ownerId?: number;
   iconPath: string;
-  course?: CourseType;
-  year?: YearType;
+  courses?: CourseType[];
+  years?: YearType[];
 }
 
 interface Folder {
   name: string;
   description: string;
   ownerId: number;
-  course: CourseType[];
-  year: YearType[];
+  courses: CourseType[];
+  years: YearType[];
 }
 
 interface ShowFilterProps {
@@ -132,7 +147,7 @@ interface FolderIcon {
   ownerName: string,
   ownerId: number,
   courses: CourseType[];
-  yeras: YearType[];
+  years: YearType[];
   files: IconGetAProps[];
 }
 
@@ -145,6 +160,15 @@ interface File {
 interface LoadingScreenProps {
   isLoading: boolean;
   setIsLoading: Dispatch<SetStateAction<S>>;
+}
+
+interface AddFilesModalProps {
+  openModal: boolean;
+  setOpenModal: Dispatch<SetStateAction<S>>;
+  handleDrop: (acceptedFiles: File[]) => void;
+  fileSelected: Blob[];
+  createFiles: () => void;
+  handleUnselectFile: (fileName: string) => void;
 }
 
 interface AddTaskModalProps {

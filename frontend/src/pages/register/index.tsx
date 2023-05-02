@@ -5,6 +5,9 @@ import { ChangeEvent, useState } from "react"
 import SelectInput from "@/components/forms/SelectInput";
 import InfoGetA from "@/components/GetAInfo/InfoGetA";
 import { Button } from '@mui/material';
+import api from "@/plugins/axios/api";
+import Cookies from "js-cookie";
+import { useRouter } from "next/router";
 
 const index = () => {
     const yearData: selectValue[] = [
@@ -58,6 +61,8 @@ const index = () => {
         },
     ]
 
+    const router = useRouter()
+
 
     const [inputValue, setInputValue] = useState<InputValue>({
         fullName: "",
@@ -84,16 +89,25 @@ const index = () => {
         setInputValue({ ...copyInputValue });
     }
 
-    const register = () => {
-        const createUserModel: User = {
+    const register = async () => {
+        const createUserModel: CreateUserModel = {
             name: inputValue.fullName,
+            userName: inputValue.userName,
+            password: inputValue.password,
             year: inputValue.year as YearStudy,
             program: inputValue.program as Program,
             subjectArea: inputValue.subjectArea as SubjectArea,
-            myFolder: [],
-            myGuideLine: [],
         }
-        console.log(createUserModel)
+
+        try {
+            const result = await api.post("/register", createUserModel)
+            Cookies.set("token", result.data)
+            router.push("/")
+
+        } catch (err) {
+            console.log(err)
+        }
+
     }
 
     return (

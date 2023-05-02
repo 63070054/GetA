@@ -59,7 +59,7 @@ const CreateFolderModal = ({
       open={openModal}
       onClose={() => setOpenModal(false)}
     >
-      <Box className="absolute center-offset bg-white shadow-lg rounded-lg">
+      <Box className="absolute center-offset bg-white shadow-lg rounded-lg md:w-auto w-11/12">
         <div className='relative py-2 bg-green flex flex-col items-center justify-center rounded-t-lg'>
           <Typography variant="h6" className="text-white tracking-wide">สร้างโฟลเดอร์</Typography>
         </div>

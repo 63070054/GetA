@@ -79,6 +79,8 @@ func GetUsers(c *gin.Context) {
 		users = append(users, user)
 	}
 
+	fmt.Println(users)
+
 	if err := rows.Err(); err != nil {
 		fmt.Println("Encountered an error while iterating over rows:", err)
 		return
@@ -135,6 +137,7 @@ func GetUser(c *gin.Context) {
 
 func Login(c *gin.Context) {
 	var loginuser LoginUser
+	fmt.Println(loginuser.UserName, loginuser.Password)
 	if err := c.BindJSON(&loginuser); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -167,6 +170,8 @@ func Login(c *gin.Context) {
 		}
 		users = append(users, user)
 	}
+
+	
 
 	usersEncode, err := json.MarshalIndent(users, "", "    ")
 
