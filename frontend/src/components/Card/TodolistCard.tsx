@@ -8,29 +8,13 @@ import { useState } from "react";
 interface TodolistCardProps extends TodolistCard {
     addTask: (toDoIndex: number, newTask: Task) => void;
     toDoIndex: number;
+    handleonChangeStatus: (toDoIndex: number, task: Task) => void;
 }
 
-const TodolistCard = ({ date, tasks, addTask, toDoIndex }: TodolistCardProps) => {
-    const [taskList, setTaskList] = useState(tasks);
+const TodolistCard = ({ id, date, subTasks, addTask, toDoIndex, handleonChangeStatus }: TodolistCardProps) => {
     const [open, setOpen] = useState(false);
-    const handleChange = (taskId: string) => {
-        setTaskList((prevTasks) => {
-            const updatedTasks = prevTasks.map((task) => {
-                if (task.id === taskId) {
-                    return { ...task, status: !task.status };
-                }
-                return task;
-            });
-            return updatedTasks;
-        });
-    };
-    const closeModal = () => {
-        setOpen(open);
-    }
 
-    const handleonChangeStatus = (task: Task) => {
-        if (task.id) handleChange(task?.id)
-    }
+    console.log(subTasks)
 
     return (
         <div className="relative">
@@ -40,14 +24,14 @@ const TodolistCard = ({ date, tasks, addTask, toDoIndex }: TodolistCardProps) =>
                         {date}
                     </Typography>
                     <div className="px-3">
-                        {taskList.map((task, index) =>
-                            task.status === false ? <Task key={index} {...task} onStatusChange={() => handleonChangeStatus(task)} /> : null
+                        {subTasks?.map((task, index) =>
+                            task.status === false ? <Task key={index} {...task} onStatusChange={() => handleonChangeStatus(toDoIndex, task)} /> : null
                         )}
                     </div>
-                    {taskList.some(task => task.status === true) && <Divider variant="middle" className="mt-5" color="primary" />}
+                    {subTasks?.some(task => task.status === true) && <Divider variant="middle" className="mt-5" color="primary" />}
                     <div className="px-3">
-                        {taskList.map((task, index) =>
-                            task.status === true ? <Task key={index} {...task} onStatusChange={() => handleonChangeStatus(task)} /> : null
+                        {subTasks?.map((task, index) =>
+                            task.status === true ? <Task key={index} {...task} onStatusChange={() => handleonChangeStatus(toDoIndex, task)} /> : null
                         )}
                     </div>
                 </CardContent>
@@ -57,7 +41,9 @@ const TodolistCard = ({ date, tasks, addTask, toDoIndex }: TodolistCardProps) =>
                     </Fab>
                 </CardActions>
             </Card>
-            <AddTaskModal openModal={open} setOpenModal={setOpen} {...{ addTask, toDoIndex }}></AddTaskModal>
+            {id && (
+                < AddTaskModal openModal={open} setOpenModal={setOpen} taskId={id} {...{ addTask, toDoIndex }} />
+            )}
         </div>
     );
 };

@@ -8,6 +8,17 @@ interface FormsInput {
   type: HTMLInputTypeAttribute;
   inputValue: InputValue;
   handleInputChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  amountRows?: number;
+}
+
+interface CreateFilesModel {
+  files: Blob[];
+  folderId: int;
+}
+
+interface LoginModel {
+  userName: string;
+  password: string;
 }
 
 interface InputValue {
@@ -16,10 +27,12 @@ interface InputValue {
 interface SelectInput {
   label: string;
   selectData: selectValue[];
+  name: string;
+  handleSelectChange: (value: string, name: string) => void;
 }
 
 interface selectValue {
-  id: string;
+  id: number;
   name: string;
 }
 
@@ -28,10 +41,19 @@ interface CheckBox {
   status: boolean;
 }
 
-interface User {
-  id: string;
+interface CreateUserModel {
   name: string;
-  year: YearType;
+  userName: string;
+  password: string;
+  year: YearStudy;
+  program: Program;
+  subjectArea: SubjectArea;
+}
+
+interface User {
+  id?: number;
+  name: string;
+  year: YearStudy;
   program: Program;
   subjectArea: SubjectArea;
   myFolder: IconGetAProps[];
@@ -42,19 +64,32 @@ type YearStudy = "ปี 1" | "ปี 2" | "ปี 3" | "ปี 4" | "อื่�
 type Program = "IT" | "DSBA";
 type SubjectArea = "Network" | "Software Engineer" | "Multimedia" | "อื่น ๆ";
 
-
-interface TodolistCard {
-  id?: string;
+interface AddDateModel {
   date: string;
-  tasks: Task[];
+  ownerId: numberl;
+  subTasks: Task[];
 }
 
-interface Task {
-  id?: string;
+interface AddTaskModel {
   title: string;
   status: boolean;
   time?: string;
-  onStatusChange?: (taskId: string) => void;
+  taskId: number;
+}
+
+interface TodolistCard {
+  id?: number;
+  date: string;
+  subTasks: Task[];
+  ownerId: number;
+}
+
+interface Task {
+  id?: number;
+  title: string;
+  status: boolean;
+  time?: string;
+  taskId: number;
 }
 
 interface ChildrenProps {
@@ -67,15 +102,26 @@ interface NavBarRouter {
   icon?: SvgIconComponent;
 }
 
+
 interface IconGetAProps {
-  id: string;
+  id: number;
   name: string;
+  description?: string;
   routeTo: string;
   ownerName?: string;
-  ownerId?: string;
+  ownerId?: number;
   iconPath: string;
-  course?: CourseType;
-  year?: YearType;
+  courses?: CourseType[];
+  years?: YearType[];
+}
+
+interface Folder {
+  name: string;
+  description: string;
+  ownerId: number;
+  ownerName?: string;
+  courses: CourseType[];
+  years: YearType[];
 }
 
 interface ShowFilterProps {
@@ -87,6 +133,11 @@ interface FilterBoxProps {
   backgroundColor: string;
   textColor: string;
   name: CourseType | YearType;
+}
+
+interface SearchInputProps {
+  searchInput: string;
+  setSearchInput: Dispatch<SetStateAction<S>>;
 }
 
 type CourseType = "SVV" | "ITPM" | "SOP" | "HID" | "OOP" | "Gen B";
@@ -110,18 +161,18 @@ interface FilterModalProps {
 }
 
 interface FolderIcon {
-  id: string;
+  id: number;
   name: string;
   description?: string;
   ownerName: string,
-  ownerId: string,
+  ownerId: number,
   courses: CourseType[];
-  yeras: YearType[];
+  years: YearType[];
   files: IconGetAProps[];
 }
 
-interface File {
-  id: string;
+interface FileGetA {
+  id: number;
   name: string;
   filePath: string;
 }
@@ -131,11 +182,31 @@ interface LoadingScreenProps {
   setIsLoading: Dispatch<SetStateAction<S>>;
 }
 
+interface CreateGuideLineModalProps {
+  openModal: boolean;
+  setOpenModal: Dispatch<SetStateAction<S>>;
+  inputValue: InputValue;
+  handleInputChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  nameTitle: string;
+  nameDescription: string;
+  createGuideLine: () => void;
+}
+
+interface AddFilesModalProps {
+  openModal: boolean;
+  setOpenModal: Dispatch<SetStateAction<S>>;
+  handleDrop: (acceptedFiles: Blob[]) => void;
+  fileSelected: Blob[];
+  createFiles: () => void;
+  handleUnselectFile: (fileName: string) => void;
+}
+
 interface AddTaskModalProps {
   openModal: boolean;
   setOpenModal: Dispatch<SetStateAction<S>>;
   addTask: (toDoIndex: number, newTask: Task) => void;
   toDoIndex: number;
+  taskId: number;
 }
 
 interface AddToDoModalProps {
@@ -145,9 +216,9 @@ interface AddToDoModalProps {
 }
 
 interface GuideLineCard {
-  id: string;
+  id: number;
   title: string;
   description: string;
-  folderId: string;
-  files: IconGetAProps[];
+  ownerId: int;
+  ownerName: string;
 }

@@ -5,27 +5,34 @@ import FormsInput from '../forms/FormsInput';
 import CustomTimePicker from '../Input/TimePicker';
 import dayjs, { Dayjs } from 'dayjs';
 import CustomDatePicker from '../Input/DatePicker';
+import { useUser } from '@/utils/useUser';
 
-const AddTodoModal = ({addToDo,setOpenModal,openModal}:AddToDoModalProps) => {
-    const [dateValue,setDateValue] = useState<string>("1 เมษายน 2566")
-    const monthsArr:string[] = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม']
-    const handleAddToDo = ()=>{
-        const task:Task[] =[]
-        const newToDo:TodolistCard={
-            date:dateValue,
-            tasks:task
+const AddTodoModal = ({ addToDo, setOpenModal, openModal }: AddToDoModalProps) => {
+    const [dateValue, setDateValue] = useState<string>("1 เมษายน 2566")
+    const monthsArr: string[] = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม']
+
+    const { id: userId } = useUser()
+
+    const handleAddToDo = () => {
+        if (userId) {
+            const task: Task[] = []
+            const newToDo: TodolistCard = {
+                date: dateValue,
+                subTasks: task,
+                ownerId: userId
+            }
+            addToDo(newToDo);
+            setOpenModal(false);
         }
-        addToDo(newToDo);
-        setOpenModal(false);
     }
-    const handleDateChange=(date:Dayjs)=>{
+    const handleDateChange = (date: Dayjs) => {
         console.log(date.date())
         const month = monthsArr[date.month()]
         const day = date.date()
-        const year = date.year()+543
-        const pickedDate =`${day} ${month} ${year}`
+        const year = date.year() + 543
+        const pickedDate = `${day} ${month} ${year}`
         setDateValue(pickedDate);
-        
+
     }
 
     return (
@@ -36,7 +43,7 @@ const AddTodoModal = ({addToDo,setOpenModal,openModal}:AddToDoModalProps) => {
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
-                <Box className="absolute center-offset bg-white shadow-lg rounded-lg flex flex-col w-80">
+                <Box className="absolute center-offset bg-white shadow-lg rounded-lg flex flex-col md:w-auto w-11/12">
                     <Typography id="modal-modal-title" variant="h6" component="h2" className='todolistTitle p-1 rounded-t-lg'>
                         เพิ่มรายการวันที่ใหม่
                     </Typography>

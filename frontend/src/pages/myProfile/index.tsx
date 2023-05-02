@@ -1,190 +1,245 @@
-import ShowFilterSelected from "@/components/Filter/ShowFilterSelected";
-import FilterModal from "@/components/Modal/FilterModal";
-import { useState } from 'react';
-import SearchInputWithFilter from '@/components/Input/SearchInputWithFilter';
+import { ChangeEvent, useState, useEffect } from 'react';
 import IconGetA from '@/components/IconGetA';
-import { Typography } from "@mui/material";
-import SmallContainer from "@/components/Container/SmallContainer";
+import { Button, Chip, IconButton, Typography } from "@mui/material";
 import IconContainer from "@/components/Container/IconContainer";
 import GuidelineCard from "@/components/Card/GuidelineCard";
 import GuideLineContainer from "@/components/Container/GuideLineContainer";
+import AddIcon from '@mui/icons-material/Add';
+import CreateFolderModal from "@/components/Modal/CreateFolderModal";
+import api from "@/plugins/axios/api";
+import MediumComtainer from "@/components/Container/MediumContainer";
+import GetAToast from "@/components/Alert/GetAToast";
+import { useUser } from "@/utils/useUser";
+import { useRouter } from 'next/router';
+import CreateGuideLineModal from '@/components/Modal/CreateGuideLineModal';
 
-export default function Home() {
+export default function MyProfile() {
 
-  const userInfo: User = {
-    id: "0",
-    name: "ณัฐพงษ์ ปทุมสูตร",
-    year: "ปี 1",
-    program: "IT",
-    subjectArea: "Software Engineer",
-    myFolder: [
-      {
-        id: "0",
-        name: "SVV Week17(หลุดข้อสอบ)",
-        routeTo: "/folder/:folderId",
-        ownerName: "waveza2",
-        ownerId: "1",
-        iconPath: "/icons/folderGetA.svg"
-      },
-      {
-        id: "1",
-        name: "SVV Week17(หลุดข้อสอบ)",
-        routeTo: "/folder/:folderId",
-        ownerName: "waveza2",
-        ownerId: "2",
-        iconPath: "/icons/folderGetA.svg"
-      },
-      {
-        id: "2",
-        name: "SVV Week17(หลุดข้อสอบ)",
-        routeTo: "/folder/:folderId",
-        ownerName: "waveza2",
-        ownerId: "3",
-        iconPath: "/icons/folderGetA.svg"
-      },
-      {
-        id: "3",
-        name: "SVV Week17(หลุดข้อสอบ)",
-        routeTo: "/folder/:folderId",
-        ownerName: "waveza2",
-        ownerId: "4",
-        iconPath: "/icons/folderGetA.svg"
-      },
-      {
-        id: "4",
-        name: "SVV Week17(หลุดข้อสอบ)",
-        routeTo: "/folder/:folderId",
-        ownerName: "waveza2",
-        ownerId: "5",
-        iconPath: "/icons/folderGetA.svg"
-      },
-      {
-        id: "5",
-        name: "SVV Week17(หลุดข้อสอบ)",
-        routeTo: "/folder/:folderId",
-        ownerName: "waveza2",
-        ownerId: "6",
-        iconPath: "/icons/folderGetA.svg"
-      },
-      {
-        id: "6",
-        name: "SVV Week17(หลุดข้อสอบ)",
-        routeTo: "/folder/:folderId",
-        ownerName: "waveza2",
-        ownerId: "7",
-        iconPath: "/icons/folderGetA.svg"
-      },
-      {
-        id: "7",
-        name: "SVV Week17(หลุดข้อสอบ)",
-        routeTo: "/folder/:folderId",
-        ownerName: "waveza2",
-        ownerId: "8",
-        iconPath: "/icons/folderGetA.svg"
-      },
-      {
-        id: "8",
-        name: "SVV Week17(หลุดข้อสอบ)",
-        routeTo: "/folder/:folderId",
-        ownerName: "waveza2",
-        ownerId: "9",
-        iconPath: "/icons/folderGetA.svg"
-      },
-      {
-        id: "9",
-        name: "SVV Week17(หลุดข้อสอบ)",
-        routeTo: "/folder/:folderId",
-        ownerName: "waveza2",
-        ownerId: "10",
-        iconPath: "/icons/folderGetA.svg"
-      },
-    ],
-    myGuideLine: [
-      {
-        id: "0",
-        title: "ITPM ตัวร้าย",
-        description: "อยากโดนเซ็ตหย่อค่ะ <br /> อิอิ",
-        files: [
-          {
-            id: "0",
-            name: "SVV Week17(หลุดข้อสอบ)",
-            routeTo: "/folder/:folderId/file/:fileId",
-            iconPath: "/icons/fileGetA.svg"
-          },
-          {
-            id: "1",
-            name: "SVV Week17(หลุดข้อสอบ)",
-            routeTo: "/folder/:folderId/file/:fileId",
-            iconPath: "/icons/fileGetA.svg"
-          },
-          {
-            id: "2",
-            name: "SVV Week17(หลุดข้อสอบ)",
-            routeTo: "/folder/:folderId/file/:fileId",
-            iconPath: "/icons/fileGetA.svg"
-          },
-        ],
-        folderId: "12"
-      },
-      {
-        id: "0",
-        title: "ITPM ตัวร้าย",
-        description: "อยากโดนเซ็ตหย่อค่ะ <br /> อิอิ <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />",
-        files: [
-          {
-            id: "0",
-            name: "SVV Week17(หลุดข้อสอบ)",
-            routeTo: "/folder/:folderId/file/:fileId",
-            iconPath: "/icons/fileGetA.svg"
-          },
-          {
-            id: "1",
-            name: "SVV Week17(หลุดข้อสอบ)",
-            routeTo: "/folder/:folderId/file/:fileId",
-            iconPath: "/icons/fileGetA.svg"
-          },
-          {
-            id: "2",
-            name: "SVV Week17(หลุดข้อสอบ)",
-            routeTo: "/folder/:folderId/file/:fileId",
-            iconPath: "/icons/fileGetA.svg"
-          },
-        ],
-        folderId: "12"
-      },
-    ]
+  const [inputValueFolder, setInputValueFolder] = useState<InputValue>({
+    name: "",
+    description: ""
+  });
+
+  const [inputValueGuideLine, setInputValueGuideLine] = useState<InputValue>({
+    title: "",
+    description: ""
+  });
+  const [filterCourses, setFilterCourses] = useState<CourseType[]>([])
+  const [filterYears, setFilterYears] = useState<YearType[]>([])
+  const [openModal, setOpenModal] = useState<boolean>(false)
+  const [openModalGuideLine, setOpenModalGuideLine] = useState<boolean>(false)
+  const { id: userId, name } = useUser()
+  const [userInfo, setUserInfo] = useState<User>()
+  const router = useRouter()
+
+  useEffect(() => {
+
+
+    const getUserById = async () => {
+      try {
+        const response = await api.get("/user/" + userId)
+
+        const copyUserInfo: User = response.data[0]
+        console.log(response.data)
+        copyUserInfo.myFolder = copyUserInfo.myFolder.map(folder => {
+          return {
+            id: folder.id,
+            name: folder.name,
+            routeTo: "/folder/:folderId",
+            iconPath: "/icons/folderGetA.svg"
+          }
+        })
+
+        setUserInfo({ ...copyUserInfo })
+      } catch (err) {
+        console.log(err)
+      }
+    }
+
+    if (router.isReady) {
+      getUserById()
+    }
+
+
+  }, [router.isReady])
+
+
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    const copyInputValue = inputValueFolder;
+    copyInputValue[name] = value;
+    setInputValueFolder({ ...copyInputValue });
+  }
+
+  const handleInputGuideLineChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    const copyInputValue = inputValueGuideLine;
+    copyInputValue[name] = value;
+    setInputValueGuideLine({ ...copyInputValue });
+  }
+
+  const handleOpenModal = () => {
+    setOpenModal(true)
+    setFilterCourses([])
+    setFilterYears([])
   }
 
 
+
+
+  const createGuideLine = async () => {
+
+    if (userId) {
+      const newGuideLine = {
+        title: inputValueGuideLine.title,
+        description: inputValueGuideLine.description,
+        ownerId: userId,
+        ownerName: name
+      }
+
+      try {
+        const response = await api.post("/guide", newGuideLine)
+        console.log(response)
+        const guideLineId = response.data
+        await resetValue()
+        GetAToast.fire({
+          icon: "success",
+          title: "สร้างแนวข้อสอบสำเร็จ",
+        });
+
+        if (userInfo) {
+          const copyUserInfo: User = userInfo;
+          const guideLineFromDB: GuideLineCard = {
+            id: guideLineId,
+            title: inputValueGuideLine.title,
+            description: inputValueGuideLine.description,
+            ownerId: userId,
+            ownerName: name
+          }
+
+          copyUserInfo?.myGuideLine.push(guideLineFromDB)
+
+          setUserInfo({ ...copyUserInfo })
+        }
+
+      } catch (err) {
+        console.log(err)
+      }
+    }
+
+  }
+
+  const createFolder = async () => {
+
+    if (userId) {
+      const newFolder: Folder = {
+        name: inputValueFolder.name,
+        description: inputValueFolder.description,
+        ownerId: userId,
+        ownerName: name,
+        courses: filterCourses as CourseType[],
+        years: filterYears as YearType[],
+      }
+
+      try {
+        const response = await api.post("/folder", newFolder)
+        const folderId = response.data
+        await resetValue()
+        GetAToast.fire({
+          icon: "success",
+          title: "สร้างโฟลเดอร์สำเร็จ",
+        });
+
+        if (userInfo) {
+          const copyUserInfo: User = userInfo;
+          const folderFromDB: IconGetAProps = {
+            id: folderId,
+            ...newFolder,
+            routeTo: "/folder/:folderId",
+            iconPath: "/icons/folderGetA.svg"
+          }
+          copyUserInfo?.myFolder.push(folderFromDB)
+
+          setUserInfo({ ...copyUserInfo })
+        }
+
+      } catch (err) {
+        console.log(err)
+      }
+    }
+
+  }
+
+  const resetValue = async () => {
+    setInputValueFolder({
+      name: "",
+      description: ""
+    })
+    setInputValueGuideLine({
+      title: "",
+      description: ""
+    })
+    setOpenModal(false)
+    setOpenModalGuideLine(false)
+  }
+
   return (
-    <SmallContainer>
+    <MediumComtainer>
       <div className="relative h-48">
-        <img src="userCover.png " className="h-full w-full absolute z-0 shadow-lg" ></img>
+        <img src="/userCover.png " className="h-full w-full absolute z-0 shadow-lg" />
         <div className="relative flex h-full">
-          <div className="aspect-square">
-            <img src="profile.png " className="w-4/6 p-2 relative z-10 top-1/2 centerY " ></img></div>
-          <div className="flex flex-col self-center">
-            <Typography variant="h4" className="self-start relative z-10" color="#000000" gutterBottom>{userInfo.name}</Typography>
-            <Typography variant="h6" className="self-start relative z-10" color="#000000" gutterBottom>ณัฐพงษ์ ปทุมสูตร</Typography>
+          {/* <div className="aspect-square">
+            <img src="/profile.png " className="w-4/6 p-2 relative z-10 top-1/2 centerY " />
+          </div> */}
+          <div className="flex flex-col self-center gap-4 p-4">
+            <div className="flex gap-6 self- items-center">
+              <div className="w-24 h-24">
+                <img src="/profile.png " className="w-full p-2 relative z-10 top-1/2 centerY " />
+              </div>
+              <div className='flex flex-col gap'>
+                <Typography variant="h4" className="relative z-10" color="#000000" gutterBottom>{userInfo?.name}</Typography>
+                <div className='flex gap-2 self-start'>
+                  {userInfo && (
+                    <>
+                      <Chip label={userInfo?.program} variant="outlined" />
+                      <Chip label={userInfo?.subjectArea} variant="outlined" />
+                      <Chip label={userInfo?.year} variant="outlined" />
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      <Typography variant="h6" className="self-start mt-6" color="#000000" gutterBottom>โฟลเดอร์ของฉัน</Typography>
-      <div className="flex flex-col gap-6 w-full">
+      <div className="flex gap-4 items-center mt-6">
+        <Typography variant="h6" className="m-0" color="#000000" gutterBottom>โฟลเดอร์ของฉัน</Typography>
+        <IconButton className="bg-orange" onClick={handleOpenModal}>
+          <AddIcon />
+        </IconButton>
+      </div>
+      <div className="flex flex-col gap-4 w-full">
         <IconContainer>
-          {userInfo.myFolder.map(folder => (
-            <IconGetA {...folder} routeTo={folder.routeTo.replace(":folderId", folder.id)} key={folder.id} />
+          {userInfo?.myFolder?.map(folder => (
+            <IconGetA {...folder} routeTo={folder.routeTo.replace(":folderId", `${folder.id}`)} key={folder.id} />
           ))}
         </IconContainer>
-        <Typography variant="h6" className="self-start mt-6" color="#000000" gutterBottom>แนวข้อสอบของฉัน</Typography>
-        <div className="flex flex-col gap-6 w-full">
+        <div className="flex gap-4 items-center mt-6">
+          <Typography variant="h6" className="m-0" color="#000000" gutterBottom>แนวข้อสอบของฉัน</Typography>
+          <IconButton className="bg-orange" onClick={() => setOpenModalGuideLine(true)}>
+            <AddIcon />
+          </IconButton>
+        </div>
+        <div className="flex flex-col gap-4 w-full">
           <GuideLineContainer>
-            {userInfo.myGuideLine.map(guideLine => (
+            {userInfo?.myGuideLine?.map(guideLine => (
               <GuidelineCard key={guideLine.id} {...guideLine} />
             ))}
           </GuideLineContainer>
         </div>
       </div>
-    </SmallContainer>
+      <CreateFolderModal nameName="name" nameDescription="description" inputValue={inputValueFolder} {...{ openModal, setOpenModal, filterCourses, setFilterCourses, filterYears, setFilterYears, handleInputChange, createFolder }} />
+      <CreateGuideLineModal nameTitle="title" nameDescription="description" inputValue={inputValueGuideLine} handleInputChange={handleInputGuideLineChange} openModal={openModalGuideLine} setOpenModal={setOpenModalGuideLine} {...{ createGuideLine }} />
+    </MediumComtainer>
   )
 }

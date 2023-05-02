@@ -9,6 +9,7 @@ import api, { AxiosInterceptor } from './../plugins/axios/api';
 import Cookies from "js-cookie"
 import { useRouter } from 'next/router';
 import LoadingScreen from '@/components/Loading/LoadingScreen';
+import { useIsLogin } from '@/utils/useIsLogin';
 
 export default function App({ Component, pageProps }: AppProps) {
   const theme = createTheme({
@@ -63,6 +64,12 @@ export default function App({ Component, pageProps }: AppProps) {
         return Promise.reject(error);
       }
     );
+
+    if (isLogin) {
+      router.push("/")
+    }
+
+
   }, []);
 
   useEffect(() => {
@@ -82,8 +89,7 @@ export default function App({ Component, pageProps }: AppProps) {
       router.events.off("routeChangeComplete", handleComplete);
     };
   }, [router]);
-
-  const [isLogin, setIsLogin] = useState<boolean>(true);
+  const { isLogin, setIsLogin } = useIsLogin();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   return (

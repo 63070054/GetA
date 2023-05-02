@@ -13,7 +13,7 @@ const IconGetA = ({
 
   let showName = name
 
-  if (name.length > maxLengthText) {
+  if (name?.length > maxLengthText) {
     showName = name.slice(0, maxLengthText + 1) + "..."
   }
 
@@ -21,7 +21,7 @@ const IconGetA = ({
   return (
     <div className='flex flex-col items-center justify-center text-center'>
       <Link href={routeTo} className="flex flex-col items-center justify-center no-underline">
-        <img src={iconPath} className="w-full h-full" />
+        <img src={iconPath} className="w-24 h-full" />
         <Typography variant='primary'>{showName}</Typography>
       </Link>
       {ownerName && (

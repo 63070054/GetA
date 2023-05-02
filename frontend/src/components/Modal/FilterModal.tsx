@@ -44,7 +44,7 @@ const FilterModal = ({
       open={openModal}
       onClose={() => setOpenModal(false)}
     >
-      <Box className="absolute center-offset bg-white shadow-lg py-4 px-12 rounded-lg flex flex-col gap-4">
+      <Box className="absolute center-offset bg-white shadow-lg py-4 px-12 rounded-lg flex flex-col gap-4 md:w-auto w-11/12">
         <Typography variant="h6" className='font-bold'>
           รายวิชา
         </Typography>

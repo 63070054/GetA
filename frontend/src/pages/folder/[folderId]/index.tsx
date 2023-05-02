@@ -1,87 +1,127 @@
-import { useState } from 'react';
-import { Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { Button, Typography } from '@mui/material';
 import ShowFilterSelected from '@/components/Filter/ShowFilterSelected';
 import IconGetA from '@/components/IconGetA';
 import { useRouter } from 'next/router';
 import IconContainer from '@/components/Container/IconContainer';
 import SmallContainer from '@/components/Container/SmallContainer';
+import api from '@/plugins/axios/api';
+import Link from 'next/link';
+import { ChangeEvent } from 'react';
+import PDFUploader from '@/components/Input/PDFuploader';
+import { useCallback } from 'react';
+import AddFilesModal from '@/components/Modal/AddFilesModal';
+import Cookies from 'js-cookie';
+import { useUser } from '@/utils/useUser';
 
 const Folder = () => {
 
   const router = useRouter()
   const { folderId } = router.query
+  const { id: userId } = useUser()
+
+  useEffect(() => {
+    const getFolderById = async () => {
+      const response = await api.get("/folder/" + folderId)
+      const folder = response?.data?.[0]
+      console.log(folder)
+      if (folder) {
+        folder.files = folder?.files.map((file: any) => {
+          return {
+            id: file.Id,
+            name: file.Name,
+            routeTo: "/folder/:folderId/file/:fileId",
+            iconPath: "/icons/fileGetA.svg"
+          }
+        })
+        console.log(folder)
+        setFolderData({ ...folder })
+
+      }
+
+
+    }
+    if (router.isReady) {
+      getFolderById()
+    }
+  }, [router.isReady])
 
   const [folderData, setFolderData] = useState<FolderIcon>({
-    id: "1",
-    name: "SVV Week17 (หลุดข้อสอบ)",
-    description: "มาร์ค พุทโธหยวนบลูเบอร์รีไตรมาสหมายปอง แบรนด์เวิร์ลด์ตุ๋ย รองรับคลิปสปา เคลมเทวาซีอีโอ โค้ชแอ็คชั่นวิก เตี๊ยมคณาญาติโบว์ลิ่งโลชั่น เหมยเซ็กซี่ทอม ฮองเฮาเวิลด์นางแบบสคริปต์จังโก้ เอ๊าะยิวเวสต์อุปนายก ซีนีเพล็กซ์ก่อนหน้าอยุติธรรมเบิร์ด โฮลวีตแอลมอนด์รูบิกวอเตอร์ ซาดิสม์แฟรี ซูโม่โปรเจกเตอร์ เดชานุภาพ ไฮก",
-    courses: ["Gen B", "HID"],
-    yeras: ["ปี 1", "ปี 2"],
-    ownerName: "waveza2",
-    ownerId: "1",
-    files: [
-      {
-        id: "0",
-        name: "SVV Week17(หลุดข้อสอบ)",
-        routeTo: "/folder/:folderId/file/:fileId",
-        iconPath: "/icons/fileGetA.svg"
-      },
-      {
-        id: "1",
-        name: "SVV Week17(หลุดข้อสอบ)",
-        routeTo: "/folder/:folderId/file/:fileId",
-        iconPath: "/icons/fileGetA.svg"
-      },
-      {
-        id: "2",
-        name: "SVV Week17(หลุดข้อสอบ)",
-        routeTo: "/folder/:folderId/file/:fileId",
-        iconPath: "/icons/fileGetA.svg"
-      },
-      {
-        id: "3",
-        name: "SVV Week17(หลุดข้อสอบ)",
-        routeTo: "/folder/:folderId/file/:fileId",
-        iconPath: "/icons/fileGetA.svg"
-      },
-      {
-        id: "4",
-        name: "SVV Week17(หลุดข้อสอบ)",
-        routeTo: "/folder/:folderId/file/:fileId",
-        iconPath: "/icons/fileGetA.svg"
-      },
-      {
-        id: "5",
-        name: "SVV Week17(หลุดข้อสอบ)",
-        routeTo: "/folder/:folderId/file/:fileId",
-        iconPath: "/icons/fileGetA.svg"
-      },
-      {
-        id: "6",
-        name: "SVV Week17(หลุดข้อสอบ)",
-        routeTo: "/folder/:folderId/file/:fileId",
-        iconPath: "/icons/fileGetA.svg"
-      },
-      {
-        id: "7",
-        name: "SVV Week17(หลุดข้อสอบ)",
-        routeTo: "/folder/:folderId/file/:fileId",
-        iconPath: "/icons/fileGetA.svg"
-      },
-      {
-        id: "8",
-        name: "SVV Week17(หลุดข้อสอบ)",
-        routeTo: "/folder/:folderId/file/:fileId",
-        iconPath: "/icons/fileGetA.svg"
-      },
-      {
-        id: "9",
-        name: "SVV Week17(หลุดข้อสอบ)",
-        routeTo: "/folder/:folderId/file/:fileId",
-        iconPath: "/icons/fileGetA.svg"
-      },
-    ]
+    id: 1,
+    name: "กำลังโหลดข้อมูล",
+    description: "กำลังโหลดข้อมูล",
+    courses: [],
+    years: [],
+    ownerName: "กำลังโหลดข้อมูล",
+    ownerId: 1,
+    files: []
   })
+
+  const [openModal, setOpenModal] = useState<boolean>(false)
+  const [fileSelected, setFileSelected] = useState<Blob[]>([])
+
+  const handleDrop = useCallback((acceptedFiles: Blob[]) => {
+    // Filter out non-PDF files
+    const pdfFiles: Blob[] = acceptedFiles.filter(file => {
+      // Check if the file is a PDF
+      if (file.type !== 'application/pdf') {
+        return false;
+      }
+
+      // Check if the file name already exists in the array
+      const exists = fileSelected.findIndex(f => f.name === file.name) !== -1;
+      return !exists;
+    });
+
+
+    setFileSelected(prevState => [...prevState, ...pdfFiles]);
+
+  }, []);
+
+  const handleUnselectFile = (fileName: string) => {
+    let copyFileSelected = fileSelected;
+    copyFileSelected = copyFileSelected.filter(file => file.name !== fileName)
+    setFileSelected([...copyFileSelected])
+
+  }
+
+  const createFiles = async () => {
+    if (folderId) {
+      const formData = new FormData();
+      formData.append("folderId", folderId.toString());
+      fileSelected.forEach(file => formData.append("files", file));
+
+      try {
+        const response = await api.post("/file", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        });
+        const newFiles = response.data
+        const convertNewFiles = newFiles.map((file: any) => {
+          return {
+            id: file.Id,
+            name: file.Name,
+            routeTo: "/folder/:folderId/file/:fileId",
+            iconPath: "/icons/fileGetA.svg"
+          }
+        })
+        console.log(response);
+        const copyFolderData = folderData
+        copyFolderData.files = [...copyFolderData.files, ...convertNewFiles]
+        setFolderData({ ...copyFolderData })
+        resetValue()
+
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  };
+
+  const resetValue = () => {
+    setFileSelected([])
+    setOpenModal(false)
+  }
 
   return (
     <SmallContainer>
@@ -90,10 +130,12 @@ const Folder = () => {
           <div className='flex gap-2 w-full flex-col'>
             <div className='flex flex-col gap-2'>
               <div>
-                <Typography variant='h4' className='font-bold'>{folderData.name}</Typography>
-                <Typography variant='primary'>{folderData.ownerName}</Typography>
+                <Typography variant='h4' className='font-bold'>{folderData?.name}</Typography>
+                <Link href={`/user/${folderData?.ownerId}`}>
+                  <Typography variant='primary'>{folderData.ownerName}</Typography>
+                </Link>
               </div>
-              <ShowFilterSelected courses={folderData.courses} years={folderData.yeras} />
+              <ShowFilterSelected courses={folderData?.courses} years={folderData?.years} />
             </div>
           </div>
           <div className='flex flex-col gap-2'>
@@ -102,17 +144,26 @@ const Folder = () => {
           </div>
         </div>
         <div className='w-full flex justify-center'>
-          <IconContainer>
-            {folderData?.files.map(file => (
-              <>
-                {folderId && typeof (folderId) == "string" && (
-                  <IconGetA {...file} key={file.id} routeTo={file.routeTo.replace(":fileId", file.id).replace(":folderId", folderId)} />
-                )}
-              </>
-            ))}
-          </IconContainer>
+          {folderData?.files?.length == 0 ? (
+            <Typography variant='h4' className='font-bold'>ไม่มีไฟล์</Typography>
+          ) : (
+            <IconContainer>
+              {folderData?.files?.map(file => (
+                <>
+                  {folderId && (
+                    <IconGetA {...file} key={file?.id} routeTo={file?.routeTo?.replace(":fileId", `${file?.id}`).replace(":folderId", `${folderId}`)} />
+                  )}
+                </>
+              ))}
+            </IconContainer>
+          )}
         </div>
+        {folderData.ownerId == userId && (
+          <Button className="bg-orange" onClick={() => setOpenModal(true)}>เพิ่มไฟล์</Button>
+        )}
+
       </div>
+      <AddFilesModal {...{ openModal, setOpenModal, handleDrop, createFiles, fileSelected, handleUnselectFile }} />
     </SmallContainer>
   );
 };

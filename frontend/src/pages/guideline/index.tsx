@@ -1,85 +1,55 @@
 import GuidelineCard from "@/components/Card/GuidelineCard";
 import GuideLineContainer from "@/components/Container/GuideLineContainer";
-import IconContainer from "@/components/Container/IconContainer";
 import MediumComtainer from "@/components/Container/MediumContainer";
 import ShowFilterSelected from "@/components/Filter/ShowFilterSelected";
-import SearchInputWithFilter from "@/components/Input/SearchInputWithFilter";
+import SearchInput from "@/components/Input/SearchInput";
 import FilterModal from "@/components/Modal/FilterModal";
+import api from "@/plugins/axios/api";
+import { useRouter } from "next/router";
 import { useState } from 'react';
+import { useEffect } from 'react';
 
 const index = () => {
-    const [filterCourses, setFilterCourses] = useState<CourseType[]>(["ITPM"])
-    const [filterYears, setFilterYears] = useState<YearType[]>(["ปี 1"])
     const [searchInput, setSearchInput] = useState<string>("")
-    const [openModal, setOpenModal] = useState<boolean>(false)
 
-    const [guideLines, setGuideLines] = useState<GuideLineCard[]>([
-        {
-            id: "0",
-            title: "ITPM ตัวร้าย",
-            description: "อยากโดนเซ็ตหย่อค่ะ <br /> อิอิ",
-            files: [
-                {
-                    id: "0",
-                    name: "SVV Week17(หลุดข้อสอบ)",
-                    routeTo: "/folder/:folderId/file/:fileId",
-                    iconPath: "/icons/fileGetA.svg"
-                },
-                {
-                    id: "1",
-                    name: "SVV Week17(หลุดข้อสอบ)",
-                    routeTo: "/folder/:folderId/file/:fileId",
-                    iconPath: "/icons/fileGetA.svg"
-                },
-                {
-                    id: "2",
-                    name: "SVV Week17(หลุดข้อสอบ)",
-                    routeTo: "/folder/:folderId/file/:fileId",
-                    iconPath: "/icons/fileGetA.svg"
-                },
-            ],
-            folderId: "12"
-        },
-        {
-            id: "0",
-            title: "ITPM ตัวร้าย",
-            description: "อยากโดนเซ็ตหย่อค่ะ <br /> อิอิ <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />",
-            files: [
-                {
-                    id: "0",
-                    name: "SVV Week17(หลุดข้อสอบ)",
-                    routeTo: "/folder/:folderId/file/:fileId",
-                    iconPath: "/icons/fileGetA.svg"
-                },
-                {
-                    id: "1",
-                    name: "SVV Week17(หลุดข้อสอบ)",
-                    routeTo: "/folder/:folderId/file/:fileId",
-                    iconPath: "/icons/fileGetA.svg"
-                },
-                {
-                    id: "2",
-                    name: "SVV Week17(หลุดข้อสอบ)",
-                    routeTo: "/folder/:folderId/file/:fileId",
-                    iconPath: "/icons/fileGetA.svg"
-                },
-            ],
-            folderId: "12"
-        },
-    ])
+    const [guideLines, setGuideLines] = useState<GuideLineCard[]>([])
+    const filterGuideLines = guideLines.filter(guideLine => {
+        const includeText = guideLine.title.toLowerCase().includes(searchInput.toLowerCase()) || guideLine.description.toLowerCase().includes(searchInput.toLowerCase()) || guideLine.ownerName.toLowerCase().includes(searchInput.toLowerCase())
+        return includeText
+    })
+
+    const router = useRouter()
+
+    useEffect(() => {
+
+        const getGuideLines = async () => {
+            try {
+                const response = await api.get("/guides")
+                console.log(response)
+                const copyseGuideLines = response.data
+                setGuideLines([...copyseGuideLines])
+            } catch (err) {
+                console.log(err)
+            }
+        }
+
+        if (router.isReady) {
+            getGuideLines()
+        }
+
+
+    }, [router.isReady])
 
     return (
         <MediumComtainer>
             <div className="flex flex-col gap-6 w-full">
-                <SearchInputWithFilter {...{ filterCourses, filterYears, searchInput, setFilterCourses, setFilterYears, setSearchInput }} setOpenFilterModal={setOpenModal} />
-                <ShowFilterSelected courses={filterCourses} years={filterYears} />
+                <SearchInput {...{ searchInput, setSearchInput }} />
                 <GuideLineContainer>
-                    {guideLines.map(guideLine => (
+                    {filterGuideLines?.map(guideLine => (
                         <GuidelineCard key={guideLine.id} {...guideLine} />
                     ))}
                 </GuideLineContainer>
             </div>
-            <FilterModal {...{ openModal, setOpenModal, filterCourses, setFilterCourses, filterYears, setFilterYears }} />
         </MediumComtainer>
     );
 };
