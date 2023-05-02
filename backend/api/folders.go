@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
-    "strings"
     "strconv"
     "mime/multipart"
     "github.com/aws/aws-sdk-go/aws"
@@ -222,13 +221,50 @@ type Folder struct {
     Files        []FileFolder `json:"files"`
 }
 
+type Folders struct {
+    Id          *int        `json:"id" db:"id"`
+    Name        string      `json:"name" db:"name"`
+    Description string      `json:"description" db:"description"`
+    OwnerId     int         `json:"ownerId" db:"ownerId"`
+    OwnerName *string      `json:"ownerName" db:"ownerName"`
+    Courses      []CourseFolder    `json:"courses"`
+    Years        []YearFolder      `json:"years"`
+    Files        []File `json:"files"`
+}
+
 type FileFolder struct {
     Id   int
     Name string
     FilePath *string
+    FolderId int
+}
+
+type File struct {
+    Id   int `json:"id" db:"id"`
+    Name string `json:"name" db:"name"`
+    FilePath *string `json:"filePath" db:"filePath"`
+    FolderId int `json:"folderId" db:"folderId"`
+}
+
+type Course struct {
+    Id   int `json:"id" db:"id"`
+    Name string `json:"name" db:"name"`
+    FolderId int `json:"folderId" db:"folderId"`
+}
+
+type FolderYear struct {
+    Id   int `json:"id" db:"id"`
+    Name string `json:"name" db:"name"`
+    FolderId int `json:"folderId" db:"folderId"`
+}
+
+type NameUser struct {
+    Id   int `json:"id" db:"id"`
+    Name string `json:"name" db:"name"`
 }
 
 type CourseFolder string
+
 
 const (
     Course_SVV  CourseFolder = "SVV"
@@ -335,7 +371,11 @@ func AddFolder(c *gin.Context) {
 }
 
 func GetFolders(c *gin.Context) {
-    var folders []Folder
+    var folders []Folders
+    var files []File
+    var courses []Course
+    var years []FolderYear
+    var users []NameUser
 	db, err := sql.Open("mysql", "admin:Zaza456654@tcp(get-a-db.c3fxksxqrbwf.us-east-1.rds.amazonaws.com:3306)/get-a")
 	if err != nil {
 		fmt.Println("Err!")
@@ -346,80 +386,94 @@ func GetFolders(c *gin.Context) {
 		fmt.Println("Ping Err!")
 	}
 	fmt.Println("Connected!")
-	rows, err := db.Query(`
-        SELECT f.id, f.name, f.description, f.ownerId, u.name as ownerName,
-       GROUP_CONCAT(DISTINCT yf.name SEPARATOR '??') as years,
-       GROUP_CONCAT(DISTINCT cf.name SEPARATOR '??') as courses,
-       GROUP_CONCAT(DISTINCT ff.id, ':::', ff.name SEPARATOR '??') as files
-        FROM Folders f
-        LEFT JOIN Users u ON f.ownerId = u.id
-        LEFT JOIN YearFolders yf ON f.id = yf.folderId
-        LEFT JOIN CourseFolders cf ON f.id = cf.folderId
-        LEFT JOIN FolderFiles ff ON f.id = ff.folderId
-        GROUP BY f.id`)
+    queryusers, err := db.Query(`SELECT id, name FROM Users`)
+    defer queryusers.Close()
+	for queryusers.Next() {
+		var user NameUser
 
-	if err != nil {
-		fmt.Println("Failed to execute query:", err)
-		return
+        if err := queryusers.Scan(&user.Id, &user.Name); err != nil {
+            fmt.Println("Failed to scan row:", err)
+            return
+        }
+        fmt.Println(user)
+		users = append(users, user)
 	}
-	defer rows.Close()
 
-	for rows.Next() {
-		var folder Folder
-        var yearStr []uint8
-        var courseStr []uint8
-        var fileStr []uint8
+    queryfiles, err := db.Query(`SELECT * FROM FolderFiles`)
+    defer queryfiles.Close()
+	for queryfiles.Next() {
+		var file File
 
-        if err := rows.Scan(&folder.Id, &folder.Name, &folder.Description, &folder.OwnerId, &folder.OwnerName, &yearStr, &courseStr, &fileStr); err != nil {
+        if err := queryfiles.Scan(&file.Id, &file.Name, &file.FilePath, &file.FolderId); err != nil {
             fmt.Println("Failed to scan row:", err)
             return
         }
 
-        folder.Years = make([]YearFolder, 0)
-        yearArr := strings.Split(string(yearStr), "??")
-        if len(yearArr) > 1 {
-            for _, year := range yearArr {
-                folder.Years = append(folder.Years, YearFolder(year))
-            }
+		files = append(files, file)
+	}
+
+    querycourse, err := db.Query(`SELECT * FROM CourseFolders`)
+    defer querycourse.Close()
+	for querycourse.Next() {
+		var course Course
+
+        if err := querycourse.Scan(&course.Id, &course.Name, &course.FolderId); err != nil {
+            fmt.Println("Failed to scan row:", err)
+            return
         }
 
-        folder.Courses = make([]CourseFolder, 0)
-        courseArr := strings.Split(string(courseStr), "??")
-        if len(courseArr) > 1 {
-            for _, course := range courseArr {
-                folder.Courses = append(folder.Courses, CourseFolder(course))
-            }
+		courses = append(courses, course)
+	}
+	queryyear, err := db.Query(`SELECT * FROM YearFolders`)
+    defer queryyear.Close()
+	for queryyear.Next() {
+		var year FolderYear
+
+        if err := queryyear.Scan(&year.Id, &year.Name, &year.FolderId); err != nil {
+            fmt.Println("Failed to scan row:", err)
+            return
         }
 
-        folder.Files = make([]FileFolder, 0)
-        fileArr := strings.Split(string(fileStr), "??")
-        if len(fileArr) > 1  {
-            for _, file := range fileArr {
-                fmt.Println(file)
-                parts := strings.Split(file, ":::")
-                fileId, err := strconv.Atoi(parts[0])
-                if err != nil {
-                    // handle the error
-                }
-                fileName := parts[1]
-                folder.Files = append(folder.Files, FileFolder{
-                    Id: fileId,
-                    Name: fileName,
-                })
-            }
-        }
+		years = append(years, year)
+	}
+    queryfolders, err := db.Query(`SELECT * FROM Folders`)
+	if err != nil {
+		fmt.Println("Failed to execute query:", err)
+		return
+	}
+	defer queryfolders.Close()
+	for queryfolders.Next() {
+		var folder Folders
 
+        if err := queryfolders.Scan(&folder.Id, &folder.Name, &folder.Description, &folder.OwnerId); err != nil {
+            fmt.Println("Failed to scan row:", err)
+            return
+        }
+        for i, file := range files {
+            if *folder.Id == *&files[i].FolderId{
+                folder.Files = append(folder.Files, file)
+            }
+            
+        }
+        for i, course := range courses {
+            if *folder.Id == *&courses[i].FolderId{
+                folder.Courses = append(folder.Courses, CourseFolder(course.Name))
+            }
+            
+        }
+        for i, year := range years {
+            if *folder.Id == *&courses[i].FolderId{
+                folder.Years = append(folder.Years, YearFolder(year.Name))
+            }
+            
+        }
+        for i, user := range users {
+            if *&folder.OwnerId == *&user.Id{
+                folder.OwnerName = &users[i].Name
+            }
+            
+        }
 		folders = append(folders, folder)
-	}
-
-	if err := rows.Err(); err != nil {
-		fmt.Println("Encountered an error while iterating over rows:", err)
-		return
-	}
-
-	if err := rows.Err(); err != nil {
-		fmt.Println("Encountered an error while iterating over rows:", err)
-		return
 	}
 
 	c.IndentedJSON(http.StatusOK, folders)
@@ -427,7 +481,12 @@ func GetFolders(c *gin.Context) {
 
 func GetFolder(c *gin.Context) {
     id := c.Param("id")
-    var folders []Folder
+    userId, err := strconv.Atoi(id)
+    var folders []Folders
+    var files []File
+    var courses []Course
+    var years []FolderYear
+    var users []NameUser
 	db, err := sql.Open("mysql", "admin:Zaza456654@tcp(get-a-db.c3fxksxqrbwf.us-east-1.rds.amazonaws.com:3306)/get-a")
 	if err != nil {
 		fmt.Println("Err!")
@@ -438,85 +497,94 @@ func GetFolder(c *gin.Context) {
 		fmt.Println("Ping Err!")
 	}
 	fmt.Println("Connected!")
-	rows, err := db.Query(`
-    SELECT f.id, f.name, f.description, f.ownerId, u.name as ownerName,
-       GROUP_CONCAT(DISTINCT yf.name SEPARATOR '??') as years,
-       GROUP_CONCAT(DISTINCT cf.name SEPARATOR '??') as courses,
-       GROUP_CONCAT(DISTINCT ff.id, ':::', ff.name SEPARATOR '??') as files
-    FROM Folders f
-    LEFT JOIN Users u ON f.ownerId = u.id
-    LEFT JOIN YearFolders yf ON f.id = yf.folderId
-    LEFT JOIN CourseFolders cf ON f.id = cf.folderId
-    LEFT JOIN FolderFiles ff ON f.id = ff.folderId
-    WHERE f.id = ?
-    GROUP BY f.id
-    `, id)
+    queryusers, err := db.Query(`SELECT id, name FROM Users WHERE id = ?`,userId)
+    defer queryusers.Close()
+	for queryusers.Next() {
+		var user NameUser
 
-    if err != nil {
-        fmt.Println("Failed to execute query:", err)
-        return
-    }
+        if err := queryusers.Scan(&user.Id, &user.Name); err != nil {
+            fmt.Println("Failed to scan row:", err)
+            return
+        }
+        fmt.Println(user)
+		users = append(users, user)
+	}
 
+    queryfiles, err := db.Query(`SELECT * FROM FolderFiles`)
+    defer queryfiles.Close()
+	for queryfiles.Next() {
+		var file File
 
-	for rows.Next() {
-		var folder Folder
-        var yearStr []uint8
-        var courseStr []uint8
-        var fileStr []uint8
-
-        if err := rows.Scan(&folder.Id, &folder.Name, &folder.Description, &folder.OwnerId, &folder.OwnerName, &yearStr, &courseStr, &fileStr); err != nil {
+        if err := queryfiles.Scan(&file.Id, &file.Name, &file.FilePath, &file.FolderId); err != nil {
             fmt.Println("Failed to scan row:", err)
             return
         }
 
-        folder.Years = make([]YearFolder, 0)
-        yearArr := strings.Split(string(yearStr), "??")
-        if len(yearArr) > 1 {
-            for _, year := range yearArr {
-                folder.Years = append(folder.Years, YearFolder(year))
-            }
+		files = append(files, file)
+	}
+
+    querycourse, err := db.Query(`SELECT * FROM CourseFolders`)
+    defer querycourse.Close()
+	for querycourse.Next() {
+		var course Course
+
+        if err := querycourse.Scan(&course.Id, &course.Name, &course.FolderId); err != nil {
+            fmt.Println("Failed to scan row:", err)
+            return
         }
 
-        folder.Courses = make([]CourseFolder, 0)
-        courseArr := strings.Split(string(courseStr), "??")
-        if len(courseArr) > 1 {
-            for _, course := range courseArr {
-                folder.Courses = append(folder.Courses, CourseFolder(course))
-            }
+		courses = append(courses, course)
+	}
+	queryyear, err := db.Query(`SELECT * FROM YearFolders`)
+    defer queryyear.Close()
+	for queryyear.Next() {
+		var year FolderYear
+
+        if err := queryyear.Scan(&year.Id, &year.Name, &year.FolderId); err != nil {
+            fmt.Println("Failed to scan row:", err)
+            return
         }
 
-        folder.Files = make([]FileFolder, 0)
-        fileArr := strings.Split(string(fileStr), "??")
-        if len(fileArr) > 1  {
-            for _, file := range fileArr {
-                fmt.Println(file)
-                parts := strings.Split(file, ":::")
-                fileId, err := strconv.Atoi(parts[0])
-                if err != nil {
-                    // handle the error
-                }
-                fileName := parts[1]
-                fmt.Println(fileName)
-                folder.Files = append(folder.Files, FileFolder{
-                    Id: fileId,
-                    Name: fileName,
-                })
-            }
-        }
+		years = append(years, year)
+	}
+    queryfolders, err := db.Query(`SELECT * FROM Folders WHERE ownerId = ?`, userId)
+	if err != nil {
+		fmt.Println("Failed to execute query:", err)
+		return
+	}
+	defer queryfolders.Close()
+	for queryfolders.Next() {
+		var folder Folders
 
+        if err := queryfolders.Scan(&folder.Id, &folder.Name, &folder.Description, &folder.OwnerId); err != nil {
+            fmt.Println("Failed to scan row:", err)
+            return
+        }
+        for i, file := range files {
+            if *folder.Id == *&files[i].FolderId{
+                folder.Files = append(folder.Files, file)
+            }
+            
+        }
+        for i, course := range courses {
+            if *folder.Id == *&courses[i].FolderId{
+                folder.Courses = append(folder.Courses, CourseFolder(course.Name))
+            }
+            
+        }
+        for i, year := range years {
+            if *folder.Id == *&courses[i].FolderId{
+                folder.Years = append(folder.Years, YearFolder(year.Name))
+            }
+            
+        }
+        for i, user := range users {
+            if *&folder.OwnerId == *&user.Id{
+                folder.OwnerName = &users[i].Name
+            }
+            
+        }
 		folders = append(folders, folder)
-	}
-
-    fmt.Println(folders)
-
-	if err := rows.Err(); err != nil {
-		fmt.Println("Encountered an error while iterating over rows:", err)
-		return
-	}
-
-	if err := rows.Err(); err != nil {
-		fmt.Println("Encountered an error while iterating over rows:", err)
-		return
 	}
 
 	c.IndentedJSON(http.StatusOK, folders)
