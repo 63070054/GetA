@@ -14,7 +14,7 @@ func main() {
     router.GET("/user/:id", api.GetUser)
     router.POST("/users", api.CreateUser)
     router.DELETE("/users", api.DelUser)
-    router.GET("/login", api.Login)
+    router.POST("/login", api.Login)
 
 
     router.GET("/todos", api.GetTodos)
@@ -22,7 +22,7 @@ func main() {
     router.DELETE("/todos/:id", api.DelTodos)
     router.POST("/done/:id", api.DoneTodo)
     router.POST("/undone/:id", api.UndoneTodo)
-    router.POST("/date/:date", api.AddDate)
+    router.POST("/date", api.AddDate)
 
     router.GET("/notes", api.GetNotes)
     router.GET("/note/:id", api.GetNote)
