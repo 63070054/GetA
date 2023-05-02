@@ -13,7 +13,6 @@ export default function Home() {
   useEffect(() => {
     const getFolders = async () => {
       const response = await api.get("/folders")
-      console.log(response.data)
       const publicFolders = response.data.map((folder: Folder) => {
         return {
           ...folder,

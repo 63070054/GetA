@@ -7,7 +7,20 @@ import (
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 	"net/http"
+	"strings"
+	"strconv"
 )
+
+type UserFolder struct {
+    Id          int        `json:"id" db:"id"`
+    Name        string      `json:"name" db:"name"`
+}
+
+type UserGuideLine struct {
+		Id          int        `json:"id" db:"id"`
+    Title        string      `json:"title" db:"title"`
+    Description        string      `json:"description" db:"description"`
+}
 
 type User struct {
 	ID          *int    `db:"id" json:"id"`
@@ -16,6 +29,8 @@ type User struct {
 	Password    string  `db:"password" json:"password"`
 	Year        Year    `db:"year" json:"year"`
 	Program     Program `db:"program" json:"program"`
+	MyFolder     []UserFolder `db:"myFolder" json:"myFolder"`
+	MyGuideLine  []UserGuideLine `db:"myGuideLine" json:"myGuideLine"`
 	SubjectArea Area    `db:"subject_area" json:"subjectArea"`
 }
 
@@ -108,7 +123,12 @@ func GetUser(c *gin.Context) {
 		fmt.Println("Ping Err!")
 	}
 
-	rows, err := db.Query("SELECT * FROM Users WHERE id = ?", id)
+	rows, err := db.Query(`SELECT u.*,
+       GROUP_CONCAT(DISTINCT f.id, ':::', f.name SEPARATOR '??') as myFolder
+        FROM Users u
+        LEFT JOIN Folders f ON f.ownerId = ?
+				WHERE u.id = ?
+        GROUP BY u.id`, id, id)
 	if err != nil {
 		fmt.Println("Failed to execute query:", err)
 		return
@@ -117,27 +137,46 @@ func GetUser(c *gin.Context) {
 	var users []User
 
 	for rows.Next() {
-		var user User
-		if err := rows.Scan(&user.ID, &user.Password, &user.Name, &user.UserName, &user.Year, &user.Program, &user.SubjectArea); err != nil {
-			fmt.Println("Failed to scan row:", err)
-			return
-		}
+			var user User
+			var folderStr []uint8
+			if err := rows.Scan(&user.ID, &user.Password, &user.Name, &user.UserName, &user.Year, &user.Program, &user.SubjectArea, &folderStr); err != nil {
+				fmt.Println("Failed to scan row:", err)
+				return
+			}
+
+			user.MyFolder = make([]UserFolder, 0)
+			folderArr := strings.Split(string(folderStr), "??")
+			
+			if len(folderArr) > 1 {
+					for _, folder := range folderArr {
+							parts := strings.Split(folder, ":::")
+							folderId, err := strconv.Atoi(parts[0])
+							if err != nil {
+									// handle the error
+							}
+							folderName := parts[1]
+							user.MyFolder = append(user.MyFolder, UserFolder{
+									Id: folderId,
+									Name: folderName,
+							})
+					}
+			}
+
 		users = append(users, user)
 	}
 
-	userByIDEncode, err := json.MarshalIndent(users, "", "    ")
+	fmt.Println(users)
 
 	if err != nil {
 		fmt.Println("Failed to marshal JSON:", err)
 		return
 	}
 
-	c.IndentedJSON(http.StatusOK, userByIDEncode)
+	c.IndentedJSON(http.StatusOK, users)
 }
 
 func Login(c *gin.Context) {
 	var loginuser LoginUser
-	fmt.Println(loginuser.UserName, loginuser.Password)
 	if err := c.BindJSON(&loginuser); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -153,9 +192,15 @@ func Login(c *gin.Context) {
 	if err != nil {
 		fmt.Println("Ping Err!")
 	}
-	fmt.Println(loginuser.UserName, loginuser.Password)
 
-	rows, err := db.Query("SELECT * FROM Users WHERE username = ? AND password = ?", loginuser.UserName, loginuser.Password)
+	rows, err := db.Query(`SELECT u.*,
+       GROUP_CONCAT(DISTINCT f.id, ':::', f.name SEPARATOR '??') as myFolder,
+       GROUP_CONCAT(DISTINCT g.id, ':::', g.title, ':::', g.description SEPARATOR '??') as myGuideLine
+        FROM Users u
+        LEFT JOIN Folders f ON f.ownerId = u.id
+				LEFT JOIN GuideLines g on g.ownerId = u.id
+				WHERE username = ? AND password = ?
+        GROUP BY u.id`, loginuser.UserName, loginuser.Password)
 	if err != nil {
 		fmt.Println("Failed to execute query:", err)
 		return
@@ -163,24 +208,62 @@ func Login(c *gin.Context) {
 	defer rows.Close()
 
 	for rows.Next() {
-		var user User
-		if err := rows.Scan(&user.ID, &user.Password, &user.Name, &user.UserName, &user.Year, &user.Program, &user.SubjectArea); err != nil {
-			fmt.Println("Failed to scan row:", err)
-			return
-		}
+			var user User
+			var folderStr []uint8
+			var guideLineStr []uint8
+			if err := rows.Scan(&user.ID, &user.Password, &user.Name, &user.UserName, &user.Year, &user.Program, &user.SubjectArea, &folderStr, &guideLineStr); err != nil {
+				fmt.Println("Failed to scan row:", err)
+				return
+			}
+
+			user.MyFolder = make([]UserFolder, 0)
+			folderArr := strings.Split(string(folderStr), "??")
+			
+			if len(folderArr) > 1 {
+					for _, folder := range folderArr {
+							parts := strings.Split(folder, ":::")
+							folderId, err := strconv.Atoi(parts[0])
+							if err != nil {
+									// handle the error
+							}
+							folderName := parts[1]
+							user.MyFolder = append(user.MyFolder, UserFolder{
+									Id: folderId,
+									Name: folderName,
+							})
+					}
+			}
+
+			user.MyGuideLine = make([]UserGuideLine, 0)
+			guideLineArr := strings.Split(string(guideLineStr), "??")
+			
+			if len(guideLineArr) > 1 {
+					for _, guideLine := range guideLineArr {
+							parts := strings.Split(guideLine, ":::")
+							guideLineId, err := strconv.Atoi(parts[0])
+							if err != nil {
+									// handle the error
+							}
+							guideLineTitle := parts[1]
+							guideLineDescription := parts[1]
+							user.MyGuideLine = append(user.MyGuideLine, UserGuideLine{
+									Id: guideLineId,
+									Title: guideLineTitle,
+									Description: guideLineDescription,
+							})
+					}
+			}
+
 		users = append(users, user)
 	}
-
-	
-
-	usersEncode, err := json.MarshalIndent(users, "", "    ")
+	userByIDEncode, err := json.Marshal(users)
 
 	if err != nil {
 		fmt.Println("Failed to marshal JSON:", err)
 		return
 	}
 
-	c.IndentedJSON(http.StatusOK, usersEncode)
+	c.IndentedJSON(http.StatusOK, userByIDEncode)
 }
 
 func CreateUser(c *gin.Context) {

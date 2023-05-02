@@ -12,14 +12,13 @@ import PDFUploader from '@/components/Input/PDFuploader';
 import { useCallback } from 'react';
 import AddFilesModal from '@/components/Modal/AddFilesModal';
 import Cookies from 'js-cookie';
+import { useUser } from '@/utils/useUser';
 
 const Folder = () => {
 
   const router = useRouter()
   const { folderId } = router.query
-  const token = Cookies.get("token") || ""
-  const decodedToken: User = token ? JSON.parse(Buffer.from(token, 'base64').toString('utf-8'))[0] : null;
-  const userId = decodedToken?.id
+  const { id: userId } = useUser()
 
   useEffect(() => {
     const getFolderById = async () => {

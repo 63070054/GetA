@@ -9,8 +9,6 @@ const IconGetA = ({
   iconPath
 }: IconGetAProps) => {
 
-  console.log(name)
-
   const maxLengthText = 30;
 
   let showName = name

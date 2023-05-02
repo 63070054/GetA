@@ -452,10 +452,10 @@ func GetFolder(c *gin.Context) {
     GROUP BY f.id
     `, id)
 
-if err != nil {
-    fmt.Println("Failed to execute query:", err)
-    return
-}
+    if err != nil {
+        fmt.Println("Failed to execute query:", err)
+        return
+    }
 
 
 	for rows.Next() {

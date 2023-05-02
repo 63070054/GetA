@@ -189,6 +189,6 @@ interface GuideLineCard {
   id: number;
   title: string;
   description: string;
-  folderId: number;
-  files: IconGetAProps[];
+  ownerId: int;
+  ownerName: string;
 }

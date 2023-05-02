@@ -15,56 +15,18 @@ const index = () => {
 
     const [guideLines, setGuideLines] = useState<GuideLineCard[]>([
         {
-            id: "0",
+            id: 0,
             title: "ITPM ตัวร้าย",
             description: "อยากโดนเซ็ตหย่อค่ะ <br /> อิอิ",
-            files: [
-                {
-                    id: "0",
-                    name: "SVV Week17(หลุดข้อสอบ)",
-                    routeTo: "/folder/:folderId/file/:fileId",
-                    iconPath: "/icons/fileGetA.svg"
-                },
-                {
-                    id: "1",
-                    name: "SVV Week17(หลุดข้อสอบ)",
-                    routeTo: "/folder/:folderId/file/:fileId",
-                    iconPath: "/icons/fileGetA.svg"
-                },
-                {
-                    id: "2",
-                    name: "SVV Week17(หลุดข้อสอบ)",
-                    routeTo: "/folder/:folderId/file/:fileId",
-                    iconPath: "/icons/fileGetA.svg"
-                },
-            ],
-            folderId: "12"
+            ownerId: 2,
+            ownerName: "wave"
         },
         {
-            id: "0",
+            id: 0,
             title: "ITPM ตัวร้าย",
             description: "อยากโดนเซ็ตหย่อค่ะ <br /> อิอิ <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />",
-            files: [
-                {
-                    id: "0",
-                    name: "SVV Week17(หลุดข้อสอบ)",
-                    routeTo: "/folder/:folderId/file/:fileId",
-                    iconPath: "/icons/fileGetA.svg"
-                },
-                {
-                    id: "1",
-                    name: "SVV Week17(หลุดข้อสอบ)",
-                    routeTo: "/folder/:folderId/file/:fileId",
-                    iconPath: "/icons/fileGetA.svg"
-                },
-                {
-                    id: "2",
-                    name: "SVV Week17(หลุดข้อสอบ)",
-                    routeTo: "/folder/:folderId/file/:fileId",
-                    iconPath: "/icons/fileGetA.svg"
-                },
-            ],
-            folderId: "12"
+            ownerId: 2,
+            ownerName: "wave"
         },
     ])
 

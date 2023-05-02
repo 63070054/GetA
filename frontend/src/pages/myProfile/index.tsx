@@ -1,165 +1,17 @@
-import ShowFilterSelected from "@/components/Filter/ShowFilterSelected";
-import FilterModal from "@/components/Modal/FilterModal";
-import { ChangeEvent, useState } from 'react';
-import SearchInputWithFilter from '@/components/Input/SearchInputWithFilter';
+import { ChangeEvent, useState, useEffect } from 'react';
 import IconGetA from '@/components/IconGetA';
-import { Button, IconButton, Typography } from "@mui/material";
-import SmallContainer from "@/components/Container/SmallContainer";
+import { Button, Chip, IconButton, Typography } from "@mui/material";
 import IconContainer from "@/components/Container/IconContainer";
 import GuidelineCard from "@/components/Card/GuidelineCard";
 import GuideLineContainer from "@/components/Container/GuideLineContainer";
 import AddIcon from '@mui/icons-material/Add';
 import CreateFolderModal from "@/components/Modal/CreateFolderModal";
 import api from "@/plugins/axios/api";
-import Cookies from "js-cookie";
 import MediumComtainer from "@/components/Container/MediumContainer";
 import GetAToast from "@/components/Alert/GetAToast";
+import { useUser } from "@/utils/useUser";
 
 export default function MyProfile() {
-
-  const userInfo: User = {
-    id: 0,
-    name: "ณัฐพงษ์ ปทุมสูตร",
-    year: "ปี 1",
-    program: "IT",
-    subjectArea: "Software Engineer",
-    myFolder: [
-      {
-        id: 0,
-        name: "SVV Week17(หลุดข้อสอบ)",
-        routeTo: "/folder/:folderId",
-        ownerName: "waveza2",
-        ownerId: 1,
-        iconPath: "/icons/folderGetA.svg"
-      },
-      {
-        id: 1,
-        name: "SVV Week17(หลุดข้อสอบ)",
-        routeTo: "/folder/:folderId",
-        ownerName: "waveza2",
-        ownerId: 2,
-        iconPath: "/icons/folderGetA.svg"
-      },
-      {
-        id: 2,
-        name: "SVV Week17(หลุดข้อสอบ)",
-        routeTo: "/folder/:folderId",
-        ownerName: "waveza2",
-        ownerId: 3,
-        iconPath: "/icons/folderGetA.svg"
-      },
-      {
-        id: 3,
-        name: "SVV Week17(หลุดข้อสอบ)",
-        routeTo: "/folder/:folderId",
-        ownerName: "waveza2",
-        ownerId: 4,
-        iconPath: "/icons/folderGetA.svg"
-      },
-      {
-        id: 4,
-        name: "SVV Week17(หลุดข้อสอบ)",
-        routeTo: "/folder/:folderId",
-        ownerName: "waveza2",
-        ownerId: 5,
-        iconPath: "/icons/folderGetA.svg"
-      },
-      {
-        id: 5,
-        name: "SVV Week17(หลุดข้อสอบ)",
-        routeTo: "/folder/:folderId",
-        ownerName: "waveza2",
-        ownerId: 6,
-        iconPath: "/icons/folderGetA.svg"
-      },
-      {
-        id: 6,
-        name: "SVV Week17(หลุดข้อสอบ)",
-        routeTo: "/folder/:folderId",
-        ownerName: "waveza2",
-        ownerId: 7,
-        iconPath: "/icons/folderGetA.svg"
-      },
-      {
-        id: 7,
-        name: "SVV Week17(หลุดข้อสอบ)",
-        routeTo: "/folder/:folderId",
-        ownerName: "waveza2",
-        ownerId: 8,
-        iconPath: "/icons/folderGetA.svg"
-      },
-      {
-        id: 8,
-        name: "SVV Week17(หลุดข้อสอบ)",
-        routeTo: "/folder/:folderId",
-        ownerName: "waveza2",
-        ownerId: 9,
-        iconPath: "/icons/folderGetA.svg"
-      },
-      {
-        id: 9,
-        name: "SVV Week17(หลุดข้อสอบ)",
-        routeTo: "/folder/:folderId",
-        ownerName: "waveza2",
-        ownerId: 10,
-        iconPath: "/icons/folderGetA.svg"
-      },
-    ],
-    myGuideLine: [
-      {
-        id: 0,
-        title: "ITPM ตัวร้าย",
-        description: "อยากโดนเซ็ตหย่อค่ะ <br /> อิอิ",
-        files: [
-          {
-            id: 0,
-            name: "SVV Week17(หลุดข้อสอบ)",
-            routeTo: "/folder/:folderId/file/:fileId",
-            iconPath: "/icons/fileGetA.svg"
-          },
-          {
-            id: 1,
-            name: "SVV Week17(หลุดข้อสอบ)",
-            routeTo: "/folder/:folderId/file/:fileId",
-            iconPath: "/icons/fileGetA.svg"
-          },
-          {
-            id: 2,
-            name: "SVV Week17(หลุดข้อสอบ)",
-            routeTo: "/folder/:folderId/file/:fileId",
-            iconPath: "/icons/fileGetA.svg"
-          },
-        ],
-        folderId: 12
-      },
-      {
-        id: 0,
-        title: "ITPM ตัวร้าย",
-        description: "อยากโดนเซ็ตหย่อค่ะ <br /> อิอิ <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />",
-        files: [
-          {
-            id: 0,
-            name: "SVV Week17(หลุดข้อสอบ)",
-            routeTo: "/folder/:folderId/file/:fileId",
-            iconPath: "/icons/fileGetA.svg"
-          },
-          {
-            id: 1,
-            name: "SVV Week17(หลุดข้อสอบ)",
-            routeTo: "/folder/:folderId/file/:fileId",
-            iconPath: "/icons/fileGetA.svg"
-          },
-          {
-            id: 2,
-            name: "SVV Week17(หลุดข้อสอบ)",
-            routeTo: "/folder/:folderId/file/:fileId",
-            iconPath: "/icons/fileGetA.svg"
-          },
-        ],
-        folderId: 12
-      },
-    ]
-  }
 
   const [inputValueFolder, setInputValueFolder] = useState<InputValue>({
     name: "",
@@ -168,10 +20,31 @@ export default function MyProfile() {
   const [filterCourses, setFilterCourses] = useState<CourseType[]>([])
   const [filterYears, setFilterYears] = useState<YearType[]>([])
   const [openModal, setOpenModal] = useState<boolean>(false)
-  const token = Cookies.get("token") || ""
-  const decodedToken: User = token ? JSON.parse(Buffer.from(token, 'base64').toString('utf-8'))[0] : null;
-  const userId = decodedToken?.id
-  const ownerName = decodedToken?.name
+  const { id, name, year, program, subjectArea, myFolder, myGuideLine } = useUser()
+  const [userInfo, setUserInfo] = useState<User>()
+
+  useEffect(() => {
+
+    const convertMyFolder: IconGetAProps[] = myFolder?.map(folder => {
+      return {
+        id: folder.id,
+        name: folder.name,
+        routeTo: "/folder/:folderId",
+        iconPath: "/icons/folderGetA.svg"
+      }
+    }) || []
+
+    setUserInfo({
+      id,
+      name,
+      year,
+      program,
+      subjectArea,
+      myFolder: convertMyFolder,
+      myGuideLine
+    })
+  }, [])
+
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -188,24 +61,23 @@ export default function MyProfile() {
 
   const createFolder = async () => {
 
-    if (userId) {
+    if (id) {
       const newFolder: Folder = {
         name: inputValueFolder.name,
         description: inputValueFolder.description,
-        ownerId: userId,
-        ownerName: ownerName,
+        ownerId: id,
+        ownerName: name,
         courses: filterCourses as CourseType[],
         years: filterYears as YearType[],
       }
 
       try {
-        const result = await api.post("/folder", newFolder)
+        await api.post("/folder", newFolder)
         await resetValue()
         GetAToast.fire({
           icon: "success",
           title: "สร้างโฟลเดอร์สำเร็จ",
         });
-        console.log(result.data.newFolder)
 
       } catch (err) {
         console.log(err)
@@ -227,12 +99,23 @@ export default function MyProfile() {
       <div className="relative h-48">
         <img src="/userCover.png " className="h-full w-full absolute z-0 shadow-lg" />
         <div className="relative flex h-full">
-          <div className="aspect-square">
+          {/* <div className="aspect-square">
             <img src="/profile.png " className="w-4/6 p-2 relative z-10 top-1/2 centerY " />
-          </div>
-          <div className="flex flex-col self-center">
-            <Typography variant="h4" className="self-start relative z-10" color="#000000" gutterBottom>{userInfo.name}</Typography>
-            <Typography variant="h6" className="self-start relative z-10" color="#000000" gutterBottom>ณัฐพงษ์ ปทุมสูตร</Typography>
+          </div> */}
+          <div className="flex flex-col self-center gap-4 p-4">
+            <div className="flex gap-6 self- items-center">
+              <div className="w-24 h-24">
+                <img src="/profile.png " className="w-full p-2 relative z-10 top-1/2 centerY " />
+              </div>
+              <div className='flex flex-col gap'>
+                <Typography variant="h4" className="relative z-10" color="#000000" gutterBottom>{userInfo?.name}</Typography>
+                <div className='flex gap-2 self-start'>
+                  <Chip label={userInfo?.program} variant="outlined" />
+                  <Chip label={userInfo?.subjectArea} variant="outlined" />
+                  <Chip label={userInfo?.year} variant="outlined" />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -244,7 +127,7 @@ export default function MyProfile() {
       </div>
       <div className="flex flex-col gap-4 w-full">
         <IconContainer>
-          {userInfo.myFolder.map(folder => (
+          {userInfo?.myFolder?.map(folder => (
             <IconGetA {...folder} routeTo={folder.routeTo.replace(":folderId", `${folder.id}`)} key={folder.id} />
           ))}
         </IconContainer>
@@ -256,7 +139,7 @@ export default function MyProfile() {
         </div>
         <div className="flex flex-col gap-4 w-full">
           <GuideLineContainer>
-            {userInfo.myGuideLine.map(guideLine => (
+            {userInfo?.myGuideLine?.map(guideLine => (
               <GuidelineCard key={guideLine.id} {...guideLine} />
             ))}
           </GuideLineContainer>
