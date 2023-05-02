@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import Cookies from "js-cookie";
 import { useIsLogin } from "@/utils/useIsLogin";
+import GetAToast from "../Alert/GetAToast";
 
 const NavBar = () => {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
@@ -32,6 +33,10 @@ const NavBar = () => {
     setAnchorElUser(null);
     setIsLogin(false)
     Cookies.remove("token")
+    GetAToast.fire({
+      icon: "success",
+      title: "ออกจากระบบสำเร็จ",
+    });
   }
 
   const pages: NavBarRouter[] = [

@@ -105,6 +105,7 @@ interface Folder {
   name: string;
   description: string;
   ownerId: number;
+  ownerName?: string;
   courses: CourseType[];
   years: YearType[];
 }

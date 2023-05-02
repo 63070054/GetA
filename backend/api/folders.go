@@ -324,6 +324,7 @@ func AddFolder(c *gin.Context) {
         Name:        folder.Name,
         Description: folder.Description,
         OwnerId:     folder.OwnerId,
+        OwnerName: folder.OwnerName,
         Courses: folder.Courses,
         Years: folder.Years,
     }

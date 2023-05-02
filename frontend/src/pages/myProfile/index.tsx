@@ -13,6 +13,7 @@ import CreateFolderModal from "@/components/Modal/CreateFolderModal";
 import api from "@/plugins/axios/api";
 import Cookies from "js-cookie";
 import MediumComtainer from "@/components/Container/MediumContainer";
+import GetAToast from "@/components/Alert/GetAToast";
 
 export default function MyProfile() {
 
@@ -170,6 +171,7 @@ export default function MyProfile() {
   const token = Cookies.get("token") || ""
   const decodedToken: User = token ? JSON.parse(Buffer.from(token, 'base64').toString('utf-8'))[0] : null;
   const userId = decodedToken?.id
+  const ownerName = decodedToken?.name
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -191,6 +193,7 @@ export default function MyProfile() {
         name: inputValueFolder.name,
         description: inputValueFolder.description,
         ownerId: userId,
+        ownerName: ownerName,
         courses: filterCourses as CourseType[],
         years: filterYears as YearType[],
       }
@@ -198,6 +201,11 @@ export default function MyProfile() {
       try {
         const result = await api.post("/folder", newFolder)
         await resetValue()
+        GetAToast.fire({
+          icon: "success",
+          title: "สร้างโฟลเดอร์สำเร็จ",
+        });
+        console.log(result.data.newFolder)
 
       } catch (err) {
         console.log(err)

@@ -9,6 +9,7 @@ import InfoGetA from "@/components/GetAInfo/InfoGetA";
 import CheckBox from "@/components/Input/CheckBox";
 import api from "@/plugins/axios/api";
 import Cookies from "js-cookie";
+import GetAToast from "@/components/Alert/GetAToast";
 
 
 const index = () => {
@@ -37,6 +38,10 @@ const index = () => {
             const result = await api.post("/login", loginModel)
             Cookies.set("token", result.data)
             router.push("/")
+            GetAToast.fire({
+                icon: "success",
+                title: "เข้าสู่ระบบสำเร็จ",
+            });
 
         } catch (err) {
             console.log(err)
