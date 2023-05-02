@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
-    "strconv"
+	"strconv"
 )
 
 type Task struct {
@@ -16,29 +16,29 @@ type Task struct {
 
 type SubTask struct {
 	ID     *int    `db:"id" json:"id"`
-	Title  string `db:"title" json:"title"`
-	Status bool   `db:"status" json:"status"`
+	Title  string  `db:"title" json:"title"`
+	Status bool    `db:"status" json:"status"`
 	Time   *string `db:"time" json:"time"`
-	TaskID int    `db:"taskId" json:"taskId"`
+	TaskID int     `db:"taskId" json:"taskId"`
 }
 
-type Todos struct{
-    ID int `db:"id" json:"id"`
-    Date string `db:"date" json:"date"`
-    OwnerID int `db:"ownerId" json:"ownerId"`
-    Title  string `db:"title" json:"title"`
-	Status bool   `db:"status" json:"status"`
-	Time   *string `db:"time" json:"time"`
-    TodoID   string `db:"Id" json:"todoID"`
+type Todos struct {
+	ID      int     `db:"id" json:"id"`
+	Date    string  `db:"date" json:"date"`
+	OwnerID int     `db:"ownerId" json:"ownerId"`
+	Title   string  `db:"title" json:"title"`
+	Status  bool    `db:"status" json:"status"`
+	Time    *string `db:"time" json:"time"`
+	TodoID  string  `db:"Id" json:"todoID"`
 }
 
 func GetTodos(c *gin.Context) {
 	stringuserId := c.Param("id")
-    fmt.Println(stringuserId)
-    userId, err := strconv.Atoi(stringuserId)
-    if err != nil {
-        fmt.Println(err)
-    }
+	fmt.Println(stringuserId)
+	userId, err := strconv.Atoi(stringuserId)
+	if err != nil {
+		fmt.Println(err)
+	}
 
 	var todos []Todos
 
@@ -51,8 +51,8 @@ func GetTodos(c *gin.Context) {
 	if err != nil {
 		fmt.Println("Ping Err!")
 	}
-    result, err := db.Exec("USE `get-a`")
-    fmt.Println(result)
+	result, err := db.Exec("USE `get-a`")
+	fmt.Println(result)
 
 	rows, err := db.Query("SELECT Tasks.*, SubTasks.title, SubTasks.status, SubTasks.time ,SubTasks.Id FROM Tasks INNER JOIN SubTasks ON Tasks.id = SubTasks.taskId WHERE Tasks.ownerId = ?", userId)
 	if err != nil {
@@ -76,13 +76,13 @@ func GetTodos(c *gin.Context) {
 
 func AddTodos(c *gin.Context) {
 
-    var todo SubTask
-    if err := c.BindJSON(&todo); err != nil {
+	var todo SubTask
+	if err := c.BindJSON(&todo); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-    db, err := sql.Open("mysql", "admin:Zaza456654@tcp(get-a-db.c3fxksxqrbwf.us-east-1.rds.amazonaws.com:3306)/get-a")
+	db, err := sql.Open("mysql", "admin:Zaza456654@tcp(get-a-db.c3fxksxqrbwf.us-east-1.rds.amazonaws.com:3306)/get-a")
 	if err != nil {
 		fmt.Println("Err!")
 	}
@@ -92,7 +92,7 @@ func AddTodos(c *gin.Context) {
 		fmt.Println("Ping Err!")
 	}
 
-    stmt, err := db.Prepare("INSERT INTO SubTasks (title,status,time, taskId) VALUES(?,?,?,?)")
+	stmt, err := db.Prepare("INSERT INTO SubTasks (title,status,time, taskId) VALUES(?,?,?,?)")
 	if err != nil {
 		// Handle error
 	}
@@ -108,14 +108,43 @@ func AddTodos(c *gin.Context) {
 		// Handle error
 	}
 
-
 	c.IndentedJSON(http.StatusOK, LastInsert)
 }
 
 func DelTodos(c *gin.Context) {
-	id := c.Param("id")
-	message := fmt.Sprintf("Del Todo %s", id)
-	c.IndentedJSON(http.StatusOK, gin.H{"message": message})
+	todoid := c.Param("id")
+	id, err := strconv.Atoi(todoid)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+    db, err := sql.Open("mysql", "admin:Zaza456654@tcp(get-a-db.c3fxksxqrbwf.us-east-1.rds.amazonaws.com:3306)/get-a")
+	if err != nil {
+		fmt.Println("Err!")
+	}
+	defer db.Close()
+	err = db.Ping()
+	if err != nil {
+		fmt.Println("Ping Err!")
+	}
+
+	stmt, err := db.Prepare("DELETE FROM SubTasks WHERE id = ?")
+	if err != nil {
+		fmt.Println("Del Err!")
+	}
+	defer stmt.Close()
+
+	result, err := stmt.Exec(id)
+	if err != nil {
+		fmt.Println("Exec Err!")
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		// handle error
+	}
+
+	c.IndentedJSON(http.StatusOK, rowsAffected)
 }
 
 func DoneTodo(c *gin.Context) {
