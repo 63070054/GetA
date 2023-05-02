@@ -280,6 +280,7 @@ func Login(c *gin.Context) {
 
 		users = append(users, user)
 	}
+
 	userByIDEncode, err := json.Marshal(users)
 
 	if err != nil {
@@ -291,6 +292,7 @@ func Login(c *gin.Context) {
 }
 
 func CreateUser(c *gin.Context) {
+	var users []User
 	var user User
 	if err := c.BindJSON(&user); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -319,13 +321,33 @@ func CreateUser(c *gin.Context) {
 		fmt.Printf("Insert Err!")
 	}
 
-	rowsAffected, err := result.RowsAffected()
+	// Insert data into FolderFiles table
+    userId, err := result.LastInsertId()
+    if err != nil {
+        // Handle error
+    }
+
+		var convertUserId = int(userId)
+
+		users = append(users, User{
+			ID:         &convertUserId,
+			Name:       user.Name,
+			UserName:   user.UserName,
+			Year:       user.Year,
+			Program:    user.Program,
+			MyFolder:   []UserFolder{},
+			MyGuideLine: []UserGuideLine{},
+			SubjectArea:user.SubjectArea,
+		})
+
+	userEncoded, err := json.Marshal(users)
+
 	if err != nil {
-		// Handle error
+		fmt.Println("Failed to marshal JSON:", err)
+		return
 	}
 
-	fmt.Printf("Received user with name: %s\n", user.Name)
-	c.IndentedJSON(http.StatusOK, rowsAffected)
+	c.IndentedJSON(http.StatusOK, userEncoded)
 }
 
 func DelUser(c *gin.Context) {

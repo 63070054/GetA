@@ -11,6 +11,7 @@ import MediumComtainer from "@/components/Container/MediumContainer";
 import GetAToast from "@/components/Alert/GetAToast";
 import { useUser } from "@/utils/useUser";
 import { useRouter } from 'next/router';
+import CreateGuideLineModal from '@/components/Modal/CreateGuideLineModal';
 
 export default function MyProfile() {
 
@@ -18,9 +19,15 @@ export default function MyProfile() {
     name: "",
     description: ""
   });
+
+  const [inputValueGuideLine, setInputValueGuideLine] = useState<InputValue>({
+    title: "",
+    description: ""
+  });
   const [filterCourses, setFilterCourses] = useState<CourseType[]>([])
   const [filterYears, setFilterYears] = useState<YearType[]>([])
   const [openModal, setOpenModal] = useState<boolean>(false)
+  const [openModalGuideLine, setOpenModalGuideLine] = useState<boolean>(false)
   const { id: userId, name } = useUser()
   const [userInfo, setUserInfo] = useState<User>()
   const router = useRouter()
@@ -64,10 +71,62 @@ export default function MyProfile() {
     setInputValueFolder({ ...copyInputValue });
   }
 
+  const handleInputGuideLineChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    const copyInputValue = inputValueGuideLine;
+    copyInputValue[name] = value;
+    setInputValueGuideLine({ ...copyInputValue });
+  }
+
   const handleOpenModal = () => {
     setOpenModal(true)
     setFilterCourses([])
     setFilterYears([])
+  }
+
+
+
+
+  const createGuideLine = async () => {
+
+    if (userId) {
+      const newGuideLine = {
+        title: inputValueGuideLine.title,
+        description: inputValueGuideLine.description,
+        ownerId: userId,
+        ownerName: name
+      }
+
+      try {
+        const response = await api.post("/guide", newGuideLine)
+        console.log(response)
+        const guideLineId = response.data
+        await resetValue()
+        GetAToast.fire({
+          icon: "success",
+          title: "สร้างแนวข้อสอบสำเร็จ",
+        });
+
+        if (userInfo) {
+          const copyUserInfo: User = userInfo;
+          const guideLineFromDB: GuideLineCard = {
+            id: guideLineId,
+            title: inputValueGuideLine.title,
+            description: inputValueGuideLine.description,
+            ownerId: userId,
+            ownerName: name
+          }
+
+          copyUserInfo?.myGuideLine.push(guideLineFromDB)
+
+          setUserInfo({ ...copyUserInfo })
+        }
+
+      } catch (err) {
+        console.log(err)
+      }
+    }
+
   }
 
   const createFolder = async () => {
@@ -95,7 +154,7 @@ export default function MyProfile() {
           const copyUserInfo: User = userInfo;
           const folderFromDB: IconGetAProps = {
             id: folderId,
-            name: newFolder.name,
+            ...newFolder,
             routeTo: "/folder/:folderId",
             iconPath: "/icons/folderGetA.svg"
           }
@@ -116,7 +175,12 @@ export default function MyProfile() {
       name: "",
       description: ""
     })
+    setInputValueGuideLine({
+      title: "",
+      description: ""
+    })
     setOpenModal(false)
+    setOpenModalGuideLine(false)
   }
 
   return (
@@ -162,7 +226,7 @@ export default function MyProfile() {
         </IconContainer>
         <div className="flex gap-4 items-center mt-6">
           <Typography variant="h6" className="m-0" color="#000000" gutterBottom>แนวข้อสอบของฉัน</Typography>
-          <IconButton className="bg-orange">
+          <IconButton className="bg-orange" onClick={() => setOpenModalGuideLine(true)}>
             <AddIcon />
           </IconButton>
         </div>
@@ -175,6 +239,7 @@ export default function MyProfile() {
         </div>
       </div>
       <CreateFolderModal nameName="name" nameDescription="description" inputValue={inputValueFolder} {...{ openModal, setOpenModal, filterCourses, setFilterCourses, filterYears, setFilterYears, handleInputChange, createFolder }} />
+      <CreateGuideLineModal nameTitle="title" nameDescription="description" inputValue={inputValueGuideLine} handleInputChange={handleInputGuideLineChange} openModal={openModalGuideLine} setOpenModal={setOpenModalGuideLine} {...{ createGuideLine }} />
     </MediumComtainer>
   )
 }

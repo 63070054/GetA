@@ -8,6 +8,7 @@ import { Button } from '@mui/material';
 import api from "@/plugins/axios/api";
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";
+import GetAToast from "@/components/Alert/GetAToast";
 
 const index = () => {
     const yearData: selectValue[] = [
@@ -100,9 +101,13 @@ const index = () => {
         }
 
         try {
-            const result = await api.post("/register", createUserModel)
+            const result = await api.post("/users", createUserModel)
             Cookies.set("token", result.data)
             router.push("/")
+            GetAToast.fire({
+                icon: "success",
+                title: "สมัครสมาชิกสำเร็จ"
+            })
 
         } catch (err) {
             console.log(err)

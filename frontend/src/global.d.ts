@@ -102,6 +102,7 @@ interface NavBarRouter {
   icon?: SvgIconComponent;
 }
 
+
 interface IconGetAProps {
   id: number;
   name: string;
@@ -132,6 +133,11 @@ interface FilterBoxProps {
   backgroundColor: string;
   textColor: string;
   name: CourseType | YearType;
+}
+
+interface SearchInputProps {
+  searchInput: string;
+  setSearchInput: Dispatch<SetStateAction<S>>;
 }
 
 type CourseType = "SVV" | "ITPM" | "SOP" | "HID" | "OOP" | "Gen B";
@@ -174,6 +180,16 @@ interface FileGetA {
 interface LoadingScreenProps {
   isLoading: boolean;
   setIsLoading: Dispatch<SetStateAction<S>>;
+}
+
+interface CreateGuideLineModalProps {
+  openModal: boolean;
+  setOpenModal: Dispatch<SetStateAction<S>>;
+  inputValue: InputValue;
+  handleInputChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  nameTitle: string;
+  nameDescription: string;
+  createGuideLine: () => void;
 }
 
 interface AddFilesModalProps {
