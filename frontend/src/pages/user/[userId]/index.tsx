@@ -17,22 +17,24 @@ export default function MyProfile() {
   const router = useRouter()
   const { userId } = router.query
 
-  const [inputValueFolder, setInputValueFolder] = useState<InputValue>({
-    name: "",
-    description: ""
-  });
-
-  const [filterCourses, setFilterCourses] = useState<CourseType[]>([])
-  const [filterYears, setFilterYears] = useState<YearType[]>([])
-  const [openModal, setOpenModal] = useState<boolean>(false)
-  const { id, name, year, program, subjectArea, myFolder, myGuideLine } = useUser()
   const [userInfo, setUserInfo] = useState<User>()
 
   useEffect(() => {
 
     const getUserById = async () => {
       const response = await api.get("/user/" + userId)
-      console.log(response)
+
+      const copyUserInfo: User = response.data[0]
+      copyUserInfo.myFolder = copyUserInfo.myFolder.map(folder => {
+        return {
+          id: folder.id,
+          name: folder.name,
+          routeTo: "/folder/:folderId",
+          iconPath: "/icons/folderGetA.svg"
+        }
+      })
+
+      setUserInfo({ ...copyUserInfo })
     }
 
     if (router.isReady) {
@@ -42,54 +44,6 @@ export default function MyProfile() {
 
   }, [router.isReady])
 
-
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    const copyInputValue = inputValueFolder;
-    copyInputValue[name] = value;
-    setInputValueFolder({ ...copyInputValue });
-  }
-
-  const handleOpenModal = () => {
-    setOpenModal(true)
-    setFilterCourses([])
-    setFilterYears([])
-  }
-
-  const createFolder = async () => {
-
-    if (id) {
-      const newFolder: Folder = {
-        name: inputValueFolder.name,
-        description: inputValueFolder.description,
-        ownerId: id,
-        ownerName: name,
-        courses: filterCourses as CourseType[],
-        years: filterYears as YearType[],
-      }
-
-      try {
-        await api.post("/folder", newFolder)
-        await resetValue()
-        GetAToast.fire({
-          icon: "success",
-          title: "สร้างโฟลเดอร์สำเร็จ",
-        });
-
-      } catch (err) {
-        console.log(err)
-      }
-    }
-
-  }
-
-  const resetValue = async () => {
-    setInputValueFolder({
-      name: "",
-      description: ""
-    })
-    setOpenModal(false)
-  }
 
   return (
     <MediumComtainer>
@@ -107,9 +61,13 @@ export default function MyProfile() {
               <div className='flex flex-col gap'>
                 <Typography variant="h4" className="relative z-10" color="#000000" gutterBottom>{userInfo?.name}</Typography>
                 <div className='flex gap-2 self-start'>
-                  <Chip label={userInfo?.program} variant="outlined" />
-                  <Chip label={userInfo?.subjectArea} variant="outlined" />
-                  <Chip label={userInfo?.year} variant="outlined" />
+                  {userInfo && (
+                    <>
+                      <Chip label={userInfo?.program} variant="outlined" />
+                      <Chip label={userInfo?.subjectArea} variant="outlined" />
+                      <Chip label={userInfo?.year} variant="outlined" />
+                    </>
+                  )}
                 </div>
               </div>
             </div>
@@ -118,21 +76,17 @@ export default function MyProfile() {
       </div>
       <div className="flex gap-4 items-center mt-6">
         <Typography variant="h6" className="m-0" color="#000000" gutterBottom>โฟลเดอร์ของฉัน</Typography>
-        <IconButton className="bg-orange" onClick={handleOpenModal}>
-          <AddIcon />
-        </IconButton>
+
       </div>
       <div className="flex flex-col gap-4 w-full">
         <IconContainer>
           {userInfo?.myFolder?.map(folder => (
-            <IconGetA {...folder} routeTo={folder.routeTo.replace(":folderId", `${folder.id}`)} key={folder.id} />
+            <IconGetA {...folder} ownerId={userInfo?.id} ownerName={userInfo?.name} routeTo={folder.routeTo.replace(":folderId", `${folder.id}`)} key={folder.id} />
           ))}
         </IconContainer>
         <div className="flex gap-4 items-center mt-6">
           <Typography variant="h6" className="m-0" color="#000000" gutterBottom>แนวข้อสอบของฉัน</Typography>
-          <IconButton className="bg-orange">
-            <AddIcon />
-          </IconButton>
+
         </div>
         <div className="flex flex-col gap-4 w-full">
           <GuideLineContainer>
@@ -142,7 +96,6 @@ export default function MyProfile() {
           </GuideLineContainer>
         </div>
       </div>
-      <CreateFolderModal nameName="name" nameDescription="description" inputValue={inputValueFolder} {...{ openModal, setOpenModal, filterCourses, setFilterCourses, filterYears, setFilterYears, handleInputChange, createFolder }} />
     </MediumComtainer>
   )
 }

@@ -112,6 +112,12 @@ func GetUsers(c *gin.Context) {
 func GetUser(c *gin.Context) {
 	id := c.Param("id")
 	// message := fmt.Sprintf("User id : %s", id)
+	var loginuser LoginUser
+	if err := c.BindJSON(&loginuser); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	var users []User
 	db, err := sql.Open("mysql", "admin:Zaza456654@tcp(get-a-db.c3fxksxqrbwf.us-east-1.rds.amazonaws.com:3306)/get-a")
 	if err != nil {
 		fmt.Println("Err!")
@@ -124,22 +130,24 @@ func GetUser(c *gin.Context) {
 	}
 
 	rows, err := db.Query(`SELECT u.*,
-       GROUP_CONCAT(DISTINCT f.id, ':::', f.name SEPARATOR '??') as myFolder
+       GROUP_CONCAT(DISTINCT f.id, ':::', f.name SEPARATOR '??') as myFolder,
+       GROUP_CONCAT(DISTINCT g.id, ':::', g.title, ':::', g.description SEPARATOR '??') as myGuideLine
         FROM Users u
         LEFT JOIN Folders f ON f.ownerId = ?
-				WHERE u.id = ?
-        GROUP BY u.id`, id, id)
+				LEFT JOIN GuideLines g on g.ownerId = ?
+				WHERE username = ? AND password = ?
+        GROUP BY ?`, id, id, id)
 	if err != nil {
 		fmt.Println("Failed to execute query:", err)
 		return
 	}
 	defer rows.Close()
-	var users []User
 
 	for rows.Next() {
 			var user User
 			var folderStr []uint8
-			if err := rows.Scan(&user.ID, &user.Password, &user.Name, &user.UserName, &user.Year, &user.Program, &user.SubjectArea, &folderStr); err != nil {
+			var guideLineStr []uint8
+			if err := rows.Scan(&user.ID, &user.Password, &user.Name, &user.UserName, &user.Year, &user.Program, &user.SubjectArea, &folderStr, &guideLineStr); err != nil {
 				fmt.Println("Failed to scan row:", err)
 				return
 			}
@@ -162,10 +170,28 @@ func GetUser(c *gin.Context) {
 					}
 			}
 
+			user.MyGuideLine = make([]UserGuideLine, 0)
+			guideLineArr := strings.Split(string(guideLineStr), "??")
+			
+			if len(guideLineArr) > 1 {
+					for _, guideLine := range guideLineArr {
+							parts := strings.Split(guideLine, ":::")
+							guideLineId, err := strconv.Atoi(parts[0])
+							if err != nil {
+									// handle the error
+							}
+							guideLineTitle := parts[1]
+							guideLineDescription := parts[1]
+							user.MyGuideLine = append(user.MyGuideLine, UserGuideLine{
+									Id: guideLineId,
+									Title: guideLineTitle,
+									Description: guideLineDescription,
+							})
+					}
+			}
+
 		users = append(users, user)
 	}
-
-	fmt.Println(users)
 
 	if err != nil {
 		fmt.Println("Failed to marshal JSON:", err)
