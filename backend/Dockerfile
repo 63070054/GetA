@@ -1,23 +1,27 @@
-# Use a lightweight alpine image with Go and Node.js installed
-FROM golang:alpine as builder
+# syntax=docker/dockerfile:1
 
-# Set the working directory inside the container
+FROM golang:1.19
+
+# Set destination for COPY
 WORKDIR /app
 
-# Copy the source code to the working directory inside the container
-COPY . .
+# Download Go modules
+COPY go.mod go.sum ./
+RUN go mod download
 
-# Build the Go binary
-RUN go build -o main .
+# Copy the source code. Note the slash at the end, as explained in
+# https://docs.docker.com/engine/reference/builder/#copy
+COPY *.go ./
 
-# Use a lightweight Node.js image to serve the application
-FROM node:alpine
+# Build
+RUN CGO_ENABLED=0 GOOS=linux go build -o /backend
 
-# Set the working directory inside the container
-WORKDIR /app
+# Optional:
+# To bind to a TCP port, runtime parameters must be supplied to the docker command.
+# But we can document in the Dockerfile what ports
+# the application is going to listen on by default.
+# https://docs.docker.com/engine/reference/builder/#expose
+EXPOSE 8080
 
-# Copy the Go binary from the builder stage to the working directory inside the container
-COPY --from=builder /app/main .
-
-# Start the application when the container starts
-CMD ["go", "run", "."]
+# Run
+CMD ["/backend"]
