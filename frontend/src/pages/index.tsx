@@ -47,10 +47,11 @@ export default function Home() {
       folder.ownerName?.toLowerCase() || "",
     ];
 
-    const includeCourse = filterCourses.some(filterCourse => folder.courses?.includes(filterCourse));
-    const includeYear = filterYears.some(filterYear => folder.years?.includes(filterYear));
-    const includeText = convertSearchInput != "" ? folderValues.some(folderValue => folderValue.includes(convertSearchInput)) : false;
-    return includeCourse || includeYear || includeText;
+    let includeCourse = filterCourses.length != 0 ? filterCourses.some(filterCourse => folder.courses?.includes(filterCourse)) : true;
+    let includeYear = filterYears.length != 0 ? filterYears.some(filterYear => folder.years?.includes(filterYear)) : true;
+    let includeText = convertSearchInput != "" ? folderValues.some(folderValue => folderValue.includes(convertSearchInput)) : true;
+    
+    return includeCourse && includeYear && includeText;
   });
 
   return (
