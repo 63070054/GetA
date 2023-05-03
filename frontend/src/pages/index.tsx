@@ -51,7 +51,7 @@ export default function Home() {
     const includeYear = filterYears.some(filterYear => folder.years?.includes(filterYear));
     const includeText = convertSearchInput != "" ? folderValues.some(folderValue => folderValue.includes(convertSearchInput)) : false;
 
-    return includeCourse || includeYear || includeText;
+    return includeCourse && includeYear && includeText;
   });
 
   return (
