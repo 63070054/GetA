@@ -151,7 +151,7 @@ func GetUser(c *gin.Context) {
 			user.MyFolder = make([]UserFolder, 0)
 			folderArr := strings.Split(string(folderStr), "??")
 			
-			if len(folderArr) > 1 {
+			if len(folderArr) > 0 {
 					for _, folder := range folderArr {
 							parts := strings.Split(folder, ":::")
 							folderId, err := strconv.Atoi(parts[0])
@@ -169,7 +169,7 @@ func GetUser(c *gin.Context) {
 			user.MyGuideLine = make([]UserGuideLine, 0)
 			guideLineArr := strings.Split(string(guideLineStr), "??")
 			
-			if len(guideLineArr) > 1 {
+			if len(guideLineArr) > 0 {
 					for _, guideLine := range guideLineArr {
 							parts := strings.Split(guideLine, ":::")
 							guideLineId, err := strconv.Atoi(parts[0])
@@ -189,7 +189,7 @@ func GetUser(c *gin.Context) {
 		users = append(users, user)
 	}
 
-	fmt.Println(users)
+	fmt.Println("TEST USER", users)
 
 	if err != nil {
 		fmt.Println("Failed to marshal JSON:", err)
