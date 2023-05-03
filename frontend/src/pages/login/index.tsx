@@ -36,7 +36,7 @@ const index = () => {
 
         try {
             const result = await api.post("/login", loginModel)
-            console.log("Test LOGIN", result)
+            console.log(result)
             Cookies.set("token", result.data)
             router.push("/")
             GetAToast.fire({

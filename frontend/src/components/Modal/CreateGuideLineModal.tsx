@@ -29,7 +29,7 @@ const CreateGuideLineModal = ({
         <div className="py-4 px-12 flex flex-col gap-4">
           <FormsInput label="ชื่อ" name={nameTitle} type="text" {...{ inputValue, handleInputChange }} />
           <FormsInput label="คำอธิบาย" name={nameDescription} type="text" {...{ inputValue, handleInputChange }} amountRows={3} />
-          <Button className='bg-orange w-full' onClick={createGuideLine}>ยืนยันการแนวข้อสอบ</Button>
+          <Button className='bg-orange w-full' onClick={createGuideLine}>ยืนยันการสร้างแนวข้อสอบ</Button>
         </div>
       </Box >
     </Modal >

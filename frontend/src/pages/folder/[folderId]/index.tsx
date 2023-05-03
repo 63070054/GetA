@@ -33,7 +33,9 @@ const Folder = () => {
             routeTo: "/folder/:folderId/file/:fileId",
             iconPath: "/icons/fileGetA.svg"
           }
-        })
+        }) || []
+        folder.years = folder.years || []
+        folder.courses = folder.courses || []
         console.log(folder)
         setFolderData({ ...folder })
 
@@ -101,8 +103,8 @@ const Folder = () => {
         console.log(response.data)
         const convertNewFiles = newFiles.map((file: any) => {
           return {
-            id: file.id,
-            name: file.name,
+            id: file.Id,
+            name: file.Name,
             routeTo: "/folder/:folderId/file/:fileId",
             iconPath: "/icons/fileGetA.svg"
           }

@@ -143,7 +143,8 @@ export default function MyProfile() {
 
       try {
         const response = await api.post("/folder", newFolder)
-        const folderId = response.data
+        console.log(response)
+        const folderId = response.data.newFolder.id
         await resetValue()
         GetAToast.fire({
           icon: "success",
@@ -155,6 +156,7 @@ export default function MyProfile() {
           const folderFromDB: IconGetAProps = {
             id: folderId,
             ...newFolder,
+            ownerName: "",
             routeTo: "/folder/:folderId",
             iconPath: "/icons/folderGetA.svg"
           }
