@@ -50,8 +50,7 @@ export default function Home() {
     const includeCourse = filterCourses.some(filterCourse => folder.courses?.includes(filterCourse));
     const includeYear = filterYears.some(filterYear => folder.years?.includes(filterYear));
     const includeText = convertSearchInput != "" ? folderValues.some(folderValue => folderValue.includes(convertSearchInput)) : false;
-
-    return includeCourse && includeYear && includeText;
+    return includeCourse || includeYear || includeText;
   });
 
   return (
