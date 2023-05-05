@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 const api = axios.create({
   // baseURL: "http://localhost:8888",
-  baseURL: "http://52.203.36.3:8888",
+  baseURL: "http://3.88.7.36:8888",
 });
 
 const AxiosInterceptor = ({ children, setIsLoading }) => {
